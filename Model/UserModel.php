@@ -12,6 +12,14 @@ class UserModel
         $this->conn = $database->getConnection();
     }
 
+    public function user()
+    {
+        $query = "SELECT * FROM ". $this->table_name;
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     public function addUser($username, $email, $password)
     {
         $query = "INSERT INTO " . $this->table_name . " (username, email, password) VALUES (:username, :email, :password)";
@@ -29,14 +37,24 @@ class UserModel
         }
     }
 
-    public function updateUser($id, $username, $email)
+    public function getUserById($id)
     {
-        $query = "UPDATE " . $this->table_name . " SET username = :username, email = :email WHERE id = :id";
+        $query = "SELECT * FROM ".$this->table_name." WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id',$id);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function updateUser($id, $username, $email, $password)
+    {
+        $query = "UPDATE " . $this->table_name . " SET username = :username, email = :email, password = :password WHERE id = :id";
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(":id", $id);
         $stmt->bindParam(":username", $username);
         $stmt->bindParam(":email", $email);
+        $stmt->bindParam(":password", $password);
 
         if ($stmt->execute()) {
             return true;

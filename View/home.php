@@ -12,5 +12,6 @@
         password : <input type="password" name="password" id="password"><br>
         <button type="submit" name="add" id="add">Submit</button>
     </form>
+    <a href="/mvc/user">data</a>
 </body>
 </html>
