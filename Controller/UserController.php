@@ -65,5 +65,17 @@ class UserController
             }
         }
     }
+
+    public function delete($id)
+    {
+        $result = $this->userModel->deleteUser($id);
+        if ($result) {
+            // Tampilkan pesan sukses atau redirect ke halaman lain
+            include __DIR__ . '/../View/berhasil.php';
+        } else {
+            // Tampilkan pesan gagal
+            echo "Gagal menambahkan user";
+        }
+    }
 }
 ?>

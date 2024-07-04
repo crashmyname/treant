@@ -39,11 +39,11 @@ class UserModel
 
     public function getUserById($id)
     {
-        $query = "SELECT * FROM ".$this->table_name." WHERE id = :id";
+        $query = "SELECT * FROM ".$this->table_name." WHERE user_id = :id";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id',$id);
+        $stmt->bindParam(':id', $id);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetch();
     }
 
     public function updateUser($id, $username, $email, $password)
@@ -61,6 +61,14 @@ class UserModel
         } else {
             return false;
         }
+    }
+
+    public function deleteUser($id)
+    {
+        $query = "DELETE FROM ". $this->table_name . " WHERE user_id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id',$id);
+        return $stmt->execute();
     }
 }
 ?>

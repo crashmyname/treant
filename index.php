@@ -21,6 +21,10 @@ switch ($action) {
     case '/mvc/update':
         $userController->update($request);
         break;
+    case '/mvc/delete':
+        $id = isset($_GET['id']) ? $_GET['id'] : null;
+        $userController->delete($id);
+        break;
     default:
         include __DIR__ . '/View/home.php';
         break;

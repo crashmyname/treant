@@ -10,7 +10,8 @@
         <td><?= $u['username']?></td>
         <td><?= $u['email']?></td>
         <td><?= $u['password']?></td>
-        <td><a href="/mvc/formedit?id=<?= htmlspecialchars($u['user_id']) ?>">Edit</a></td>
+        <td><a href="/mvc/formedit?id=<?= htmlspecialchars($u['user_id']) ?>">Edit</a>
+            <a href="/mvc/delete?id=<?= htmlspecialchars($u['user_id']) ?>">Delete</a></td>
     </tr>
     <?php endforeach;?>
 </table>
