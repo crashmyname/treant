@@ -10,6 +10,8 @@
 - .htacces
 - index.php
 
+## .env ✨
+- File ini untuk mengkoneksikan ke database ya adik adik jadi untuk mengisi database nya ada disini
 ## Model
 - Model untuk database karena basisnya mvc ala ala jadi jangan lupa buat model crud dulu
 ## Controller
