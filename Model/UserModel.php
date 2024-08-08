@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/config.php';
 
 class UserModel
 {
@@ -10,6 +10,9 @@ class UserModel
     {
         $database = new Database();
         $this->conn = $database->getConnection();
+        if ($this->conn === null) {
+            die('Koneksi database gagal.');
+        }
     }
 
     public function user()
