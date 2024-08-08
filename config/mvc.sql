@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 04, 2024 at 09:45 AM
+-- Generation Time: Aug 08, 2024 at 04:26 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -41,8 +41,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`user_id`, `username`, `email`, `password`) VALUES
 (2, 'administrator', 'fadli_azka_prayogi@stanley-electric.com', '$2y$10$0gAVR2W/QUsxXTbI6q/B5.uvbYj7kdL6tIwx75EKONgSO9odYxy.i'),
 (3, 'administrator', 'fadli_azka_prayogi@stanley-electric.com', '$2y$10$21hSj15C20rGN5OKD9Ec2.i3BLzq1H05L2jSGm6/x5WXu9a6UN8ba'),
-(4, 'administrator', 'fadli_azka_prayogi@stanley-electric.com', '$2y$10$1Ue3jiIwpaK5pgl/9CqYl.7spmpruy8mkadWB1IMjAbAgN.BQTxMK'),
-(5, 'sumimasen', 'sumimasen@gmail.com', '$2y$10$6jc5bl/uEpUjVK1WjbtFx.9uqgwKA3qILNtMWxk7euXkAnK0prK3q');
+(4, 'administrator', 'fadli_azka_prayogi@stanley-electric.com', '$2y$10$1Ue3jiIwpaK5pgl/9CqYl.7spmpruy8mkadWB1IMjAbAgN.BQTxMK');
 
 --
 -- Indexes for dumped tables
@@ -62,7 +61,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
