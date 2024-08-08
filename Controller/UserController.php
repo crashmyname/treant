@@ -42,13 +42,13 @@ class UserController
         include __DIR__.'/../View/edit.php';
     }
 
-    public function update(Request $request)
+    public function update(Request $request,$id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id =$request->id;
             $username =$request->username;
             $email =$request->email;
-            $password =$request->$password;
+            $password =$request->password;
 
             if(!$password){
                 $result = $this->userModel->updateUser($id, $username, $email);
@@ -57,8 +57,8 @@ class UserController
             }
 
             if ($result) {
-                // Tampilkan pesan sukses atau redirect ke halaman lain
-                include __DIR__ . '/../views/berhasil.php';
+                $user = $this->userModel->user();
+                include __DIR__ . '/../View/user.php';
             } else {
                 // Tampilkan pesan gagal
                 echo "Gagal memperbarui user";
@@ -70,8 +70,8 @@ class UserController
     {
         $result = $this->userModel->deleteUser($id);
         if ($result) {
-            // Tampilkan pesan sukses atau redirect ke halaman lain
-            include __DIR__ . '/../View/berhasil.php';
+            $user = $this->userModel->user();
+            include __DIR__ . '/../View/user.php';
         } else {
             // Tampilkan pesan gagal
             echo "Gagal menambahkan user";

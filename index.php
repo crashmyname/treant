@@ -19,7 +19,8 @@ switch ($action) {
         $userController->getUserId($id);
         break;
     case '/mvc/update':
-        $userController->update($request);
+        $id = isset($_GET['id']) ? $_GET['id'] : null;
+        $userController->update($request,$id);
         break;
     case '/mvc/delete':
         $id = isset($_GET['id']) ? $_GET['id'] : null;

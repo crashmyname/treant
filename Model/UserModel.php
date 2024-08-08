@@ -48,13 +48,13 @@ class UserModel
 
     public function updateUser($id, $username, $email, $password)
     {
-        $query = "UPDATE " . $this->table_name . " SET username = :username, email = :email, password = :password WHERE id = :id";
+        $query = "UPDATE " . $this->table_name . " SET username = :username, email = :email, password = :password WHERE user_id = :id";
         $stmt = $this->conn->prepare($query);
-
+        $hash = password_hash($password, PASSWORD_BCRYPT);
         $stmt->bindParam(":id", $id);
         $stmt->bindParam(":username", $username);
         $stmt->bindParam(":email", $email);
-        $stmt->bindParam(":password", $password);
+        $stmt->bindParam(":password", $hash);
 
         if ($stmt->execute()) {
             return true;
