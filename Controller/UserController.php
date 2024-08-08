@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../Model/UserModel.php';
 require_once __DIR__ . '/../bin/support/Request.php';
 require_once __DIR__ . '/../bin/support/View.php';
+require_once __DIR__ . '/../bin/support/Validator.php';
 
 class UserController
 {
@@ -10,6 +11,7 @@ class UserController
     public function __construct()
     {
         $this->userModel = new UserModel();
+        $this->validator = new Validator();
     }
 
     public function index()
@@ -21,18 +23,31 @@ class UserController
     public function store(Request $request)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $username = $request->username;
-            $email = $request->email;
-            $password = $request->password;
+            $data = [
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => $request->password
+            ];
+            $rules = [
+                'username' => 'required|min:3|max:50',
+                'email' => 'required|email',
+                'password' => 'required|min:6'
+            ];
 
-            $result = $this->userModel->addUser($username, $email, $password);
+            $errors = $this->validator->validate($data,$rules);
 
-            if ($result) {
-                $user = $this->userModel->user();
+            if(!empty($errors)){
                 View::redirectTo('/mvc/user');
             } else {
-                // Tampilkan pesan gagal
-                echo "Gagal menambahkan user";
+                $result = $this->userModel->addUser($data['username'], $data['email'], $data['password']);
+                // $result = $this->userModel->addUser($username, $email, $password); <-- jika tidak menggunakan validasi gunakan seperti ini
+                if ($result) {
+                    $user = $this->userModel->user();
+                    View::redirectTo('/mvc/user');
+                } else {
+                    // Tampilkan pesan gagal
+                    echo "Gagal menambahkan user";
+                }
             }
         }
     }

@@ -11,7 +11,7 @@
     <form action="/mvc/store" id="" method="POST">
         <div class="card container-fluid ms-auto">
 
-            nama : <input type="text" class="form-control" name="username" id="username" required><br>
+            nama : <input type="text" class="form-control" name="username" id="username"><br>
             email : <input type="email" class="form-control" name="email" id="email"required><br>
             password : <input type="password" class="form-control" name="password" id="password"required><br>
             <button type="submit" name="add" class="btn btn-success" id="add">Submit</button>
