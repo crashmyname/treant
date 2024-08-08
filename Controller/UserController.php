@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../Model/UserModel.php';
 require_once __DIR__ . '/../bin/support/Request.php';
+require_once __DIR__ . '/../bin/support/View.php';
 
 class UserController
 {
@@ -27,8 +28,8 @@ class UserController
             $result = $this->userModel->addUser($username, $email, $password);
 
             if ($result) {
-                // Tampilkan pesan sukses atau redirect ke halaman lain
-                include __DIR__ . '/../View/berhasil.php';
+                $user = $this->userModel->user();
+                View::redirectTo('/mvc/user');
             } else {
                 // Tampilkan pesan gagal
                 echo "Gagal menambahkan user";
@@ -39,7 +40,7 @@ class UserController
     public function getUserId($id)
     {
         $user = $this->userModel->getUserById($id);
-        include __DIR__.'/../View/edit.php';
+        View::render('edit',['user'=>$user]);
     }
 
     public function update(Request $request,$id)
@@ -58,7 +59,7 @@ class UserController
 
             if ($result) {
                 $user = $this->userModel->user();
-                include __DIR__ . '/../View/user.php';
+                View::redirectTo('/mvc/user');
             } else {
                 // Tampilkan pesan gagal
                 echo "Gagal memperbarui user";
@@ -71,7 +72,7 @@ class UserController
         $result = $this->userModel->deleteUser($id);
         if ($result) {
             $user = $this->userModel->user();
-            include __DIR__ . '/../View/user.php';
+            View::redirectTo('/mvc/user');
         } else {
             // Tampilkan pesan gagal
             echo "Gagal menambahkan user";

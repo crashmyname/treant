@@ -2,6 +2,7 @@
 require_once __DIR__ . '/Controller/UserController.php';
 require_once __DIR__ . '/Model/UserModel.php';
 require_once __DIR__ . '/bin/support/Request.php';
+require_once __DIR__ . '/bin/support/View.php';
 
 $action = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $request = new Request();
@@ -16,7 +17,7 @@ switch ($action) {
         break;
     case '/mvc/formedit':
         $id = isset($_GET['id']) ? $_GET['id'] : null;
-        $userController->getUserId($id);
+        $userController->getUserId(base64_decode($id));
         break;
     case '/mvc/update':
         $id = isset($_GET['id']) ? $_GET['id'] : null;
@@ -24,7 +25,7 @@ switch ($action) {
         break;
     case '/mvc/delete':
         $id = isset($_GET['id']) ? $_GET['id'] : null;
-        $userController->delete($id);
+        $userController->delete(base64_decode($id));
         break;
     default:
         include __DIR__ . '/View/home.php';
