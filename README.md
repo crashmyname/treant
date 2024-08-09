@@ -14,6 +14,12 @@
 - File ini untuk mengkoneksikan ke database ya adik adik jadi untuk mengisi database nya ada disini
 ## Model
 - Model untuk database karena basisnya mvc ala ala jadi jangan lupa buat model crud dulu
+## public
+- Didalam folder public ini diisikan asset template, gambar dan lainnya.
+  cara penggunaannya simple.
+  ```
+  <img src="<?= asset('yourasset.jpg') ?>" alt="">
+  atau lainnya.
 ## Controller
 - Controller Action untuk melakukan action misalkan ada kondisi dan lain sebagainya
 ## index.php

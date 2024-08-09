@@ -3,6 +3,7 @@ require_once __DIR__ . '/Controller/UserController.php';
 require_once __DIR__ . '/Model/UserModel.php';
 require_once __DIR__ . '/bin/support/Request.php';
 require_once __DIR__ . '/bin/support/View.php';
+require_once __DIR__ . '/bin/support/Asset.php';
 
 $action = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $request = new Request();
