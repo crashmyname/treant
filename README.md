@@ -17,7 +17,7 @@
 ## public
 - Didalam folder public ini diisikan asset template, gambar dan lainnya.
   cara penggunaannya simple.
-  ```
+  ```php
   untuk mengakses image
   <img src="<?= asset('yourasset.jpg') ?>" alt="">
 
@@ -31,7 +31,7 @@
 - Controller Action untuk melakukan action misalkan ada kondisi dan lain sebagainya
 ## route
 - Route adalah tujuan url yang mengarahkan ke suatu module atau view, jadi semua diarahkan melalui route bukan melalui file.php
-```
+```php
   <?php
     require_once __DIR__ . '/bin/support/Request.php';
     require_once __DIR__ . '/bin/support/View.php';
@@ -76,7 +76,7 @@
 ```
 ## View
 - Basic View, disini view menggunakan support View.php jadi user bisa mengembalikan atau mengarahkan ke halaman mana ajah dengan support ini misalnya.
-```
+```php
 View::render('home',[],'layout'); <-- maksud dari code ini adalah kita mengarahkan kehalaman home, [] <-- tidak membawa parameter, 'layout' <-- jika memisahkan navbar dengan content
 
 bisa juga menggunakan
