@@ -56,15 +56,15 @@
             $userController->store($request);
             break;
         case '/mvc/formedit':
-            $id = isset($_GET['id']) ? $_GET['id'] : null;
+            $id = $request->id ? $request->id : null;
             $userController->getUserId(base64_decode($id));
-            break;
+        break;
         case '/mvc/update':
-            $id = isset($_GET['id']) ? $_GET['id'] : null;
+            $id = $request->id ? $request->id : null;
             $userController->update($request,$id);
             break;
         case '/mvc/delete':
-            $id = isset($_GET['id']) ? $_GET['id'] : null;
+            $id = $request->id ? $request->id : null;
             $userController->delete(base64_decode($id));
             break;
         default:
