@@ -85,8 +85,8 @@ View::redirectTo('/mvc/user'); <-- fungsi ini mengarahkan ke route misalkan /mvc
 dan bisa menggunakan basic
 include __DIR__.'/../View/user.php'; <-- akan mengarahkan ke halaman user yang berada pada folder View;
 ```
-## index.php
-- index.php adalah route disini jadi pastiin jangan lupa menambahkan route nya supaya appsnya bisa berjalan oke sip mantap AKMJ
+## route.php
+- route.php adalah route disini jadi pastiin jangan lupa menambahkan route nya supaya appsnya bisa berjalan oke sip mantap AKMJ
 
 Terima gaji
 ## Contact
