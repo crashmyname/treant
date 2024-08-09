@@ -19,6 +19,7 @@
   cara penggunaannya simple.
   ```
   <img src="<?= asset('yourasset.jpg') ?>" alt="">
+  ```
   atau lainnya.
 ## Controller
 - Controller Action untuk melakukan action misalkan ada kondisi dan lain sebagainya
