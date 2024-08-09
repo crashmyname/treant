@@ -17,7 +17,8 @@
             <button type="submit" name="add" class="btn btn-success" id="add">Submit</button>
         </div>
     </form><br>
-    <a href="/mvc/user" class="btn btn-info">data</a>
+    <a href="/user" class="btn btn-info">data</a>
+    <img src="<?= asset('1665482840992.jpg')?>" alt="">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
 </html>
