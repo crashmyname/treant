@@ -18,9 +18,14 @@
 - Didalam folder public ini diisikan asset template, gambar dan lainnya.
   cara penggunaannya simple.
   ```
+  untuk mengakses image
   <img src="<?= asset('yourasset.jpg') ?>" alt="">
+  untuk menagkses template
+  <link rel="stylesheet" href="<?= asset('adminlte/bootstrap.min.css') ?>">
+  <script src="<?= asset('adminlte/js/bootstrap.min.js') ?>"></script>
+  
   ```
-  atau lainnya.
+  atau lainnya bisa diakses di menu public.
 ## Controller
 - Controller Action untuk melakukan action misalkan ada kondisi dan lain sebagainya
 ## index.php
