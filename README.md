@@ -20,6 +20,7 @@
   ```
   untuk mengakses image
   <img src="<?= asset('yourasset.jpg') ?>" alt="">
+  
   untuk menagkses template
   <link rel="stylesheet" href="<?= asset('adminlte/bootstrap.min.css') ?>">
   <script src="<?= asset('adminlte/js/bootstrap.min.js') ?>"></script>
