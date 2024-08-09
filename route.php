@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '/Controller/UserController.php';
-require_once __DIR__ . '/Model/UserModel.php';
 require_once __DIR__ . '/bin/support/Request.php';
 require_once __DIR__ . '/bin/support/View.php';
 require_once __DIR__ . '/bin/support/Asset.php';
+require_once __DIR__ . '/Controller/UserController.php';
+require_once __DIR__ . '/Model/UserModel.php';
 
 $action = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $request = new Request();
@@ -29,7 +29,8 @@ switch ($action) {
         $userController->delete(base64_decode($id));
         break;
     default:
-        include __DIR__ . '/View/home.php';
+        // include __DIR__ . '/View/home.php';
+        View::render('home',[],'layout');
         break;
 }
 ?>
