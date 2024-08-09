@@ -17,7 +17,8 @@ class UserController
     public function index()
     {
         $user = $this->userModel->user();
-        include __DIR__.'/../View/user.php';
+        // include __DIR__.'/../View/user.php'; <-- bisa menggunakan basic ini
+        View::render('user', ['user'=>$user],'layout'); //<-- View::render untuk mengembalikan ke halaman yang dituju misalnya user, dan membawa parameter $user untuk menampilkan data, layout untuk menampilkan navbar jika dibutuhkan
     }
 
     public function store(Request $request)
@@ -37,15 +38,16 @@ class UserController
             $errors = $this->validator->validate($data,$rules);
 
             if(!empty($errors)){
-                View::redirectTo('/mvc/user');
+                $user = $this->userModel->user();
+                View::render('user', ['errors' => $errors, 'data' => $data, 'user' => $user]);
+                return;
             } else {
                 $result = $this->userModel->addUser($data['username'], $data['email'], $data['password']);
                 // $result = $this->userModel->addUser($username, $email, $password); <-- jika tidak menggunakan validasi gunakan seperti ini
                 if ($result) {
                     $user = $this->userModel->user();
                     View::redirectTo('/mvc/user');
-                } else {
-                    // Tampilkan pesan gagal
+                } else {    
                     echo "Gagal menambahkan user";
                 }
             }
@@ -66,7 +68,7 @@ class UserController
             $email =$request->email;
             $password =$request->password;
 
-            if(!$password){
+            if(empty($password)){
                 $result = $this->userModel->updateUser($id, $username, $email);
             } else {
                 $result = $this->userModel->updateUser($id, $username, $email, $password);
@@ -76,7 +78,6 @@ class UserController
                 $user = $this->userModel->user();
                 View::redirectTo('/mvc/user');
             } else {
-                // Tampilkan pesan gagal
                 echo "Gagal memperbarui user";
             }
         }
@@ -89,7 +90,6 @@ class UserController
             $user = $this->userModel->user();
             View::redirectTo('/mvc/user');
         } else {
-            // Tampilkan pesan gagal
             echo "Gagal menambahkan user";
         }
     }
