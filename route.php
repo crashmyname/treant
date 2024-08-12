@@ -19,10 +19,9 @@ if (isset($_ENV['ROUTE_PREFIX']) && !empty($_ENV['ROUTE_PREFIX'])) {
     throw new Exception('Variabel lingkungan ROUTE_PREFIX tidak ditemukan atau kosong.');
 }
 
-$action = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $request = new Request();
-$userController = new UserController();
 $route = new Route($prefix);
+$userController = new UserController();
 
 $route->get('/', [$userController, 'index']);
 $route->get('/user', [$userController, 'index']);

@@ -36,42 +36,60 @@
     require_once __DIR__ . '/bin/support/Request.php';
     require_once __DIR__ . '/bin/support/View.php';
     require_once __DIR__ . '/bin/support/Asset.php';
+    $envFile = __DIR__ . '/.env';
     <!-- Tambahkan Controller dan Model dibawah untuk code diatas jangan diubah atau di oprek karena helpers untuk menjalankan suatu function -->
     require_once __DIR__ . '/Controller/UserController.php';
     require_once __DIR__ . '/Model/UserModel.php';
 
-    $action = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $env = parse_ini_file($envFile);
+
+    foreach ($env as $key => $value) {
+        $_ENV[$key] = $value;
+    }
+
+    if (isset($_ENV['ROUTE_PREFIX']) && !empty($_ENV['ROUTE_PREFIX'])) {
+        $prefix = $_ENV['ROUTE_PREFIX'];
+    } else {
+        // Tampilkan pesan kesalahan atau log jika variabel tidak ada
+        throw new Exception('Variabel lingkungan ROUTE_PREFIX tidak ditemukan atau kosong.');
+    }
+    // Code diatas adalah untuk memparsing ROUTEPREFIX yang ada pada .env untuk route_prefix diisi dengan nama projek masing masing yang ada pada file .env
     $request = new Request();
+    $route = new Route($prefix);
     <!-- Tambahkan controller yang dipanggil diatas tadi seperti code dibawah ini -->
     $userController = new UserController();
 
-    <!-- Contoh Penggunaan Routenya tambahkan saja case yang anda ingin buat misalkan case '/yourproject/product' 
-    terus arahkan ke controller mana dengan function apa misal $productController->product();
+    <!-- Contoh Penggunaan Routenya dibawah get untuk melakukan get dan post untuk melakukan post,
+    untuk case delete kenapa menggunakan get karena dia mengambil id nya untuk dihapus dalam fungsi
+    untuk tambah atau update menggunakan post, $route->get / $route->post untuk kedua ada data yang
+    dikirimkan data pertama yaitu url yang dituju, yang kedua masukkan controller serta actionnya jika
+    ada controller lain contoh [$productController, 'product'], dan jangan lupa lakukan pemanggilan
+    require_once __DIR__ . '/Controller/ProductController.php';
+    dan $productController = new ProductController();
     -->
-    switch ($action) {
-        case '/mvc/user':
-            $userController->index();
-            break;
-        case '/mvc/store':
-            $userController->store($request);
-            break;
-        case '/mvc/formedit':
-            $id = $request->id ? $request->id : null;
-            $userController->getUserId(base64_decode($id));
-        break;
-        case '/mvc/update':
-            $id = $request->id ? $request->id : null;
-            $userController->update($request,$id);
-            break;
-        case '/mvc/delete':
-            $id = $request->id ? $request->id : null;
-            $userController->delete(base64_decode($id));
-            break;
-        default:
-            // include __DIR__ . '/View/home.php';
-            View::render('home',[],'layout');
-            break;
-    }
+    $route->get('/', [$userController, 'index']);
+    $route->get('/user', [$userController, 'index']);
+    $route->get('/adduser', [$userController, 'adduser']);
+    $route->get('/formedit', function() use ($userController, $request) {
+        $id = $request->id ? base64_decode($request->id) : null;
+        $userController->getUserId($id);
+    });
+    $route->get('/delete', function() use ($userController, $request) {
+        $id = $request->id ? base64_decode($request->id) : null;
+        $userController->delete($id);
+    });
+
+    // Menambahkan rute POST
+    $route->post('/store', function() use ($userController, $request) {
+        $userController->store($request);
+    });
+    $route->post('/update', function() use ($userController, $request) {
+        $id = $request->id ? base64_decode($request->id) : null;
+        $userController->update($request, $id);
+    });
+
+    // Menjalankan route
+    $route->dispatch();
     ?>
 ```
 ## View
