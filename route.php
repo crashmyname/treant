@@ -21,7 +21,7 @@ $userController = new UserController();
 
 // Menambahkan rute GET
 $route->get('/', function(){
-    View::render('berhasil', []);
+    View::render('wellcome/berhasil', []);
 });
 $route->get('/user', [$userController, 'index']);
 $route->get('/adduser', [$userController, 'adduser']);
