@@ -15,10 +15,10 @@
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/mvc/">Home</a>
+                    <a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/mvc/user">User</a>
+                    <a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/user">User</a>
                 </li>
             </ul>
         </div>

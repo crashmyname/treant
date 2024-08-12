@@ -1,4 +1,5 @@
 <?php
+namespace Support;
 
 class Route {
     private $routes = [];
@@ -9,7 +10,7 @@ class Route {
         $this->routes['GET'] = [];
         // Mendaftarkan rute POST
         $this->routes['POST'] = [];
-        $this->prefix = $prefix;
+        $this->prefix = rtrim($prefix, '/');
     }
 
     public function get($uri, $handler) {
@@ -22,17 +23,20 @@ class Route {
 
     public function dispatch() {
         $method = $_SERVER['REQUEST_METHOD'];
-        $uri = strtok($_SERVER['REQUEST_URI'], '?'); // Menghapus query string
-
-        $uri = str_replace($this->prefix, '', $uri);
-
+        $uri = strtok($_SERVER['REQUEST_URI'], '?');
+    
+        if (strpos($uri, $this->prefix) === 0) {
+            $uri = substr($uri, strlen($this->prefix));
+        }
+    
         if (isset($this->routes[$method][$uri])) {
             $handler = $this->routes[$method][$uri];
-            $handler(); // Menjalankan handler
+            call_user_func($handler);
         } else {
             echo "404 Not Found";
         }
     }
+    
 }
 
 ?>

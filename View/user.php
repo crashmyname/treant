@@ -36,8 +36,8 @@
         <td><?= htmlspecialchars($u['username']) ?></td>
         <td><?= htmlspecialchars($u['email']) ?></td>
         <td><?= htmlspecialchars($u['password']) ?></td>
-        <td><a href="/mvc/formedit?id=<?= base64_encode($u['user_id']) ?>" class="btn btn-warning">Edit</a>
-            <a href="/mvc/delete?id=<?= base64_encode($u['user_id']) ?>" class="btn btn-danger" onclick="return confirm('Apakah yakin ingin dihapus?')">Delete</a>
+        <td><a href="<?= $_ENV['ROUTE_PREFIX']?>/formedit?id=<?= base64_encode($u['user_id']) ?>" class="btn btn-warning">Edit</a>
+            <a href="<?= $_ENV['ROUTE_PREFIX']?>/delete?id=<?= base64_encode($u['user_id']) ?>" class="btn btn-danger" onclick="return confirm('Apakah yakin ingin dihapus?')">Delete</a>
         </td>
     </tr>
     <?php endforeach;?>

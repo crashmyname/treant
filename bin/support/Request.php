@@ -1,4 +1,5 @@
 <?php
+namespace Support;
 
 class Request {
     private $data;

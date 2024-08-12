@@ -1,8 +1,13 @@
 <?php
-require_once __DIR__ . '/../Model/UserModel.php';
-require_once __DIR__ . '/../bin/support/Request.php';
-require_once __DIR__ . '/../bin/support/View.php';
-require_once __DIR__ . '/../bin/support/Validator.php';
+namespace Controller;
+// require_once __DIR__ . '/../Model/UserModel.php';
+// require_once __DIR__ . '/../bin/support/Request.php';
+// require_once __DIR__ . '/../bin/support/View.php';
+// require_once __DIR__ . '/../bin/support/Validator.php';
+use Support\Request;
+use Support\Validator;
+use Support\View;
+use Model\UserModel;
 
 class UserController
 {

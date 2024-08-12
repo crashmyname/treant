@@ -1,11 +1,10 @@
 <?php
+require_once __DIR__ . '/bin/support/Request.php';
+require_once __DIR__ . '/bin/support/View.php';
 require_once __DIR__ . '/bin/support/Asset.php';
-use Support\Request;
-use Support\Route;
-use Support\Validator;
-use Support\View;
-use Controller\UserController;
-use Model\UserModel;
+require_once __DIR__ . '/bin/support/Route.php';
+require_once __DIR__ . '/Controller/UserController.php';
+require_once __DIR__ . '/Model/UserModel.php';
 $envFile = __DIR__ . '/.env';
 $env = parse_ini_file($envFile);
 
@@ -45,4 +44,37 @@ $route->post('/update', function() use ($userController, $request) {
 
 // Menjalankan route
 $route->dispatch();
+
+// switch ($action) {
+//     case '/mvc/':
+//         $user = $userController->index();
+//         View::render('user',['user'=>$user],'layout');
+//         break;
+//     case '/mvc/user':
+//         $userController->index();
+//         break;
+//     case '/mvc/adduser':
+//         $userController->adduser();
+//         break;
+//     case '/mvc/store':
+//         $userController->store($request);
+//         break;
+//     case '/mvc/formedit':
+//         $id = $request->id ? $request->id : null;
+//         $userController->getUserId(base64_decode($id));
+//         break;
+//     case '/mvc/update':
+//         $id = $request->id ? $request->id : null;
+//         $userController->update($request,$id);
+//         break;
+//     case '/mvc/delete':
+//         $id = $request->id ? $request->id : null;
+//         $userController->delete(base64_decode($id));
+//         break;
+//     default:
+//         // include __DIR__ . '/View/home.php';
+//         // View::render('home',[],'layout');
+//         echo "404 Not Found";
+//         break;
+// }
 ?>

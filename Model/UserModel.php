@@ -1,5 +1,8 @@
 <?php
+namespace Model;
+
 require_once __DIR__ . '/../config/config.php';
+use Config\Database;
 
 class UserModel
 {
