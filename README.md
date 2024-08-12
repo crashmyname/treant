@@ -33,14 +33,16 @@
 - Route adalah tujuan url yang mengarahkan ke suatu module atau view, jadi semua diarahkan melalui route bukan melalui file.php
 ```php
   <?php
-    require_once __DIR__ . '/bin/support/Request.php';
-    require_once __DIR__ . '/bin/support/View.php';
+    use Support\Request;
+    use Support\Route;
+    use Support\Validator;
+    use Support\View;
     require_once __DIR__ . '/bin/support/Asset.php';
     $envFile = __DIR__ . '/.env';
     // Tambahkan Controller dan Model dibawah untuk code diatas jangan diubah 
     // atau di oprek karena helpers untuk menjalankan suatu function
-    require_once __DIR__ . '/Controller/UserController.php';
-    require_once __DIR__ . '/Model/UserModel.php';
+    use Controller\UserController;
+    use Model\UserModel;
 
     $env = parse_ini_file($envFile);
 
@@ -48,12 +50,8 @@
         $_ENV[$key] = $value;
     }
 
-    if (isset($_ENV['ROUTE_PREFIX']) && !empty($_ENV['ROUTE_PREFIX'])) {
-        $prefix = $_ENV['ROUTE_PREFIX'];
-    } else {
-        // Tampilkan pesan kesalahan atau log jika variabel tidak ada
-        throw new Exception('Variabel lingkungan ROUTE_PREFIX tidak ditemukan atau kosong.');
-    }
+    $prefix = $_ENV['ROUTE_PREFIX'] != null ? $_ENV['ROUTE_PREFIX'] : throw new Exception('Variabel lingkungan ROUTE_PREFIX tidak ditemukan atau kosong.');
+    
     // Code diatas adalah untuk memparsing ROUTEPREFIX yang ada pada .env 
     // untuk route_prefix diisi dengan nama projek masing masing yang ada pada file .env
     $request = new Request();
