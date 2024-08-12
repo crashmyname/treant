@@ -1,32 +1,38 @@
 <?php
-class Route
-{
+
+class Route {
     private $routes = [];
-    private $basePath;
+    private $prefix;
 
-    public function __construct($basePath = '')
-    {
-        $this->basePath = rtrim(str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']), '/');
-        // echo
+    public function __construct($prefix) {
+        // Mendaftarkan rute GET
+        $this->routes['GET'] = [];
+        // Mendaftarkan rute POST
+        $this->routes['POST'] = [];
+        $this->prefix = $prefix;
     }
 
-    public function get($uri, $callback)
-    {
-        $fullUri = $this->basePath . '/' . ltrim($uri, '/');
-        $this->addRoute('GET', $fullUri, $callback);
-        return $this;
+    public function get($uri, $handler) {
+        $this->routes['GET'][$uri] = $handler;
     }
 
-    public function post($uri, $callback)
-    {
-        $fullUri = $this->basePath . '/' . ltrim($uri, '/');
-        $this->addRoute('POST', $fullUri, $callback);
-        return $this;
+    public function post($uri, $handler) {
+        $this->routes['POST'][$uri] = $handler;
     }
 
-    private function addRoute($method, $uri, $callback)
-    {
-        $this->routes[$method][$uri] = $callback;
+    public function dispatch() {
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = strtok($_SERVER['REQUEST_URI'], '?'); // Menghapus query string
+
+        $uri = str_replace($this->prefix, '', $uri);
+
+        if (isset($this->routes[$method][$uri])) {
+            $handler = $this->routes[$method][$uri];
+            $handler(); // Menjalankan handler
+        } else {
+            echo "404 Not Found";
+        }
     }
 }
+
 ?>

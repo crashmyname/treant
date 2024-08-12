@@ -21,6 +21,11 @@ class UserController
         View::render('user', ['user'=>$user],'layout'); //<-- View::render untuk mengembalikan ke halaman yang dituju misalnya user, dan membawa parameter $user untuk menampilkan data, layout untuk menampilkan navbar jika dibutuhkan
     }
 
+    public function adduser()
+    {
+        View::render('home',[],'layout');
+    }
+
     public function store(Request $request)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
