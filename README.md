@@ -37,7 +37,8 @@
     require_once __DIR__ . '/bin/support/View.php';
     require_once __DIR__ . '/bin/support/Asset.php';
     $envFile = __DIR__ . '/.env';
-    <!-- Tambahkan Controller dan Model dibawah untuk code diatas jangan diubah atau di oprek karena helpers untuk menjalankan suatu function -->
+    <!-- Tambahkan Controller dan Model dibawah untuk code diatas jangan diubah 
+    atau di oprek karena helpers untuk menjalankan suatu function -->
     require_once __DIR__ . '/Controller/UserController.php';
     require_once __DIR__ . '/Model/UserModel.php';
 
@@ -95,16 +96,19 @@
 ## View
 - Basic View, disini view menggunakan support View.php jadi user bisa mengembalikan atau mengarahkan ke halaman mana ajah dengan support ini misalnya.
 ```php
-View::render('home',[],'layout'); <-- maksud dari code ini adalah kita mengarahkan kehalaman home, [] <-- tidak membawa parameter, 'layout' <-- jika memisahkan navbar dengan content
+View::render('home',[],'layout'); <-- maksud dari code ini adalah kita mengarahkan kehalaman home,
+[] <-- tidak membawa parameter, 'layout' <-- jika memisahkan navbar dengan content
 
 bisa juga menggunakan
-View::redirectTo('/mvc/user'); <-- fungsi ini mengarahkan ke route misalkan /mvc/product <-- akan mengarahkan ke route product
+View::redirectTo('/mvc/user'); <-- fungsi ini mengarahkan ke route misalkan /mvc/product <-- akan 
+mengarahkan ke route product
 
 dan bisa menggunakan basic
 include __DIR__.'/../View/user.php'; <-- akan mengarahkan ke halaman user yang berada pada folder View;
 ```
 ## route.php
-- route.php adalah route disini jadi pastiin jangan lupa menambahkan route nya supaya appsnya bisa berjalan oke sip mantap AKMJ
+- route.php adalah route disini jadi pastiin jangan lupa menambahkan route nya supaya appsnya bisa berjalan 
+oke sip mantap AKMJ
 
 Terima gaji
 ## Contact
