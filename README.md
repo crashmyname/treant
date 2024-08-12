@@ -54,7 +54,8 @@
         // Tampilkan pesan kesalahan atau log jika variabel tidak ada
         throw new Exception('Variabel lingkungan ROUTE_PREFIX tidak ditemukan atau kosong.');
     }
-    // Code diatas adalah untuk memparsing ROUTEPREFIX yang ada pada .env untuk route_prefix diisi dengan nama projek masing masing yang ada pada file .env
+    // Code diatas adalah untuk memparsing ROUTEPREFIX yang ada pada .env 
+    // untuk route_prefix diisi dengan nama projek masing masing yang ada pada file .env
     $request = new Request();
     $route = new Route($prefix);
     <!-- Tambahkan controller yang dipanggil diatas tadi seperti code dibawah ini -->
