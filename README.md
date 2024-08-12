@@ -37,8 +37,8 @@
     require_once __DIR__ . '/bin/support/View.php';
     require_once __DIR__ . '/bin/support/Asset.php';
     $envFile = __DIR__ . '/.env';
-    <!-- Tambahkan Controller dan Model dibawah untuk code diatas jangan diubah 
-    atau di oprek karena helpers untuk menjalankan suatu function -->
+    // Tambahkan Controller dan Model dibawah untuk code diatas jangan diubah 
+    // atau di oprek karena helpers untuk menjalankan suatu function
     require_once __DIR__ . '/Controller/UserController.php';
     require_once __DIR__ . '/Model/UserModel.php';
 
