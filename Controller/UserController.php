@@ -47,9 +47,9 @@ class UserController
             if($error){
                 View::render('login', ['errors' => $error]);
             } else {
-                $result = $this->userModel->onLogin($request->email, $request->password);
+                $result = $this->userModel->onLogin($data['email'], $data['password']);
                 if($result){
-                    $user = $this->userModel->getUserIdByEmail($request->email);
+                    $user = $this->userModel->getUserIdByEmail($data['email']);
                     if($user){
                         $_SESSION['user_id'] = $user['user_id'];
                         $_SESSION['username'] = $user['username'];
@@ -59,7 +59,8 @@ class UserController
                     $r = $_ENV['ROUTE_PREFIX'];
                     View::redirectTo($r.'/user');
                 } else {
-                    echo "gagal login";
+                    $error_m = "gagal login";
+                    View::render('login',['error_m'=>$error_m]);
                 }
             }
         }
@@ -98,7 +99,7 @@ class UserController
                 // $result = $this->userModel->addUser($username, $email, $password); <-- jika tidak menggunakan validasi gunakan seperti ini
                 if ($result) {
                     $user = $this->userModel->user();
-                    View::redirectTo('/mvc/user');
+                    View::redirectTo($_ENV['ROUTE_PREFIX'].'/user');
                 } else {    
                     echo "Gagal menambahkan user";
                 }

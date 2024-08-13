@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en">
 <?php 
-echo $_SESSION['user_id'];
-echo $_SESSION['username'];
-echo $_SESSION['email'];
+echo 'Your ID : '.$_SESSION['user_id'].'<br>';
+echo 'Username : '.$_SESSION['username'].'<br>';
+echo 'Email : '.$_SESSION['email'];
 ?>
 <head>
     <meta charset="utf-8">
