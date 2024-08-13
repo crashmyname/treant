@@ -29,18 +29,27 @@ class UserModel
 
     public function addUser($username, $email, $password)
     {
-        $query = "INSERT INTO " . $this->table_name . " (username, email, password) VALUES (:username, :email, :password)";
-        $stmt = $this->conn->prepare($query);
+        try{
+            $this->conn->beginTransaction();
+            $query = "INSERT INTO " . $this->table_name . " (username, email, password) VALUES (:username, :email, :password)";
+            $stmt = $this->conn->prepare($query);
 
-        $hash = password_hash($password, PASSWORD_BCRYPT);
-        $stmt->bindParam(":username", $username);
-        $stmt->bindParam(":email", $email);
-        $stmt->bindParam(":password", $hash);
+            $hash = password_hash($password, PASSWORD_BCRYPT);
+            $stmt->bindParam(":username", $username);
+            $stmt->bindParam(":email", $email);
+            $stmt->bindParam(":password", $hash);
 
-        if ($stmt->execute()) {
-            return true;
-        } else {
-            return false;
+            if ($stmt->execute()) {
+                $this->conn->commit();
+                return true;
+            } else {
+                $this->conn->rollback();
+                return false;
+            }
+        } catch (\PDOException $e)
+        {
+            $this->conn->rollback();
+            $e;
         }
     }
 
