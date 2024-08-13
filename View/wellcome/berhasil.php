@@ -46,7 +46,7 @@
       <div class="container">
         <h1 class="display-4">Welcome to MVC Tanjidor</h1>
         <p class="lead">A simple and elegant framework to kickstart your PHP projects.</p>
-        <a href="<?= $_ENV['ROUTE_PREFIX']?>/user" class="btn btn-primary btn-lg">Get Started</a>
+        <a href="<?= $_ENV['ROUTE_PREFIX']?>/login" class="btn btn-primary btn-lg">Get Started</a>
       </div>
     </section>
 
