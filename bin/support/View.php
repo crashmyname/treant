@@ -32,7 +32,8 @@ class View{
             if (file_exists($layoutPath)) {
                 include $layoutPath;
             } else {
-                throw new Exception("Layout file not found: $layoutPath");
+                // throw new Exception("Layout file not found: $layoutPath");
+                View::render('errors/500');
             }
         } else {
             echo $content;
