@@ -1,9 +1,12 @@
 <?php
+session_start();
 require_once __DIR__ . '/bin/support/Asset.php';
+require_once __DIR__ . '/bin/support/Middleware.php';
 use Support\Request;
 use Support\Route;
 use Support\Validator;
 use Support\View;
+use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
 use Controller\UserController;
 use Model\UserModel;
 $envFile = __DIR__ . '/.env';
@@ -23,9 +26,26 @@ $userController = new UserController();
 $route->get('/', function(){
     View::render('wellcome/berhasil', []);
 });
-$route->get('/user', [$userController, 'index']);
-$route->get('/adduser', [$userController, 'adduser']);
+$route->get('/login', function(){
+    View::render('login', []);
+});
+$route->post('/login', function() use ($userController) {
+    $request = new Request();
+    $userController->login($request);
+});
+$route->get('/logout', function() use ($userController) {
+    $userController->logout();
+});
+$route->get('/user', function() use ($userController) {
+    AuthMiddleware::checkLogin(); //<-- Cara pemanggilannya
+    $userController->index();
+});
+$route->get('/adduser', function() use ($userController){
+    AuthMiddleware::checkLogin();
+    $userController->addUser();
+});
 $route->get('/formedit', function() use ($userController, $request) {
+    AuthMiddleware::checkLogin();
     $id = $request->id ? base64_decode($request->id) : null;
     $userController->getUserId($id);
 });
@@ -44,5 +64,6 @@ $route->post('/update', function() use ($userController, $request) {
 });
 
 // Menjalankan route
+// echo "Dispatching route...<br>";
 $route->dispatch();
 ?>

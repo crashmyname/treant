@@ -3,6 +3,7 @@ namespace Model;
 
 require_once __DIR__ . '/../config/config.php';
 use Config\Database;
+use PDO;
 
 class UserModel
 {
@@ -43,6 +44,24 @@ class UserModel
         }
     }
 
+    public function onLogin($email, $password)
+    {
+        $query = "SELECT * FROM ".$this->table_name." WHERE email = :email";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":email", $email);
+        
+        if ($stmt->execute()) {
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            error_log("User fetched: " . print_r($user, true)); // Debugging
+            
+            if ($user && password_verify($password, $user['password'])) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
     public function getUserById($id)
     {
         $query = "SELECT * FROM ".$this->table_name." WHERE user_id = :id";
@@ -50,6 +69,20 @@ class UserModel
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         return $stmt->fetch();
+    }
+
+    public function getUserIdByEmail($email)
+    {
+        $query = "SELECT user_id, username, email FROM " . $this->table_name . " WHERE email = :email";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":email", $email);
+        
+        if ($stmt->execute()) {
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $user;
+        }
+        
+        return null;
     }
 
     public function updateUser($id, $username, $email, $password)

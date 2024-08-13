@@ -20,6 +20,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/user">User</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/logout">Logout</a>
+                </li>
             </ul>
         </div>
     </nav>

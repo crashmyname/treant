@@ -31,6 +31,48 @@ class UserController
         View::render('home',[],'layout');
     }
 
+    public function login(Request $request)
+    {
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $data = [
+                'email' => $request->email,
+                'password' => $request->password
+            ];
+            error_log("Login request data: " . print_r($data, true));
+            $rule = [
+                'email' => 'required',
+                'password' => 'required'
+            ];
+            $error = $this->validator->validate($data,$rule);
+            if($error){
+                View::render('login', ['errors' => $error]);
+            } else {
+                $result = $this->userModel->onLogin($request->email, $request->password);
+                if($result){
+                    $user = $this->userModel->getUserIdByEmail($request->email);
+                    if($user){
+                        $_SESSION['user_id'] = $user['user_id'];
+                        $_SESSION['username'] = $user['username'];
+                        $_SESSION['email'] = $user['email'];
+                    }
+                    // View::render('user', ['user'=>$users],'layout');
+                    $r = $_ENV['ROUTE_PREFIX'];
+                    View::redirectTo($r.'/user');
+                } else {
+                    echo "gagal login";
+                }
+            }
+        }
+    }
+
+    public function logout()
+    {
+        session_unset();
+        session_destroy();
+        $r = $_ENV['ROUTE_PREFIX'];
+        View::redirectTo($r.'/login');
+    }
+
     public function store(Request $request)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

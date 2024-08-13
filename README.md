@@ -37,6 +37,7 @@
     use Support\Route;
     use Support\Validator;
     use Support\View;
+    use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
     require_once __DIR__ . '/bin/support/Asset.php';
     $envFile = __DIR__ . '/.env';
     // Tambahkan Controller dan Model dibawah untuk code diatas jangan diubah 
@@ -67,10 +68,29 @@
     require_once __DIR__ . '/Controller/ProductController.php';
     dan $productController = new ProductController();
     -->
-    $route->get('/', [$userController, 'index']);
-    $route->get('/user', [$userController, 'index']);
-    $route->get('/adduser', [$userController, 'adduser']);
+    $route->get('/', function(){
+    View::render('wellcome/berhasil', []);
+    });
+    $route->get('/login', function(){
+        View::render('login', []);
+    });
+    $route->post('/login', function() use ($userController) {
+        $request = new Request();
+        $userController->login($request);
+    });
+    $route->get('/logout', function() use ($userController) {
+        $userController->logout();
+    });
+    $route->get('/user', function() use ($userController) {
+        AuthMiddleware::checkLogin(); //<-- Cara pemanggilannya
+        $userController->index();
+    });
+    $route->get('/adduser', function() use ($userController){
+        AuthMiddleware::checkLogin(); //<-- Cara pemanggilannya
+        $userController->addUser();
+    });
     $route->get('/formedit', function() use ($userController, $request) {
+        AuthMiddleware::checkLogin(); //<-- Cara pemanggilannya
         $id = $request->id ? base64_decode($request->id) : null;
         $userController->getUserId($id);
     });
