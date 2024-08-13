@@ -1,5 +1,6 @@
 <?php
 namespace Support;
+use Support\View;
 
 class Route {
     private $routes = [];
@@ -40,7 +41,8 @@ class Route {
                 call_user_func($handler);
             });
         } else {
-            echo "404 Not Found";
+            // echo "404 Not Found";
+            View::render('errors/404',[]);
         }
     }
 
