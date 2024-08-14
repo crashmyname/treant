@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>504 Gateway Timeout</title>
+    <title>505 Invalid CSRF</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -35,9 +35,9 @@
 <body>
 
 <div class="not-found-container">
-    <h1>504</h1>
-    <h3>Gateway Timeout</h3>
-    <p>Oops! The server took too long to respond. Please try again later.</p>
+    <h1>505</h1>
+    <h3>Invalid CSRF Token</h3>
+    <p>Oops! Your Token Invalid or CSRF Token Mismatch. Please try again later.</p>
     <a href="<?= $_ENV['ROUTE_PREFIX']?>" class="btn btn-primary">Go Home</a>
 </div>
 

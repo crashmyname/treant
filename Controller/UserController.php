@@ -4,9 +4,11 @@ namespace Controller;
 // require_once __DIR__ . '/../bin/support/Request.php';
 // require_once __DIR__ . '/../bin/support/View.php';
 // require_once __DIR__ . '/../bin/support/Validator.php';
+// require_once __DIR__ . '/../bin/support/Validator.php';
 use Support\Request;
 use Support\Validator;
 use Support\View;
+use Support\CSRFToken;
 use Model\UserModel;
 
 class UserController
@@ -28,7 +30,8 @@ class UserController
 
     public function adduser()
     {
-        View::render('home',[],'layout');
+        $csrftoken = CSRFToken::generateToken();
+        View::render('home',['csrftoken'=>$csrftoken],'layout');
     }
 
     public function login(Request $request)
@@ -77,6 +80,9 @@ class UserController
     public function store(Request $request)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!CSRFToken::validateToken($request->csrf_token)) {
+                View::render('errors/505',[]);
+            }
             $data = [
                 'username' => $request->username,
                 'email' => $request->email,
