@@ -1,7 +1,6 @@
 <?php
 session_start();
 require_once __DIR__ . '/bin/support/Asset.php';
-// require_once __DIR__ . '/bin/support/Middleware.php';
 use Support\Request;
 use Support\Route;
 use Support\Validator;
