@@ -1,3 +1,6 @@
+<?php 
+$_SESSION['login_time'] = time();
+?>
 <!doctype html>
 <html lang="id">
 

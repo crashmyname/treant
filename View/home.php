@@ -1,7 +1,7 @@
     <h1>Hello, Hell!</h1>
     <form action="<?= $_ENV['ROUTE_PREFIX']?>/store" id="" method="POST">
         <div class="card container-fluid ms-auto">
-            <input type="hidden" name="csrf_token" value="<?= $csrftoken ?>">
+            <?= $csrftoken ?>
             nama : <input type="text" class="form-control" name="username" id="username"><br>
             email : <input type="email" class="form-control" name="email" id="email"required><br>
             password : <input type="password" class="form-control" name="password" id="password"required><br>

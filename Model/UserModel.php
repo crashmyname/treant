@@ -24,7 +24,7 @@ class UserModel
         $query = "SELECT * FROM ". $this->table_name;
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function addUser($username, $email, $password)

@@ -28,11 +28,60 @@ class UserController
         View::render('user', ['user'=>$user],'layout'); //<-- View::render untuk mengembalikan ke halaman yang dituju misalnya user, dan membawa parameter $user untuk menampilkan data, layout untuk menampilkan navbar jika dibutuhkan
     }
 
+    public function userapi()
+    {
+        $user = $this->userModel->user();
+        header('Content-Type: application/json');
+        echo json_encode($user);
+    }
+
     public function adduser()
     {
-        $csrftoken = CSRFToken::generateToken();
+        $token = CSRFToken::generateToken();
+        $csrftoken = '<input type="hidden" name="csrf_token" value="'.$token.'">';
         View::render('home',['csrftoken'=>$csrftoken],'layout');
     }
+
+    public function loginapi(Request $request)
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = [
+                'email' => $request->email,
+                'password' => $request->password
+            ];
+
+            $rule = [
+                'email' => 'required',
+                'password' => 'required'
+            ];
+            
+            $error = $this->validator->validate($data, $rule);
+            if ($error) {
+                View::render('login', ['errors' => $error]);
+            } else {
+                $result = $this->userModel->onLogin($data['email'], $data['password']);
+                if ($result) {
+                    $user = $this->userModel->getUserIdByEmail($data['email']);
+                    if ($user) {
+                        // Generate token
+                        $token = bin2hex(random_bytes(32)); // atau gunakan JWT
+                        
+                        // Simpan token ke database atau session
+                        $_SESSION['token'] = $token;
+                        // atau di database:
+                        // $this->userModel->saveToken($user['user_id'], $token);
+                        
+                        // Return token sebagai response
+                        header('Content-Type: application/json');
+                        echo json_encode(['token' => $token]);
+                    }
+                } else {
+                    echo json_encode(['error' => 'Email atau password salah!!!!!!']);
+                }
+            }
+        }
+    }
+
 
     public function login(Request $request)
     {
@@ -57,6 +106,7 @@ class UserController
                         $_SESSION['user_id'] = $user['user_id'];
                         $_SESSION['username'] = $user['username'];
                         $_SESSION['email'] = $user['email'];
+                        $_SESSION['login_time'] = time();
                     }
                     // View::render('user', ['user'=>$users],'layout');
                     $r = $_ENV['ROUTE_PREFIX'];
@@ -116,7 +166,7 @@ class UserController
     public function getUserId($id)
     {
         $user = $this->userModel->getUserById($id);
-        View::render('edit',['user'=>$user]);
+        View::render('edit',['user'=>$user],'layout');
     }
 
     public function update(Request $request,$id)

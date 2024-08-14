@@ -6,6 +6,7 @@ use Support\Route;
 use Support\Validator;
 use Support\View;
 use Support\CSRFToken;
+use Support\CORSMiddleware;
 use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
 use Controller\UserController;
 use Model\UserModel;
@@ -21,6 +22,7 @@ $prefix = $_ENV['ROUTE_PREFIX'] != null ? $_ENV['ROUTE_PREFIX'] : throw new Exce
 $request = new Request();
 $route = new Route($prefix);
 $userController = new UserController();
+CORSMiddleware::handle();
 
 // Menambahkan rute GET
 $route->get('/', function(){
@@ -33,12 +35,20 @@ $route->post('/login', function() use ($userController) {
     $request = new Request();
     $userController->login($request);
 });
+$route->post('/api/login', function() use ($userController) {
+    $request = new Request();
+    $userController->loginapi($request);
+});
 $route->get('/logout', function() use ($userController) {
     $userController->logout();
 });
 $route->get('/user', function() use ($userController) {
     AuthMiddleware::checkLogin(); //<-- Cara pemanggilannya
     $userController->index();
+});
+$route->get('/api/user', function() use ($userController) {
+    AuthMiddleware::checkToken();
+    $userController->userapi();
 });
 $route->get('/adduser', function() use ($userController){
     AuthMiddleware::checkLogin();
