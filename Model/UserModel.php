@@ -27,15 +27,16 @@ class UserModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function addUser($username, $email, $password)
+    public function addUser($username,$uuid, $email, $password)
     {
         try{
             $this->conn->beginTransaction();
-            $query = "INSERT INTO " . $this->table_name . " (username, email, password) VALUES (:username, :email, :password)";
+            $query = "INSERT INTO " . $this->table_name . " (username,uuid, email, password) VALUES (:username,:uuid, :email, :password)";
             $stmt = $this->conn->prepare($query);
 
             $hash = password_hash($password, PASSWORD_BCRYPT);
             $stmt->bindParam(":username", $username);
+            $stmt->bindParam(":uuid", $uuid);
             $stmt->bindParam(":email", $email);
             $stmt->bindParam(":password", $hash);
 
@@ -94,21 +95,24 @@ class UserModel
         return null;
     }
 
-    public function updateUser($id, $username, $email, $password)
+    public function updateUser($id, $username, $email, $password = null)
     {
-        $query = "UPDATE " . $this->table_name . " SET username = :username, email = :email, password = :password WHERE user_id = :id";
+        $query = "UPDATE " . $this->table_name . " SET username = :username, email = :email";
+        if ($password !== null) {
+            $query .= ", password = :password";
+            $hash = password_hash($password, PASSWORD_BCRYPT);
+        } else {
+            $hash = null;
+        }
+        $query .= " WHERE user_id = :id";
         $stmt = $this->conn->prepare($query);
-        $hash = password_hash($password, PASSWORD_BCRYPT);
         $stmt->bindParam(":id", $id);
         $stmt->bindParam(":username", $username);
         $stmt->bindParam(":email", $email);
-        $stmt->bindParam(":password", $hash);
-
-        if ($stmt->execute()) {
-            return true;
-        } else {
-            return false;
+        if ($password !== null) {
+            $stmt->bindParam(":password", $hash);
         }
+        return $stmt->execute();
     }
 
     public function deleteUser($id)

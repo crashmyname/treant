@@ -9,6 +9,8 @@ use Support\CSRFToken;
 use Support\CORSMiddleware;
 use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
 use Support\RateLimiter;
+use Support\Crypto;
+use Support\UUID;
 use Controller\UserController;
 use Model\UserModel;
 $envFile = __DIR__ . '/.env';
@@ -64,11 +66,11 @@ $route->get('/adduser', function() use ($userController){
 });
 $route->get('/formedit', function() use ($userController, $request) {
     AuthMiddleware::checkLogin();
-    $id = $request->id ? base64_decode($request->id) : null;
+    $id = Crypto::decrypt($request->id);
     $userController->getUserId($id);
 });
 $route->get('/delete', function() use ($userController, $request) {
-    $id = $request->id ? base64_decode($request->id) : null;
+    $id = Crypto::decrypt($request->id);
     $userController->delete($id);
 });
 
@@ -77,7 +79,7 @@ $route->post('/store', function() use ($userController, $request) {
     $userController->store($request);
 });
 $route->post('/update', function() use ($userController, $request) {
-    $id = $request->id ? base64_decode($request->id) : null;
+    $id = Crypto::decrypt($request->id);
     $userController->update($request, $id);
 });
 

@@ -9,6 +9,8 @@ use Support\Request;
 use Support\Validator;
 use Support\View;
 use Support\CSRFToken;
+use Support\Crypto;
+use Support\UUID;
 use Model\UserModel;
 
 class UserController
@@ -24,6 +26,10 @@ class UserController
     public function index()
     {
         $user = $this->userModel->user();
+        foreach ($user as &$u) {
+            $u['edit_link'] = Crypto::encrypt($u['user_id']);
+            $u['delete_link'] = Crypto::encrypt($u['user_id']);
+        }
         // include __DIR__.'/../View/user.php'; <-- bisa menggunakan basic ini
         View::render('user', ['user'=>$user],'layout'); //<-- View::render untuk mengembalikan ke halaman yang dituju misalnya user, dan membawa parameter $user untuk menampilkan data, layout untuk menampilkan navbar jika dibutuhkan
     }
@@ -143,6 +149,7 @@ class UserController
                 'email' => 'required|email',
                 'password' => 'required|min:6'
             ];
+            $uuid = UUID::generateUuid();
 
             $errors = $this->validator->validate($data,$rules);
 
@@ -151,7 +158,7 @@ class UserController
                 View::render('user', ['errors' => $errors, 'data' => $data, 'user' => $user]);
                 return;
             } else {
-                $result = $this->userModel->addUser($data['username'], $data['email'], $data['password']);
+                $result = $this->userModel->addUser($data['username'],$uuid, $data['email'], $data['password']);
                 // $result = $this->userModel->addUser($username, $email, $password); <-- jika tidak menggunakan validasi gunakan seperti ini
                 if ($result) {
                     $user = $this->userModel->user();
@@ -165,24 +172,24 @@ class UserController
 
     public function getUserId($id)
     {
+        // $decryptedId = Crypto::decrypt($id);
         $user = $this->userModel->getUserById($id);
-        View::render('edit',['user'=>$user],'layout');
+        $encryptedUserId = Crypto::encrypt($user['user_id']);
+        View::render('edit',['user'=>$user,'encryptedUserId'=>$encryptedUserId],'layout');
     }
 
     public function update(Request $request,$id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id =$request->id;
             $username =$request->username;
             $email =$request->email;
             $password =$request->password;
-
-            if(empty($password)){
-                $result = $this->userModel->updateUser($id, $username, $email);
+            if (empty($password)) {
+                $password = null;
             } else {
-                $result = $this->userModel->updateUser($id, $username, $email, $password);
-            }
-
+                $password = $request->password;
+            }  
+            $result = $this->userModel->updateUser($id, $username, $email, $password);
             if ($result) {
                 $user = $this->userModel->user();
                 View::redirectTo('/mvc/user');
