@@ -8,6 +8,7 @@ use Support\View;
 use Support\CSRFToken;
 use Support\CORSMiddleware;
 use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
+use Support\RateLimiter;
 use Controller\UserController;
 use Model\UserModel;
 $envFile = __DIR__ . '/.env';
@@ -22,6 +23,13 @@ $prefix = $_ENV['ROUTE_PREFIX'] != null ? $_ENV['ROUTE_PREFIX'] : throw new Exce
 $request = new Request();
 $route = new Route($prefix);
 $userController = new UserController();
+
+$rateLimiter = new RateLimiter();
+if (!$rateLimiter->check($_SERVER['REMOTE_ADDR'])) {
+    http_response_code(429);
+    View::render('errors/429',[]);
+    exit();
+}
 CORSMiddleware::handle();
 
 // Menambahkan rute GET
