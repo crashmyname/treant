@@ -25,11 +25,10 @@ echo 'Email : '.$_SESSION['email'];
             <td>UUID</td>
             <td>Email</td>
             <td>Password</td>
-            <!-- <td>Action</td> -->
+            <td>Action</td>
         </tr>
     </thead>
 </table>
-
     </div>
     <script>
         $(document).ready(function() {
@@ -43,7 +42,16 @@ echo 'Email : '.$_SESSION['email'];
                 {"data": "username"},
                 {"data": "uuid"},
                 {"data": "email"},
-                {"data": "password"}
+                {"data": "password"},
+                {
+                    "data": "user_id",
+                    render: function(data,type,row){
+                        var editLink = `${prefix}/formedit?id=${encodeURIComponent(row.edit_link)}`;
+                        var deleteLink = `${prefix}/delete?id=${encodeURIComponent(row.delete_link)}`;
+                        return `<a href="${editLink}" class="btn btn-warning">Edit</a> | <a href="${deleteLink}" class="btn btn-danger" onclick="return confirm('Apakah yakin ingin dihapus?')">Delete</a>`
+                    },
+                    "orderable": false
+                }
             ]
         });
     });

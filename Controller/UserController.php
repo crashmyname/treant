@@ -27,18 +27,18 @@ class UserController
     public function index()
     {
         $user = $this->userModel->user();
-        // foreach ($user as &$u) {
-        //     $u['edit_link'] = Crypto::encrypt($u['user_id']);
-        //     $u['delete_link'] = Crypto::encrypt($u['user_id']);
-        // }
         // include __DIR__.'/../View/user.php'; <-- bisa menggunakan basic ini
-        View::render('user', [],'layout'); //<-- View::render untuk mengembalikan ke halaman yang dituju misalnya user, dan membawa parameter $user untuk menampilkan data, layout untuk menampilkan navbar jika dibutuhkan
+        View::render('user', ['user'=>$user],'layout'); //<-- View::render untuk mengembalikan ke halaman yang dituju misalnya user, dan membawa parameter $user untuk menampilkan data, layout untuk menampilkan navbar jika dibutuhkan
     }
 
     public function getUsers()
     {
         if (Request::isAjax()) {
             $users = $this->userModel->user();
+            foreach ($users as &$user) {
+                $user['edit_link'] = Crypto::encrypt($user['user_id']);
+                $user['delete_link'] = Crypto::encrypt($user['user_id']);
+            }
             return DataTables::of($users)->make(true);
         }
     }
