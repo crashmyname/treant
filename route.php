@@ -35,11 +35,11 @@ if (!$rateLimiter->check($_SERVER['REMOTE_ADDR'])) {
 CORSMiddleware::handle();
 
 $route->get('/', function(){
-    View::render('wellcome/berhasil', []);
+    View::render('wellcome/berhasil');
 });
 // Authentication
 $route->get('/login', function(){
-    View::render('login', []);
+    View::render('login');
 });
 $route->post('/login', function() use ($userController) {
     $request = new Request();
