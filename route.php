@@ -56,6 +56,9 @@ $route->get('/user', function() use ($userController) {
     AuthMiddleware::checkLogin(); //<-- Cara pemanggilannya
     $userController->index();
 });
+$route->get('/user/getUsers', function() use ($userController){
+    $userController->getUsers();
+});
 $route->get('/api/user', function() use ($userController) {
     AuthMiddleware::checkToken();
     $userController->userapi();

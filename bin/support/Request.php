@@ -20,6 +20,11 @@ class Request {
         return $sanitized;
     }
 
+    public static function isAjax()
+    {
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+    }
+
     public function __get($key) {
         return $this->data[$key] ?? null;
     }

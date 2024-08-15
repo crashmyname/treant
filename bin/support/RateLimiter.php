@@ -4,7 +4,7 @@ namespace Support;
 
 class RateLimiter
 {
-    private $limit = 100; // Jumlah maksimum permintaan
+    private $limit = 500; // Jumlah maksimum permintaan
     private $timeFrame = 3600; // Jangka waktu dalam detik (misalnya 1 jam)
     private $requests = [];
 

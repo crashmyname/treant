@@ -11,6 +11,7 @@ use Support\View;
 use Support\CSRFToken;
 use Support\Crypto;
 use Support\UUID;
+use Support\DataTables;
 use Model\UserModel;
 
 class UserController
@@ -26,12 +27,20 @@ class UserController
     public function index()
     {
         $user = $this->userModel->user();
-        foreach ($user as &$u) {
-            $u['edit_link'] = Crypto::encrypt($u['user_id']);
-            $u['delete_link'] = Crypto::encrypt($u['user_id']);
-        }
+        // foreach ($user as &$u) {
+        //     $u['edit_link'] = Crypto::encrypt($u['user_id']);
+        //     $u['delete_link'] = Crypto::encrypt($u['user_id']);
+        // }
         // include __DIR__.'/../View/user.php'; <-- bisa menggunakan basic ini
-        View::render('user', ['user'=>$user],'layout'); //<-- View::render untuk mengembalikan ke halaman yang dituju misalnya user, dan membawa parameter $user untuk menampilkan data, layout untuk menampilkan navbar jika dibutuhkan
+        View::render('user', [],'layout'); //<-- View::render untuk mengembalikan ke halaman yang dituju misalnya user, dan membawa parameter $user untuk menampilkan data, layout untuk menampilkan navbar jika dibutuhkan
+    }
+
+    public function getUsers()
+    {
+        if (Request::isAjax()) {
+            $users = $this->userModel->user();
+            return DataTables::of($users)->make(true);
+        }
     }
 
     public function userapi()
