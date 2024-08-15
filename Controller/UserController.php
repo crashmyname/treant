@@ -13,6 +13,7 @@ use Support\Crypto;
 use Support\UUID;
 use Support\DataTables;
 use Model\UserModel;
+use Model\User;
 
 class UserController
 {
@@ -34,7 +35,8 @@ class UserController
     public function getUsers()
     {
         if (Request::isAjax()) {
-            $users = $this->userModel->user();
+            // $users = $this->userModel->user();
+            $users = User::all();
             foreach ($users as &$user) {
                 $user['edit_link'] = Crypto::encrypt($user['user_id']);
                 $user['delete_link'] = Crypto::encrypt($user['user_id']);
@@ -167,7 +169,13 @@ class UserController
                 View::render('user', ['errors' => $errors, 'data' => $data, 'user' => $user]);
                 return;
             } else {
-                $result = $this->userModel->addUser($data['username'],$uuid, $data['email'], $data['password']);
+                // $result = $this->userModel->addUser($data['username'],$uuid, $data['email'], $data['password']);
+                $result = User::create([
+                    'username' => $data['username'],
+                    'uuid' => $uuid,
+                    'email' => $data['email'],
+                    'password' => $data['password']
+                ]);
                 // $result = $this->userModel->addUser($username, $email, $password); <-- jika tidak menggunakan validasi gunakan seperti ini
                 if ($result) {
                     $user = $this->userModel->user();
@@ -181,7 +189,6 @@ class UserController
 
     public function getUserId($id)
     {
-        // $decryptedId = Crypto::decrypt($id);
         $user = $this->userModel->getUserById($id);
         $encryptedUserId = Crypto::encrypt($user['user_id']);
         View::render('edit',['user'=>$user,'encryptedUserId'=>$encryptedUserId],'layout');

@@ -34,10 +34,10 @@ if (!$rateLimiter->check($_SERVER['REMOTE_ADDR'])) {
 }
 CORSMiddleware::handle();
 
-// Menambahkan rute GET
 $route->get('/', function(){
     View::render('wellcome/berhasil', []);
 });
+// Authentication
 $route->get('/login', function(){
     View::render('login', []);
 });
@@ -52,6 +52,7 @@ $route->post('/api/login', function() use ($userController) {
 $route->get('/logout', function() use ($userController) {
     $userController->logout();
 });
+// User
 $route->get('/user', function() use ($userController) {
     AuthMiddleware::checkLogin(); //<-- Cara pemanggilannya
     $userController->index();
@@ -72,18 +73,16 @@ $route->get('/formedit', function() use ($userController, $request) {
     $id = Crypto::decrypt($request->id);
     $userController->getUserId($id);
 });
-$route->get('/delete', function() use ($userController, $request) {
-    $id = Crypto::decrypt($request->id);
-    $userController->delete($id);
-});
-
-// Menambahkan rute POST
 $route->post('/store', function() use ($userController, $request) {
     $userController->store($request);
 });
 $route->post('/update', function() use ($userController, $request) {
     $id = Crypto::decrypt($request->id);
     $userController->update($request, $id);
+});
+$route->get('/delete', function() use ($userController, $request) {
+    $id = Crypto::decrypt($request->id);
+    $userController->delete($id);
 });
 
 // Menjalankan route
