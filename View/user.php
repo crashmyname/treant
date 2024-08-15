@@ -33,28 +33,32 @@ echo 'Email : '.$_SESSION['email'];
     <script>
         $(document).ready(function() {
             var prefix = '<?= $_ENV['ROUTE_PREFIX']?>';
-        $('#datatable').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "ajax": prefix+"/user/getUsers",
-            "columns": [
-                {"data": "user_id"},
-                {"data": "username"},
-                {"data": "uuid"},
-                {"data": "email"},
-                {"data": "password"},
-                {
-                    "data": "user_id",
-                    render: function(data,type,row){
-                        var editLink = `${prefix}/formedit?id=${encodeURIComponent(row.edit_link)}`;
-                        var deleteLink = `${prefix}/delete?id=${encodeURIComponent(row.delete_link)}`;
-                        return `<a href="${editLink}" class="btn btn-warning">Edit</a> | <a href="${deleteLink}" class="btn btn-danger" onclick="return confirm('Apakah yakin ingin dihapus?')">Delete</a>`
-                    },
-                    "orderable": false
-                }
-            ]
+            var datatable = $('#datatable').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": prefix+"/user/getUsers",
+                "columns": [
+                    {"data": "user_id"},
+                    {"data": "username"},
+                    {"data": "uuid"},
+                    {"data": "email"},
+                    {"data": "password"},
+                    {
+                        "data": "user_id",
+                        render: function(data,type,row){
+                            var editLink = `${prefix}/formedit?id=${encodeURIComponent(row.edit_link)}`;
+                            var deleteLink = `${prefix}/delete?id=${encodeURIComponent(row.delete_link)}`;
+                            return `<a href="${editLink}" class="btn btn-warning">Edit</a> | <a href="${deleteLink}" class="btn btn-danger" onclick="return confirm('Apakah yakin ingin dihapus?')">Delete</a>`
+                        },
+                        "orderable": false
+                    }
+                ]
+            });
+            // function reload(){
+            //     datatable.ajax.reload();
+            // }
+            // setInterval(reload, 5000);
         });
-    });
         // function refreshTable()
         // {
         //     var routePrefix = "<?php echo $_ENV['ROUTE_PREFIX']; ?>";

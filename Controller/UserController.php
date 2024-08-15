@@ -35,8 +35,12 @@ class UserController
     public function getUsers()
     {
         if (Request::isAjax()) {
-            // $users = $this->userModel->user();
-            $users = User::all();
+            // $users = $this->userModel->user(); <-- model lama
+            // $users = User::all();
+            $users = User::query()
+            ->select('user_id','uuid','username','email','password')
+            ->orderBy('username','asc')
+            ->get();
             foreach ($users as &$user) {
                 $user['edit_link'] = Crypto::encrypt($user['user_id']);
                 $user['delete_link'] = Crypto::encrypt($user['user_id']);
@@ -174,7 +178,7 @@ class UserController
                     'username' => $data['username'],
                     'uuid' => $uuid,
                     'email' => $data['email'],
-                    'password' => $data['password']
+                    'password' => password_hash($data['password'], PASSWORD_BCRYPT)
                 ]);
                 // $result = $this->userModel->addUser($username, $email, $password); <-- jika tidak menggunakan validasi gunakan seperti ini
                 if ($result) {
