@@ -9,10 +9,12 @@ class DataTables
     }
 
     private $data;
+    private $columns;
 
     public function __construct(array $data)
     {
         $this->data = $data;
+        $this->columns = !empty($data) ? array_keys($data[0]) : [];
     }
 
     public function make(bool $jsonEncode = false)
@@ -26,8 +28,7 @@ class DataTables
         $orderDir = isset($_REQUEST['order'][0]['dir']) ? $_REQUEST['order'][0]['dir'] : 'asc';
 
         // Kolom yang tersedia untuk pengurutan
-        $orderColumns = ['user_id', 'username', 'uuid', 'email', 'password'];
-        $orderColumn = $orderColumns[$orderColumnIndex] ?? 'user_id';
+        $orderColumn = $this->columns[$orderColumnIndex] ?? $this->columns[0] ?? null;
 
         // Filter data berdasarkan pencarian
         $filteredData = array_filter($this->data, function ($item) use ($searchValue) {
