@@ -12,6 +12,7 @@ use Support\CSRFToken;
 use Support\Crypto;
 use Support\UUID;
 use Support\DataTables;
+use Support\Response;
 use Model\UserModel;
 use Model\User;
 
@@ -52,8 +53,7 @@ class UserController
     public function userapi()
     {
         $user = $this->userModel->user();
-        header('Content-Type: application/json');
-        echo json_encode($user);
+        return response::json($user);
     }
 
     public function adduser()

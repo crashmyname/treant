@@ -1,7 +1,7 @@
 <?php
 namespace Support;
 
-class ResponseHelper
+class Response
 {
     public static function json($data, $status = 200)
     {
