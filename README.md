@@ -16,6 +16,8 @@ git clone https://github.com/crashmyname/mvc.git
 - [View]
 - .htacces
 - index.php
+- route.php
+- autoload.php
 
 ## .env ✨
 - File ini untuk mengkoneksikan ke database ya adik adik jadi untuk mengisi database nya ada disini
