@@ -86,9 +86,6 @@ $route->get('/dokumentasi/support/uuid', function(){
 $route->get('/dokumentasi/support/validator', function(){
     View::render('documentation/support/validator',[],'documentation/doc');
 });
-$route->get('/dokumentasi/support/view', function(){
-    View::render('documentation/support/view',[],'documentation/doc');
-});
 $route->get('/dokumentasi/view', function(){
     View::render('documentation/view',[],'documentation/doc');
 });

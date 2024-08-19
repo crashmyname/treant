@@ -24,7 +24,7 @@ DB_PORT=3306
 DB_DATABASE=yourdatabase
 DB_USERNAME=yourusername
 DB_PASSWORD=yourpassword
-ROUTE_PREFIX=/mvc <-- disini';
+ROUTE_PREFIX=/mvc <b style="color:red"><-- disini</b>';
     echo '</code>';
     echo '</pre>';
     ?>
