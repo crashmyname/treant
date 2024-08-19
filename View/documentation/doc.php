@@ -75,10 +75,8 @@
                 <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/response">Response</a></li>
                 <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/uuid">UUID</a></li>
                 <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/validator">Validator</a></li>
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/view">View</a></li>
               </ul>
             </li>
-            <!-- <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/config"><i class="far fa-square"></i> <span>Config</span></a></li> -->
             <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/view"><i class="far fa-square"></i> <span>View</span></a></li>
             <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/route"><i class="far fa-square"></i> <span>Route</span></a></li>
             <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/env"><i class="far fa-square"></i> <span>ENV</span></a></li>
