@@ -1,5 +1,12 @@
 # MVC Tanjidor ✨
 
+## Documentation
+- Untuk Dokumentasi jelas kalian bisa clone github ini
+```
+git clone https://github.com/crashmyname/mvc.git
+```
+- Jika sudah di clone kalian akan kehalaman awal MVC ini klik get started untuk membaca dokumentasi lengkap
+
 ## Struktur Folder
 - [bin]
 - [config]
