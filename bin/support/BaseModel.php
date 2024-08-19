@@ -174,6 +174,30 @@ class BaseModel
         return $data;
     }
 
+    public function count()
+    {
+        $sql = "SELECT COUNT(*) as count FROM {$this->table}";
+
+        if (!empty($this->joins)) {
+            $sql .= ' ' . implode(' ', $this->joins);
+        }
+
+        if (!empty($this->whereConditions)) {
+            $sql .= ' WHERE ' . implode(' AND ', $this->whereConditions);
+        }
+
+        $stmt = $this->connection->prepare($sql);
+
+        foreach ($this->whereParams as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result['count'];
+    }
+
     public function save()
     {
         if (isset($this->attributes[$this->primaryKey])) {
