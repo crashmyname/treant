@@ -1,6 +1,6 @@
 # MVC Tanjidor ✨
 
-## Documentation
+## Documentation ✨✨
 - Untuk Dokumentasi jelas kalian bisa clone github ini
 ```
 git clone https://github.com/crashmyname/mvc.git
