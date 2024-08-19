@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/bin/support/Asset.php';
+require_once __DIR__ . '/bin/support/Prefix.php';
 use Support\Request;
 use Support\Route;
 use Support\Validator;
@@ -14,14 +15,6 @@ use Support\UUID;
 use Support\Response;
 use Controller\UserController;
 use Model\UserModel;
-$envFile = __DIR__ . '/.env';
-$env = parse_ini_file($envFile);
-
-foreach ($env as $key => $value) {
-    $_ENV[$key] = $value;
-}
-
-$prefix = $_ENV['ROUTE_PREFIX'] != null ? $_ENV['ROUTE_PREFIX'] : throw new Exception('Variabel lingkungan ROUTE_PREFIX tidak ditemukan atau kosong.');
 
 $request = new Request();
 $route = new Route($prefix);
@@ -35,9 +28,78 @@ if (!$rateLimiter->check($_SERVER['REMOTE_ADDR'])) {
 }
 CORSMiddleware::handle();
 
+// DOKUMENTASI
 $route->get('/', function(){
     View::render('wellcome/berhasil');
 });
+$route->get('/dokumentasi', function(){
+    View::render('documentation/install',[],'documentation/doc');
+});
+$route->get('/dokumentasi/omodel', function(){
+    View::render('documentation/old-model',[],'documentation/doc');
+});
+$route->get('/dokumentasi/nmodel', function(){
+    View::render('documentation/new-model',[],'documentation/doc');
+});
+$route->get('/dokumentasi/controller', function(){
+    View::render('documentation/controller',[],'documentation/doc');
+});
+$route->get('/dokumentasi/support/asset', function(){
+    View::render('documentation/support/asset',[],'documentation/doc');
+});
+$route->get('/dokumentasi/support/auth', function(){
+    View::render('documentation/support/authmiddleware',[],'documentation/doc');
+});
+$route->get('/dokumentasi/support/cors', function(){
+    View::render('documentation/support/cors',[],'documentation/doc');
+});
+$route->get('/dokumentasi/support/crypto', function(){
+    View::render('documentation/support/crypto',[],'documentation/doc');
+});
+$route->get('/dokumentasi/support/csrf', function(){
+    View::render('documentation/support/csrf',[],'documentation/doc');
+});
+$route->get('/dokumentasi/support/datatable', function(){
+    View::render('documentation/support/datatables',[],'documentation/doc');
+});
+$route->get('/dokumentasi/support/date', function(){
+    View::render('documentation/support/date',[],'documentation/doc');
+});
+$route->get('/dokumentasi/support/http', function(){
+    View::render('documentation/support/http',[],'documentation/doc');
+});
+$route->get('/dokumentasi/support/mailer', function(){
+    View::render('documentation/support/mailer',[],'documentation/doc');
+});
+$route->get('/dokumentasi/support/ratelimiter', function(){
+    View::render('documentation/support/ratelimiter',[],'documentation/doc');
+});
+$route->get('/dokumentasi/support/request', function(){
+    View::render('documentation/support/request',[],'documentation/doc');
+});
+$route->get('/dokumentasi/support/response', function(){
+    View::render('documentation/support/response',[],'documentation/doc');
+});
+$route->get('/dokumentasi/support/uuid', function(){
+    View::render('documentation/support/uuid',[],'documentation/doc');
+});
+$route->get('/dokumentasi/support/validator', function(){
+    View::render('documentation/support/validator',[],'documentation/doc');
+});
+$route->get('/dokumentasi/support/view', function(){
+    View::render('documentation/support/view',[],'documentation/doc');
+});
+$route->get('/dokumentasi/view', function(){
+    View::render('documentation/view',[],'documentation/doc');
+});
+$route->get('/dokumentasi/route', function(){
+    View::render('documentation/route',[],'documentation/doc');
+});
+$route->get('/dokumentasi/env', function(){
+    View::render('documentation/env',[],'documentation/doc');
+});
+
+
 // Authentication
 $route->get('/login', function(){
     View::render('login');
