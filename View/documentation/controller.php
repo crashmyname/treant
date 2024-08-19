@@ -5,7 +5,8 @@
 
     <div class="section-body">
         <h4>Controller</h4>
-        <b>Didalam MVC akan saya contohkan controller dengan penggunaan <a href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/omodel">model lama</a> dan <a href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/nmodel">model baru</a></b><br><br>
+        <b>Didalam MVC akan saya contohkan controller dengan penggunaan <a href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/omodel">model lama</a> dan <a href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/nmodel">model baru</a></b><br>
+        <p style="color:red">Sebelum lanjut ketahap ini pastikan kalian sudah memahami konsep Model-View-Controller supaya memudahkan anda</p>
         <h6>Contoh Controller menggunakan Model lama:</h6>
         <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
