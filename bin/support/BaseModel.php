@@ -89,7 +89,10 @@ class BaseModel
 
     public function whereYear($column, $year)
     {
-        return $this->where("YEAR({$column})", '=', $year);
+        // return $this->where("YEAR({$column})", '=', $year);
+        $this->whereConditions[] = "YEAR({$column}) = :year";
+        $this->whereParams[':year'] = $year;
+        return $this;
     }
 
     public function join($table, $first, $operator, $second, $type = 'INNER')
