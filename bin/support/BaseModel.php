@@ -81,7 +81,10 @@ class BaseModel
 
     public function whereMonth($column, $month)
     {
-        return $this->where("MONTH({$column})", '=', $month);
+        // return $this->where("MONTH({$column})", '=', $month);
+        $this->whereConditions[] = "MONTH({$column}) = :month";
+        $this->whereParams[':month'] = $month;
+        return $this;
     }
 
     public function whereYear($column, $year)
