@@ -1,10 +1,6 @@
 <?php
 namespace Controller;
-// require_once __DIR__ . '/../Model/UserModel.php';
-// require_once __DIR__ . '/../bin/support/Request.php';
-// require_once __DIR__ . '/../bin/support/View.php';
-// require_once __DIR__ . '/../bin/support/Validator.php';
-// require_once __DIR__ . '/../bin/support/Validator.php';
+
 use Support\Request;
 use Support\Validator;
 use Support\View;
@@ -19,7 +15,7 @@ use Model\User;
 class UserController
 {
     private $userModel;
-
+    public $validator;
     public function __construct()
     {
         $this->userModel = new UserModel();
