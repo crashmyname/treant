@@ -95,9 +95,36 @@ class BaseModel
         return $this;
     }
 
-    public function join($table, $first, $operator, $second, $type = 'INNER')
+    public function innerJoin($table, $first, $operator, $second)
     {
-        $this->joins[] = "{$type} JOIN {$table} ON {$first} {$operator} {$second}";
+        return $this->join($table, $first, $operator, $second, 'INNER');
+    }
+
+    public function leftJoin($table, $first, $operator, $second)
+    {
+        return $this->join($table, $first, $operator, $second, 'LEFT');
+    }
+
+    public function rightJoin($table, $first, $operator, $second)
+    {
+        return $this->join($table, $first, $operator, $second, 'RIGHT');
+    }
+
+    public function outerJoin($table, $first, $operator, $second)
+    {
+        return $this->join($table, $first, $operator, $second, 'OUTER');
+    }
+
+    private function join($table, $first, $operator, $second, $type)
+    {
+        $validJoinTypes = ['INNER', 'LEFT', 'RIGHT', 'OUTER'];
+        
+        if (in_array(strtoupper($type), $validJoinTypes)) {
+            $this->joins[] = "{$type} JOIN {$table} ON {$first} {$operator} {$second}";
+        } else {
+            throw new \InvalidArgumentException("Invalid join type: {$type}");
+        }
+        
         return $this;
     }
 
