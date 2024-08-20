@@ -48,38 +48,38 @@
           </div>
           <ul class="sidebar-menu">
             <li class="menu-header">Me And U</li>
-            <li class=active><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi"><i class="fas fa-fire"></i> <span>Getting Started</span></a></li>
+            <li class="<?= $title == "Get Started" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi"><i class="fas fa-fire"></i> <span>Getting Started</span></a></li>
             <li class="menu-header">Starter</li>
-            <li class="dropdown">
+            <li class="dropdown <?= $title == "Old Model" || $title == "New Model" ? "active" : ""?>">
               <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Model</span></a>
               <ul class="dropdown-menu">
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/omodel">Old Model</a></li>
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/nmodel">New Model</a></li>
+                <li class="<?= $title == "Old Model" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/omodel">Old Model</a></li>
+                <li class="<?= $title == "New Model" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/nmodel">New Model</a></li>
               </ul>
             </li>
-            <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/controller"><i class="far fa-square"></i> <span>Controller</span></a></li>
-            <li class="dropdown">
+            <li class="<?= $title == "Controller" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/controller"><i class="far fa-square"></i> <span>Controller</span></a></li>
+            <li class="dropdown <?= $title == "Asset" || $title == "Auth" || $title == "Cors" || $title == "Crypto" || $title == "DataTable" || $title == "Date" || $title == "Http" || $title == "Mailer" || $title == "Rate Limiter" || $title == "Request" || $title == "Response" || $title == "UUID" || $title == "Validator" || $title == "CSRF" ? "active" : ""?>">
               <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Support</span></a>
               <ul class="dropdown-menu">
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/asset">Asset</a></li>
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/auth">AuthMiddleware</a></li>
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/cors">Cors</a></li>
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/crypto">Crypto</a></li>
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/csrf">Csrf</a></li>
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/datatable">Data table</a></li>
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/date">Date</a></li>
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/http">Http</a></li>
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/mailer">Mailer</a></li>
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/ratelimiter">Rate Limiter</a></li>
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/request">Request</a></li>
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/response">Response</a></li>
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/uuid">UUID</a></li>
-                <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/validator">Validator</a></li>
+                <li class="<?= $title == "Asset" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/asset">Asset</a></li>
+                <li class="<?= $title == "Auth" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/auth">AuthMiddleware</a></li>
+                <li class="<?= $title == "Cors" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/cors">Cors</a></li>
+                <li class="<?= $title == "Crypto" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/crypto">Crypto</a></li>
+                <li class="<?= $title == "CSRF" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/csrf">Csrf</a></li>
+                <li class="<?= $title == "DataTable" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/datatable">Data table</a></li>
+                <li class="<?= $title == "Date" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/date">Date</a></li>
+                <li class="<?= $title == "Http" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/http">Http</a></li>
+                <li class="<?= $title == "Mailer" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/mailer">Mailer</a></li>
+                <li class="<?= $title == "Rate Limiter" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/ratelimiter">Rate Limiter</a></li>
+                <li class="<?= $title == "Request" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/request">Request</a></li>
+                <li class="<?= $title == "Response" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/response">Response</a></li>
+                <li class="<?= $title == "UUID" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/uuid">UUID</a></li>
+                <li class="<?= $title == "Validator" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/support/validator">Validator</a></li>
               </ul>
             </li>
-            <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/view"><i class="far fa-square"></i> <span>View</span></a></li>
-            <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/route"><i class="far fa-square"></i> <span>Route</span></a></li>
-            <li><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/env"><i class="far fa-square"></i> <span>ENV</span></a></li>
+            <li class="<?= $title == "View" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/view"><i class="far fa-square"></i> <span>View</span></a></li>
+            <li class="<?= $title == "Route" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/route"><i class="far fa-square"></i> <span>Route</span></a></li>
+            <li class="<?= $title == "Env" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/env"><i class="far fa-square"></i> <span>ENV</span></a></li>
             
       </div>
 
