@@ -6,6 +6,13 @@
     <div class="section-body">
         <h4>View adalah struktur folder halaman yang akan diakses</h4>
         <b>disini juga dijelaskan helper View</b><br>
+        Import View:
+        <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
+        echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
+        echo 'use Support\View;';
+        echo '</code>';
+        echo '</pre>';
+        ?>
         Contoh Penggunaan View Render:
         <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
