@@ -65,12 +65,17 @@ class BaseModel
     public function where($column, $operator = '=', $value = null)
     {
         if ($value === null) {
-            $value = $operator;
-            $operator = '=';
+            if ($operator === '=') {
+                $operator = 'IS';
+            }
+            // Generate unique placeholder for each where condition
+            $this->whereConditions[] = "{$column} {$operator} NULL";
+        } else {
+            // Generate unique placeholder for each where condition
+            $paramName = $column . '_' . count($this->whereParams);
+            $this->whereConditions[] = "{$column} {$operator} :{$paramName}";
+            $this->whereParams[":{$paramName}"] = $value;
         }
-
-        $this->whereConditions[] = "{$column} {$operator} :{$column}";
-        $this->whereParams[":{$column}"] = $value;
         return $this;
     }
 
