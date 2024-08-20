@@ -16,7 +16,7 @@
         Untuk menggunakan CSRF user harus menambahkan input hidden yang berisikan token csrf contoh penggunaan:
         <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
-        echo htmlentities('<input type="hidden" name="csrf_token" value="$token">');
+        echo htmlentities('<input type="hidden" name="csrf" value="<?php use Support\CSRFToken; echo CSRFToken::generateToken()?>">');
         echo '</code>';
         echo '</pre>';
         ?>
@@ -41,6 +41,15 @@ $csrftoken = "<input type="hidden" name="csrf_token" value="$token">"');
         <button type="submit" name="add" class="btn btn-success" id="add">Submit</button>
     </div>
 </form>');
+        echo '</code>';
+        echo '</pre>';
+        ?>
+        Penggunaan Validasi token CSRF di Controller:
+        <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
+        echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
+        echo htmlentities('if (!CSRFToken::validateToken($request->csrf_token)) {
+        View::render("errors/505",[]);
+    }');
         echo '</code>';
         echo '</pre>';
         ?>
