@@ -6,6 +6,13 @@
     <div class="section-body">
         <h4>Helper Asset</h4>
         <b>Helper Asset ini adalah function untuk memudahkan user mengakses folder public</b><br>
+        Import Asset id route.php:
+        <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
+        echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
+        echo htmlentities('require_once __DIR__ . "/bin/support/Asset.php";');
+        echo '</code>';
+        echo '</pre>';
+        ?>
         Contoh Penggunaan Asset:
         <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';

@@ -6,6 +6,13 @@
     <div class="section-body">
         <h4>Helper CSRF</h4>
         <b>Cross Site Request Forgery atau yang dikenal sebagai CSRF adalah helper untuk mengenerate token saat melakukan transaksi apapun</b><br>
+        Import CSRF:
+        <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
+        echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
+        echo htmlentities('use Support\CSRFToken;');
+        echo '</code>';
+        echo '</pre>';
+        ?>
         Untuk menggunakan CSRF user harus menambahkan input hidden yang berisikan token csrf contoh penggunaan:
         <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';

@@ -33,67 +33,88 @@ $route->get('/', function(){
     View::render('wellcome/berhasil');
 });
 $route->get('/dokumentasi', function(){
-    View::render('documentation/install',[],'documentation/doc');
+    $title = "Get Started";
+    View::render('documentation/install',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/omodel', function(){
-    View::render('documentation/old-model',[],'documentation/doc');
+    $title = "Old Model";
+    View::render('documentation/old-model',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/nmodel', function(){
-    View::render('documentation/new-model',[],'documentation/doc');
+    $title = "New Model";
+    View::render('documentation/new-model',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/controller', function(){
-    View::render('documentation/controller',[],'documentation/doc');
+    $title = "Controller";
+    View::render('documentation/controller',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/support/asset', function(){
-    View::render('documentation/support/asset',[],'documentation/doc');
+    $title = "Asset";
+    View::render('documentation/support/asset',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/support/auth', function(){
-    View::render('documentation/support/authmiddleware',[],'documentation/doc');
+    $title = "Auth";
+    View::render('documentation/support/authmiddleware',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/support/cors', function(){
-    View::render('documentation/support/cors',[],'documentation/doc');
+    $title = "Cors";
+    View::render('documentation/support/cors',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/support/crypto', function(){
-    View::render('documentation/support/crypto',[],'documentation/doc');
+    $title = "Crypto";
+    View::render('documentation/support/crypto',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/support/csrf', function(){
-    View::render('documentation/support/csrf',[],'documentation/doc');
+    $title = "CSRF";
+    View::render('documentation/support/csrf',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/support/datatable', function(){
-    View::render('documentation/support/datatables',[],'documentation/doc');
+    $title = "DataTable";
+    View::render('documentation/support/datatables',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/support/date', function(){
-    View::render('documentation/support/date',[],'documentation/doc');
+    $title = "Date";
+    View::render('documentation/support/date',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/support/http', function(){
-    View::render('documentation/support/http',[],'documentation/doc');
+    $title = "Http";
+    View::render('documentation/support/http',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/support/mailer', function(){
-    View::render('documentation/support/mailer',[],'documentation/doc');
+    $title = "Mailer";
+    View::render('documentation/support/mailer',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/support/ratelimiter', function(){
-    View::render('documentation/support/ratelimiter',[],'documentation/doc');
+    $title = "Rate Limiter";
+    View::render('documentation/support/ratelimiter',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/support/request', function(){
-    View::render('documentation/support/request',[],'documentation/doc');
+    $title = "Request";
+    View::render('documentation/support/request',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/support/response', function(){
-    View::render('documentation/support/response',[],'documentation/doc');
+    $title = "Response";
+    View::render('documentation/support/response',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/support/uuid', function(){
-    View::render('documentation/support/uuid',[],'documentation/doc');
+    $title = "UUID";
+    View::render('documentation/support/uuid',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/support/validator', function(){
-    View::render('documentation/support/validator',[],'documentation/doc');
+    $title = "Validator";
+    View::render('documentation/support/validator',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/view', function(){
-    View::render('documentation/view',[],'documentation/doc');
+    $title = "View";
+    View::render('documentation/view',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/route', function(){
-    View::render('documentation/route',[],'documentation/doc');
+    $title = "Route";
+    View::render('documentation/route',['title'=>$title],'documentation/doc');
 });
 $route->get('/dokumentasi/env', function(){
-    View::render('documentation/env',[],'documentation/doc');
+    $title = "Env";
+    View::render('documentation/env',['title'=>$title],'documentation/doc');
 });
 
 

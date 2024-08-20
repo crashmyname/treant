@@ -39,6 +39,24 @@
         echo '</code>';
         echo '</pre>';
         ?>
-        <p>Validasinya cukup banyak tinggal buka file validator ajah yah</p>
+        Macam macam validasi yang ada:
+        <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
+        echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
+        echo htmlentities('validate|Required;
+validate|Min
+validate|Max
+validate|Numeric
+validate|Email
+validate|Confirmed
+validate|Age
+validate|Regex
+validate|FileSize
+validate|Date
+validate|Alphanumeric
+validate|Image
+validate|FileType');
+        echo '</code>';
+        echo '</pre>';
+        ?>
     </div>
 </section>

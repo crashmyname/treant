@@ -1,6 +1,5 @@
 <?php
 namespace Support;
-namespace Support;
 
 class RateLimiter
 {

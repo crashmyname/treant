@@ -17,6 +17,13 @@ class Crypto
         echo '</code>';
         echo '</pre>';
         ?>
+        Import Crypto di controller masing masing:
+        <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
+        echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
+        echo htmlentities('use Support\Crypto;');
+        echo '</code>';
+        echo '</pre>';
+        ?>
         Contoh Penggunaan Crypto:
         <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
