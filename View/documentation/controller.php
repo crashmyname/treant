@@ -7,6 +7,26 @@
         <h4>Controller</h4>
         <b>Didalam MVC akan saya contohkan controller dengan penggunaan <a href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/omodel">model lama</a> dan <a href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/nmodel">model baru</a></b><br>
         <p style="color:red">Sebelum lanjut ketahap ini pastikan kalian sudah memahami konsep Model-View-Controller supaya memudahkan anda</p>
+        Starter Pack Controller :
+    <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
+    echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
+    echo htmlentities('<?php');
+    echo '<br>namespace Controller;
+
+use Support\Request;
+use Support\View;
+use Support\CSRFToken;
+use Support\Response;
+use Model\YourModel;
+
+class yourController
+{
+    <b style="color:skyblue">Your Function here</b>
+}
+?>';
+    echo '</code>';
+    echo '</pre>';
+    ?>
         <h6>Contoh Controller menggunakan Model lama:</h6>
         <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';

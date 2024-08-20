@@ -6,6 +6,33 @@
     <div class="section-body">
         <h4>Didalam MVC ini memiliki 2 model Old Model dan <a href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/nmodel">New Model</a></h4>
         <b>Model Lama masih membuat query untuk menjalankan model tertentu dan New Model memiliki BaseModel jadi pengguna tidak perlu membuat query di model</b><br>
+        Starter Pack Old Model :
+    <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
+    echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
+    echo htmlentities('<?php');
+    echo '<br>namespace Model;
+
+use Config\Database;
+use PDO;
+
+class UserModel
+{
+    private $conn;
+    private $table_name = "yourtable";
+
+    public function __construct()
+    {
+        $database = new Database();
+        $this->conn = $database->getConnection();
+        if ($this->conn === null) {
+            die("Koneksi database gagal.");
+        }
+    }
+    <b style="color:skyblue">Your Function Here</b>
+?>';
+    echo '</code>';
+    echo '</pre>';
+    ?>
         Contoh :
         <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
