@@ -19,6 +19,7 @@ class DataTables
 
     public function make(bool $jsonEncode = false)
     {
+        ob_start();
         // Mendapatkan parameter dari request
         $draw = isset($_REQUEST['draw']) ? intval($_REQUEST['draw']) : 1;
         $start = isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0;
