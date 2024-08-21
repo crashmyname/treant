@@ -64,18 +64,21 @@ class BaseModel
 
     public function where($column, $operator = '=', $value = null)
     {
-        if ($value === null) {
+        if ($value === null || $value == '') {
             if ($operator === '=') {
                 $operator = 'IS';
+            } elseif ($operator === '!=') {
+                $operator = 'IS NOT';
             }
-            // Generate unique placeholder for each where condition
+            // Handle cases where the value is null, we use IS or IS NOT
             $this->whereConditions[] = "{$column} {$operator} NULL";
         } else {
             // Generate unique placeholder for each where condition
-            $paramName = $column . '_' . count($this->whereParams);
+            $paramName = str_replace('.', '_', $column) . '_' . count($this->whereParams);
             $this->whereConditions[] = "{$column} {$operator} :{$paramName}";
             $this->whereParams[":{$paramName}"] = $value;
         }
+    
         return $this;
     }
 
@@ -193,6 +196,37 @@ class BaseModel
 
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function toSql()
+    {
+        $sql = "SELECT {$this->distinct} " . implode(', ', $this->selectColumns) . " FROM {$this->table}";
+
+        if (!empty($this->joins)) {
+            $sql .= ' ' . implode(' ', $this->joins);
+        }
+
+        if (!empty($this->whereConditions)) {
+            $sql .= ' WHERE ' . implode(' AND ', $this->whereConditions);
+        }
+
+        if (!empty($this->groupBy)) {
+            $sql .= ' GROUP BY ' . $this->groupBy;
+        }
+
+        if (!empty($this->orderBy)) {
+            $sql .= ' ORDER BY ' . implode(', ', $this->orderBy);
+        }
+
+        if ($this->limit !== null) {
+            $sql .= ' LIMIT ' . (int)$this->limit;
+        }
+
+        if ($this->offset !== null) {
+            $sql .= ' OFFSET ' . (int)$this->offset;
+        }
+
+        return $sql;
     }
 
     public function first()
