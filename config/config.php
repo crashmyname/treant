@@ -15,7 +15,7 @@ class Database
         // Nilai default untuk variabel lingkungan
         $defaultEnv = [
             'DB_HOST' => '127.0.0.1',
-            'DB_PORT' => '5432',
+            'DB_PORT' => '3306',
             'DB_DATABASE' => 'defaultdb', // Gunakan nama database default
             'DB_USERNAME' => 'root',
             'DB_PASSWORD' => '',
