@@ -30,7 +30,7 @@ CORSMiddleware::handle();
 
 // DOKUMENTASI
 $route->get('/', function(){
-    View::render('wellcome/berhasil');
+    View::render('welcome/berhasil');
 });
 $route->get('/dokumentasi', function(){
     $title = "Get Started";
