@@ -18,7 +18,7 @@ use Model\UserModel;
 
 $request = new Request();
 $route = new Route($prefix);
-$userController = new UserController();
+// $userController = new UserController();
 
 $rateLimiter = new RateLimiter();
 if (!$rateLimiter->check($_SERVER['REMOTE_ADDR'])) {
@@ -119,52 +119,52 @@ $route->get('/dokumentasi/env', function(){
 
 
 // Authentication
-$route->get('/login', function(){
-    View::render('login');
-});
-$route->post('/login', function() use ($userController) {
-    $request = new Request();
-    $userController->login($request);
-});
-$route->post('/api/login', function() use ($userController) {
-    $request = new Request();
-    $userController->loginapi($request);
-});
-$route->get('/logout', function() use ($userController) {
-    $userController->logout();
-});
-// User
-$route->get('/user', function() use ($userController) {
-    AuthMiddleware::checkLogin(); //<-- Cara pemanggilannya
-    $userController->index();
-});
-$route->get('/user/getUsers', function() use ($userController){
-    $userController->getUsers();
-});
-$route->get('/api/user', function() use ($userController) {
-    AuthMiddleware::checkToken();
-    $userController->userapi();
-});
-$route->get('/adduser', function() use ($userController){
-    AuthMiddleware::checkLogin();
-    $userController->addUser();
-});
-$route->get('/formedit', function() use ($userController, $request) {
-    AuthMiddleware::checkLogin();
-    $id = Crypto::decrypt($request->id);
-    $userController->getUserId($id);
-});
-$route->post('/store', function() use ($userController, $request) {
-    $userController->store($request);
-});
-$route->post('/update', function() use ($userController, $request) {
-    $id = Crypto::decrypt($request->id);
-    $userController->update($request, $id);
-});
-$route->get('/delete', function() use ($userController, $request) {
-    $id = Crypto::decrypt($request->id);
-    $userController->delete($id);
-});
+// $route->get('/login', function(){
+//     View::render('login');
+// });
+// $route->post('/login', function() use ($userController) {
+//     $request = new Request();
+//     $userController->login($request);
+// });
+// $route->post('/api/login', function() use ($userController) {
+//     $request = new Request();
+//     $userController->loginapi($request);
+// });
+// $route->get('/logout', function() use ($userController) {
+//     $userController->logout();
+// });
+// // User
+// $route->get('/user', function() use ($userController) {
+//     AuthMiddleware::checkLogin(); //<-- Cara pemanggilannya
+//     $userController->index();
+// });
+// $route->get('/user/getUsers', function() use ($userController){
+//     $userController->getUsers();
+// });
+// $route->get('/api/user', function() use ($userController) {
+//     AuthMiddleware::checkToken();
+//     $userController->userapi();
+// });
+// $route->get('/adduser', function() use ($userController){
+//     AuthMiddleware::checkLogin();
+//     $userController->addUser();
+// });
+// $route->get('/formedit', function() use ($userController, $request) {
+//     AuthMiddleware::checkLogin();
+//     $id = Crypto::decrypt($request->id);
+//     $userController->getUserId($id);
+// });
+// $route->post('/store', function() use ($userController, $request) {
+//     $userController->store($request);
+// });
+// $route->post('/update', function() use ($userController, $request) {
+//     $id = Crypto::decrypt($request->id);
+//     $userController->update($request, $id);
+// });
+// $route->get('/delete', function() use ($userController, $request) {
+//     $id = Crypto::decrypt($request->id);
+//     $userController->delete($id);
+// });
 
 // Menjalankan route
 // echo "Dispatching route...<br>";
