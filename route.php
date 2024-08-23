@@ -19,6 +19,10 @@ $route = new Route($prefix);
 // $userController = new UserController();
 handleMiddleware();
 
+
+$route->get('/template', function(){
+    View::render('test');
+});
 // DOKUMENTASI
 $route->get('/', function(){
     View::render('welcome/berhasil');
