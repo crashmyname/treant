@@ -69,5 +69,32 @@ class Request {
     public function file($key) {
         return $this->files[$key] ?? null;
     }
+
+    // Mendapatkan ekstensi file asli
+    public function getClientOriginalExtension($key) {
+        $fileName = $this->files[$key]['name'] ?? '';
+        return pathinfo($fileName, PATHINFO_EXTENSION);
+    }
+
+    // Mendapatkan nama file asli
+    public function getClientOriginalName($key) {
+        return $this->files[$key]['name'] ?? '';
+    }
+
+    // Mendapatkan tipe MIME file asli
+    public function getClientMimeType($key) {
+        return $this->files[$key]['type'] ?? '';
+    }
+
+    // Mendapatkan ukuran file dalam byte
+    public function getSize($key) {
+        return $this->files[$key]['size'] ?? 0;
+    }
+
+    // Mendapatkan path sementara di mana file di-upload
+    public function getPath($key) {
+        return $this->files[$key]['tmp_name'] ?? '';
+    }
 }
+
 ?>
