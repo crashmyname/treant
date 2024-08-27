@@ -34,7 +34,7 @@ class DataTables
         // Filter data berdasarkan pencarian
         $filteredData = array_filter($this->data, function ($item) use ($searchValue) {
             foreach ($item as $value) {
-                if (stripos($value, $searchValue) !== false) {
+                if (stripos((string)$value, $searchValue) !== false) {
                     return true;
                 }
             }
