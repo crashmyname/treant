@@ -41,10 +41,10 @@
       <div class="main-sidebar sidebar-style-2">
         <aside id="sidebar-wrapper">
           <div class="sidebar-brand">
-            <a href="<?= $_ENV['ROUTE_PREFIX']?>/">Tanjidor</a>
+            <a href="<?= $_ENV['ROUTE_PREFIX']?>">Tanjidor</a>
           </div>
           <div class="sidebar-brand sidebar-brand-sm">
-            <a href="<?= $_ENV['ROUTE_PREFIX']?>/">T</a>
+            <a href="<?= $_ENV['ROUTE_PREFIX']?>">T</a>
           </div>
           <ul class="sidebar-menu">
             <li class="menu-header">Me And U</li>
