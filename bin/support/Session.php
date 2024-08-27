@@ -1,5 +1,6 @@
 <?php
 namespace Support;
+use Support\User;
 
 class Session {
     public function __construct() {
@@ -37,7 +38,8 @@ class Session {
     // Menyimpan user ke dalam sesi
     public static function user() {
         if (self::has('user')) {
-            return (object) self::get('user');
+            // return (object) self::get('user');
+            return new User(self::get('user'));
         }
         return null;
     }

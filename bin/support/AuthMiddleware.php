@@ -5,7 +5,7 @@ use Support\View;
 class AuthMiddleware
 {
     public static function checkLogin() {
-        if (!isset($_SESSION['user_id'])) {
+        if (!\Support\Session::has('user')) {
             $r = $_ENV['ROUTE_PREFIX'];
             // header('Location: '.$r.'/login');
             View::render('errors/401');
