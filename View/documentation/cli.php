@@ -9,8 +9,8 @@
     Contoh penggunaan:
     <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
     echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
-    echo 'php cli.php make:model YourModel<br>';
-    echo 'php cli.php make:controller YourController';
+    echo 'php cli make:model YourModel<br>';
+    echo 'php cli make:controller YourController';
     echo '</code>';
     echo '</pre>';
     ?>
