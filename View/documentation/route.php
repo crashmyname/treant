@@ -15,6 +15,7 @@
 session_start();
 require_once __DIR__ . "/bin/support/Asset.php";
 require_once __DIR__ . "/bin/support/Prefix.php";
+require_once __DIR__ . "/bin/support/Rc.php";
 use Support\Request;
 use Support\Route;
 use Support\View;
@@ -28,13 +29,7 @@ $request = new Request();
 $route = new Route($prefix);
 $urController = new YourController();
 
-$rateLimiter = new RateLimiter();
-if (!$rateLimiter->check($_SERVER["REMOTE_ADDR"])) {
-    http_response_code(429);
-    View::render("errors/429",[]);
-    exit();
-}
-CORSMiddleware::handle();
+handleMiddleware();
 
 $route->get("/", function(){
     View::render("wellcome/berhasil");

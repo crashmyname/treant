@@ -50,6 +50,8 @@
             <li class="menu-header">Me And U</li>
             <li class="<?= $title == "Get Started" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi"><i class="fas fa-fire"></i> <span>Getting Started</span></a></li>
             <li class="menu-header">Starter</li>
+            <li class="<?= $title == "CLI" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/cli"><i class="fas fa-fire"></i> <span>CLI</span></a></li>
+            <li class="<?= $title == "ORM" ? "active" : ""?>"><a class="nav-link" href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/orm"><i class="fas fa-fire"></i> <span>ORM</span></a></li>
             <li class="dropdown <?= $title == "Old Model" || $title == "New Model" ? "active" : ""?>">
               <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Model</span></a>
               <ul class="dropdown-menu">

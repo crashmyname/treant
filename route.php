@@ -16,7 +16,6 @@ use Model\UserModel;
 
 $request = new Request();
 $route = new Route($prefix);
-// $userController = new UserController();
 handleMiddleware();
 
 
@@ -110,6 +109,14 @@ $route->get('/dokumentasi/route', function(){
 $route->get('/dokumentasi/env', function(){
     $title = "Env";
     View::render('documentation/env',['title'=>$title],'documentation/doc');
+});
+$route->get('/dokumentasi/cli', function(){
+    $title = "CLI";
+    View::render('documentation/cli',['title'=>$title],'documentation/doc');
+});
+$route->get('/dokumentasi/orm', function(){
+    $title = "ORM";
+    View::render('documentation/orm',['title'=>$title],'documentation/doc');
 });
 
 // Menjalankan route
