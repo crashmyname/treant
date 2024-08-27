@@ -21,6 +21,7 @@ git clone https://github.com/crashmyname/mvc.git
 
 ## .env ✨
 - File ini untuk mengkoneksikan ke database ya adik adik jadi untuk mengisi database nya ada disini
+- Copy terlebih dahulu .env.example dan rename menjadi .env habis itu start your project
 ## Model
 - Model untuk database karena basisnya mvc ala ala jadi jangan lupa buat model crud dulu
 ## public
