@@ -66,7 +66,7 @@
                 <div class="card h-100">
                     <div class="card-body text-center">
                         <h5 class="card-title">Feature Two</h5>
-                        <img src="<?= asset('1_5ar8CYtsiDBGC30uE0LO2Q.png')?>" class="card-img" alt="Feature Two">
+                        <img src="<?= asset('pagepage1.jpeg')?>" class="card-img" alt="Feature Two">
                         <p class="card-text">Have Validator u can easily validate data what u want.</p>
                     </div>
                 </div>
