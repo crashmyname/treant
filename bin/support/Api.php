@@ -1,12 +1,14 @@
 <?php
+
 namespace Support;
 use Support\View;
+use Support\Request;
 
 class Api {
     private $api = [];
     private $prefix;
 
-    public function __construct($prefix) {
+    public function __construct($prefix = '') {
         $this->api['GET'] = [];
         $this->api['POST'] = [];
         $this->prefix = rtrim($prefix, '/');
@@ -20,38 +22,49 @@ class Api {
         $this->api['POST'][$uri] = ['handler' => $handler, 'middlewares' => $middlewares];
     }
 
+    public function middlewareGroup($middlewares, $callback) {
+        // Callback akan mendefinisikan rute-rute di dalam grup middleware ini
+        $callback($this, $middlewares);
+    }
+
     public function dispatch() {
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = strtok($_SERVER['REQUEST_URI'], '?');
-    
+        
         if (strpos($uri, $this->prefix) === 0) {
             $uri = substr($uri, strlen($this->prefix));
         }
-    
-        if (isset($this->api[$method][$uri])) {
-            $route = $this->api[$method][$uri];
-            $handler = $route['handler'];
-            $middlewares = $route['middlewares'];
-    
-            // Run middlewares
-            $request = new Request();
-            $this->runMiddlewares($middlewares, $request, function() use ($handler) {
-                call_user_func($handler);
-            });
-        } else {
-            // Cek apakah URI ada tetapi method tidak sesuai
-            if (array_key_exists($uri, $this->api['GET']) || array_key_exists($uri, $this->routes['POST'])) {
-                // Jika route ada tetapi method tidak sesuai
-                header("HTTP/1.1 405 Method Not Allowed");
-                View::render('errors/405',[]);
-            } else {
-                // Route tidak ditemukan
-                header("HTTP/1.1 404 Not Found");
-                View::render('errors/404',[]);
+
+        foreach ($this->api[$method] as $routeUri => $route) {
+            // Ganti parameter dinamis dengan regex, misal: /users/{id} menjadi /users/([a-zA-Z0-9_-]+)
+            $pattern = preg_replace('/\{[a-zA-Z]+\}/', '([a-zA-Z0-9_-]+)', $routeUri);
+            $pattern = str_replace('/', '\/', $pattern);
+
+            if (preg_match('/^' . $pattern . '$/', $uri, $matches)) {
+                array_shift($matches); // Hapus match penuh
+                $handler = $route['handler'];
+                $middlewares = $route['middlewares'];
+
+                // Jika handler adalah array [ControllerClass, 'method'], instansiasi controller
+                if (is_array($handler) && class_exists($handler[0]) && method_exists($handler[0], $handler[1])) {
+                    $controller = new $handler[0]; // Instansiasi kelas controller
+                    $method = $handler[1]; // Ambil nama metode
+                    $handler = [$controller, $method]; // Buat handler dari instansi controller dan metode
+                }
+                
+                // Jalankan middleware dan handler
+                $request = new Request();
+                $this->runMiddlewares($middlewares, $request, function() use ($handler, $matches) {
+                    call_user_func_array($handler, $matches); // Kirim parameter ke handler
+                });
+                return;
             }
         }
+
+        // Jika tidak ada rute yang cocok
+        header("HTTP/1.1 404 Not Found");
+        View::render('errors/404', []);
     }
-    
 
     private function runMiddlewares($middlewares, $request, $next) {
         $index = 0;
@@ -76,4 +89,5 @@ class Api {
         $middlewareHandler();
     }
 }
+
 ?>
