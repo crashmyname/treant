@@ -69,5 +69,4 @@ spl_autoload_register(function ($class) {
 require_once __DIR__ . '/bin/support/Asset.php';
 require_once __DIR__ . '/bin/support/Prefix.php';
 require_once __DIR__ . '/bin/support/Rc.php';
-require_once __DIR__ . '/bin/support/Module.php';
 ?>
