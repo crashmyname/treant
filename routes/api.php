@@ -5,22 +5,18 @@ use Support\Api;
 use Support\CSRFToken;
 use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
 use Support\Response;
+use Controller\UserController;
 
 $request = new Request();
-$api = new Api('/api');
+$api = new Api($_ENV['ROUTE_PREFIX'].'/api');
 handleMiddleware();
-
+$user = new UserController();
 // Middleware grup 'auth'
-$route->middlewareGroup([new AuthMiddleware()], function($route) {
-    $route->get('/users', [UserController::class, 'getAllUsers']); 
-    $route->get('/users/{id}', [UserController::class, 'getUserById']); 
-    $route->post('/users/create', [UserController::class, 'createUser']);
+$api->post('/login', [UserController::class, 'loginapi']); 
+$api->get('/users',function() use($user){
+    AuthMiddleware::checkToken();
+    $user->index();
 });
 
-// Middleware grup 'auth-csrf'
-$route->middlewareGroup([new AuthMiddleware(), new CSRFToken()], function($route) {
-    $route->post('/users/update', [UserController::class, 'updateUser']);
-});
-
-$route->dispatch();
+$api->dispatch();
 ?>

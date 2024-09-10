@@ -14,6 +14,7 @@ use Model\UserModel;
 $request = new Request();
 $route = new Route($prefix);
 handleMiddleware();
+$userController = new UserController();
 
 
 $route->get('/template', function(){
