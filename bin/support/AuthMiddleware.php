@@ -30,6 +30,7 @@ class AuthMiddleware
         $headers = getallheaders();
         
         if (!isset($headers['Authorization'])) {
+            header('Content-Type: application/json');
             header("HTTP/1.1 401 Unauthorized");
             echo json_encode(['error' => 'Token tidak ditemukan']);
             exit();
@@ -41,6 +42,7 @@ class AuthMiddleware
 
         // Validasi format
         if (strtolower($bearer) !== 'bearer' || empty($token)) {
+            header('Content-Type: application/json');
             header("HTTP/1.1 401 Unauthorized");
             echo json_encode(['error' => 'Format token salah']);
             exit();
@@ -48,6 +50,7 @@ class AuthMiddleware
 
         // Validasi token
         if (!isset($_SESSION['token']) || $_SESSION['token'] !== $token) {
+            header('Content-Type: application/json');
             header("HTTP/1.1 401 Unauthorized");
             echo json_encode(['error' => 'Token tidak valid']);
             exit();
