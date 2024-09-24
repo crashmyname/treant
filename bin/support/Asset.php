@@ -26,4 +26,14 @@
         return $baseURL.'vendor/'.$path;
     }
 
+    function base_url()
+    {
+        $protocol = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
+        $host = $_SERVER['HTTP_HOST'];
+
+        // Buat URL dasar
+        $baseUrl = $protocol . $host . $_ENV['ROUTE_PREFIX']; 
+        return $baseUrl;
+    }
+
 ?>
