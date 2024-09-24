@@ -4,7 +4,7 @@ use Model\User;
 use Support\Session;
 
 class Auth{
-    public function attempt($credentials)
+    public static function attempt($credentials)
     {
         $user = User::query()
             ->where(function ($query) use ($credentials) {

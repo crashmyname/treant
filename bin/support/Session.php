@@ -25,6 +25,7 @@ class Session {
 
     public static function destroy() {
         session_destroy();
+        session_unset();
     }
 
     public static function has($key) {
