@@ -4,7 +4,7 @@
     </div>
 
     <div class="section-body">
-        <h4>Didalam MVC ini memiliki 2 model Old Model dan <a href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/nmodel">New Model</a></h4>
+        <h4>Didalam MVC ini memiliki 2 model Old Model dan <a href="<?= base_url()?>/dokumentasi/nmodel">New Model</a></h4>
         <b>Model Lama masih membuat query untuk menjalankan model tertentu dan New Model memiliki BaseModel jadi pengguna tidak perlu membuat query di model</b><br>
         Starter Pack Old Model :
     <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';

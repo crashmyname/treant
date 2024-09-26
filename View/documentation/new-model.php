@@ -4,7 +4,7 @@
     </div>
 
     <div class="section-body">
-        <h4>Didalam MVC ini memiliki 2 model <a href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi/omodel">Old Model</a> dan New Model</h4>
+        <h4>Didalam MVC ini memiliki 2 model <a href="<?= base_url()?>/dokumentasi/omodel">Old Model</a> dan New Model</h4>
         <b>Model baru sudah menggunakan BaseModel jadi pengguna tidak perlu melakukan query, dan mudah dalam pemanggilan di controller</b><br>
         Contoh :
         <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
