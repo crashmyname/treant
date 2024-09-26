@@ -10,7 +10,7 @@ use Support\CORSMiddleware;
 CORSMiddleware::handle();
 
 $uri = trim($_SERVER['REQUEST_URI']);
-$apiPrefix = $_ENV['ROUTE_PREFIX'].'/api';
+$apiPrefix = '/' . basename(dirname(dirname(__DIR__))).'/api';
 if (strpos($uri, $apiPrefix) === 0) {
     $uri = substr($uri, strlen($apiPrefix));
     require_once __DIR__ . '/routes/api.php';

@@ -12,7 +12,7 @@
         echo '</pre>';
         ?>
     </div>
-    Ubah nama project menjadi projek masing-masing, dan rubah $_ENV['ROUTE_PREFIX'] menjadi nama project masing masing;
+    Ubah nama project menjadi projek masing-masing;
     <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
     echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
     echo htmlentities('.env');
@@ -23,8 +23,7 @@ DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=yourdatabase
 DB_USERNAME=yourusername
-DB_PASSWORD=yourpassword
-ROUTE_PREFIX=/mvc <b style="color:red"><-- disini</b>';
+DB_PASSWORD=yourpassword';
     echo '</code>';
     echo '</pre>';
     ?>
