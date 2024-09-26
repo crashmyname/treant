@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MVC Tanjidor</title>
+    <title>Treant MVC</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   </head>
   <style>
@@ -21,7 +21,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Mvc Tanjidor</a>
+        <a class="navbar-brand" href="#">Treant MVC</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -44,9 +44,9 @@
     <!-- Hero Section -->
     <section class="bg-light text-center py-4">
       <div class="container">
-        <h1 class="display-4">Welcome to MVC Tanjidor</h1>
+        <h1 class="display-4">Welcome to Treant MVC</h1>
         <p class="lead">A simple and elegant framework to kickstart your PHP projects.</p>
-        <a href="<?= $_ENV['ROUTE_PREFIX']?>/dokumentasi" class="btn btn-primary btn-lg">Get Started</a>
+        <a href="<?= base_url()?>/dokumentasi" class="btn btn-primary btn-lg">Get Started</a>
       </div>
     </section>
 
@@ -87,7 +87,7 @@
     <!-- Footer -->
     <footer class="bg-dark text-white text-center py-4">
       <div class="container">
-        <p>&copy; 2024 MVC Tanjidor. All rights reserved.</p>
+        <p>&copy; 2024 Treant MVC. All rights reserved.</p>
         <a href="#" class="text-white">Privacy Policy</a> |
         <a href="#" class="text-white">Terms of Service</a>
       </div>

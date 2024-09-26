@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title>MVC Tanjidor</title>
+  <title>Treant MVC</title>
 
   <!-- General CSS Files -->
   <link rel="stylesheet" href="<?= asset('stisla-1-2.2.0/dist/assets/modules/bootstrap/css/bootstrap.min.css')?>">
@@ -41,7 +41,7 @@
       <div class="main-sidebar sidebar-style-2">
         <aside id="sidebar-wrapper">
           <div class="sidebar-brand">
-            <a href="<?= base_url()?>">Tanjidor</a>
+            <a href="<?= base_url()?>">Treant</a>
           </div>
           <div class="sidebar-brand sidebar-brand-sm">
             <a href="<?= base_url()?>">T</a>

@@ -1,4 +1,4 @@
-# MVC Tanjidor ✨
+# Treant MVC ✨
 
 ## Documentation ✨✨
 - Untuk Dokumentasi jelas kunjungi https://crashmyname.github.io

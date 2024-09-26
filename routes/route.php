@@ -22,7 +22,7 @@ $route->get('/template', function(){
 });
 // DOKUMENTASI
 $route->get('/', function(){
-    View::render('welcome/berhasil');
+    View::render('welcome/welcome');
 });
 $route->get('/dokumentasi', function(){
     $title = "Get Started";
