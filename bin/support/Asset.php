@@ -44,7 +44,7 @@
             $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
             
             // Sesuaikan dengan prefiks rute jika ada
-            $baseUrl = $protocol . $host . $_ENV['ROUTE_PREFIX']; 
+            $baseUrl = $protocol . $host . '/' . basename(dirname(dirname(__DIR__))); 
             return $baseUrl;
         }
     }

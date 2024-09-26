@@ -1,0 +1,9 @@
+<?php
+require_once 'autoload.php';
+use Support\Treant;
+
+// Inisialisasi CLI
+$cli = new Treant();
+$cli->run($argv);
+
+?>

@@ -3,7 +3,7 @@ namespace Support;
 require_once __DIR__ . '/Asset.php';
 require_once __DIR__ . '/Prefix.php';
 
-class CLI
+class Treant
 {
     protected $commands = [
         'make:model' => 'createModel',
@@ -38,7 +38,7 @@ class CLI
             echo "Model $name sudah ada!\n";
         } else {
             file_put_contents($filePath, $modelTemplate);
-            echo "Mode $name berhasil dibuat!\n";
+            echo "Model $name berhasil dibuat!\n";
         }
     }
 
