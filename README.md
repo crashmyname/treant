@@ -4,7 +4,7 @@
 ## Documentation ✨✨
 - Untuk Dokumentasi jelas kunjungi https://crashmyname.github.io
 ```
-git clone https://github.com/crashmyname/mvc.git
+git clone https://github.com/crashmyname/treant
 ```
 - Jika sudah di clone kalian akan kehalaman awal MVC ini klik get started untuk membaca dokumentasi lengkap
 
