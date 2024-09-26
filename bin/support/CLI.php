@@ -1,11 +1,14 @@
 <?php
 namespace Support;
+require_once __DIR__ . '/Asset.php';
+require_once __DIR__ . '/Prefix.php';
 
 class CLI
 {
     protected $commands = [
         'make:model' => 'createModel',
         'make:controller' => 'createController',
+        'serve' => 'Serve',
         // Tambahkan perintah lainnya di sini
     ];
 
@@ -55,7 +58,35 @@ class CLI
         }
     }
 
-    // Anda bisa menambahkan metode lain untuk perintah lain di sini
+    protected function Serve()
+    {
+        $host = '127.0.0.1';
+        $port = '8000';
+
+        global $argv;
+        foreach($argv as $arg){
+            if(strpos($arg, '--host=') !== false){
+                $host = substr($arg, 7);
+            }
+            if(strpos($arg, '--port=') !== false){
+                $port = substr($arg, 7);
+            }
+        }
+        if (!filter_var($host, FILTER_VALIDATE_IP)) {
+            echo "Error: Invalid host address provided: $host\n";
+            exit(1); // Exit with error
+        }
+    
+        // Validate port (must be numeric and within range)
+        if (!is_numeric($port) || (int)$port < 1024 || (int)$port > 65535) {
+            echo "Error: Invalid port number provided: $port\n";
+            exit(1); // Exit with error
+        }
+        
+        echo "Starting development server on http://{$host}:{$port}\n";
+        exec("php -S {$host}:{$port}");
+    }
+
 }
 
 ?>

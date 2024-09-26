@@ -10,6 +10,7 @@ use Model\User;
 
 class UserController
 {
+    protected $validator;
     public function __construct()
     {
         // $this->userModel = new UserModel();
