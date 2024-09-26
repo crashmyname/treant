@@ -7,7 +7,7 @@
         <b>Pengguna tinggal Clone project ini</b>
         <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
-        echo 'git clone https://github.com/crashmyname/mvc.git';
+        echo 'git clone https://github.com/crashmyname/treant.git';
         echo '</code>';
         echo '</pre>';
         ?>
