@@ -21,7 +21,7 @@ class View{
         extract($data);
         $viewPath = __DIR__ . '/../../View/' . $view . '.php';
         if (!file_exists($viewPath)) {
-            throw new Exception("View file not found: $viewPath");
+            throw new \Exception("View file not found: $viewPath");
         }
         ob_start();
         include $viewPath;
