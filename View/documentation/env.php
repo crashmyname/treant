@@ -14,8 +14,7 @@ DB_HOST=127.0.0.1 <-- host default
 DB_PORT=3306 <-- database port nya
 DB_DATABASE=yourdatabase <-- masukkan database kamu
 DB_USERNAME=yourusername <-- masukkan usernamenya
-DB_PASSWORD=yourpassword <-- masukkan passwordnya
-ROUTE_PREFIX=/mvc <-- route_prefix ini digunakan untuk melakukan akses ke route jika di view tidak ditambahkan pasti error';
+DB_PASSWORD=yourpassword <-- masukkan passwordnya';
     echo '</code>';
     echo '</pre>';
     ?>
