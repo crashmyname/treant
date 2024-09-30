@@ -38,7 +38,7 @@
     <h1>502</h1>
     <h3>Bad Gateway</h3>
     <p>Sorry! The server received an invalid response from the upstream server.</p>
-    <a href="<?= $_ENV['ROUTE_PREFIX']?>" class="btn btn-primary">Go Home</a>
+    <a href="<?= base_url()?>" class="btn btn-primary">Go Home</a>
 </div>
 
 </body>

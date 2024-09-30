@@ -8,7 +8,7 @@ use Support\Response;
 use Controller\UserController;
 
 $request = new Request();
-$api = new Api($_ENV['ROUTE_PREFIX'].'/api');
+$api = new Api($prefix.'/api');
 handleMiddleware();
 $user = new UserController();
 // Middleware grup 'auth'

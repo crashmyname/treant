@@ -38,7 +38,7 @@
     <h1>429</h1>
     <h3>Too Many Requests</h3>
     <p>Sorry! Too Many Requests. Please try again later.</p>
-    <a href="<?= $_ENV['ROUTE_PREFIX']?>" class="btn btn-primary">Go Home</a>
+    <a href="<?= base_url()?>" class="btn btn-primary">Go Home</a>
 </div>
 
 </body>

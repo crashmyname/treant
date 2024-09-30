@@ -38,7 +38,7 @@
     <h1>500</h1>
     <h3>Internal Server Error</h3>
     <p>Sorry! Something went wrong on our end. Please try again later.</p>
-    <a href="<?= $_ENV['ROUTE_PREFIX']?>" class="btn btn-primary">Go Home</a>
+    <a href="<?= base_url()?>" class="btn btn-primary">Go Home</a>
 </div>
 
 </body>

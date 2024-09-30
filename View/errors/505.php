@@ -38,7 +38,7 @@
     <h1>505</h1>
     <h3>Invalid CSRF Token</h3>
     <p>Oops! Your Token Invalid or CSRF Token Mismatch. Please try again later.</p>
-    <a href="<?= $_ENV['ROUTE_PREFIX']?>" class="btn btn-primary">Go Home</a>
+    <a href="<?= base_url()?>" class="btn btn-primary">Go Home</a>
 </div>
 
 </body>

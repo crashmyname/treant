@@ -38,7 +38,7 @@
     <h1>403</h1>
     <h3>Forbidden</h3>
     <p>Oops! You don't have permission to access this page.</p>
-    <a href="<?= $_ENV['ROUTE_PREFIX']?>" class="btn btn-primary">Go Home</a>
+    <a href="<?= base_url()?>" class="btn btn-primary">Go Home</a>
 </div>
 
 </body>

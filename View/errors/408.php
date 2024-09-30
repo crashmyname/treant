@@ -38,7 +38,7 @@
     <h1>408</h1>
     <h3>Request Timeout</h3>
     <p>Sorry! The server timed out waiting for the request. Please try again.</p>
-    <a href="<?= $_ENV['ROUTE_PREFIX']?>" class="btn btn-primary">Go Home</a>
+    <a href="<?= base_url()?>" class="btn btn-primary">Go Home</a>
 </div>
 
 </body>

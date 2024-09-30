@@ -38,7 +38,7 @@
     <h1>504</h1>
     <h3>Gateway Timeout</h3>
     <p>Oops! The server took too long to respond. Please try again later.</p>
-    <a href="<?= $_ENV['ROUTE_PREFIX']?>" class="btn btn-primary">Go Home</a>
+    <a href="<?= base_url()?>" class="btn btn-primary">Go Home</a>
 </div>
 
 </body>

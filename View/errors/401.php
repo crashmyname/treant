@@ -38,7 +38,7 @@
     <h1>401</h1>
     <h3>Unauthorized</h3>
     <p>Oops! You need to log in to access this page.</p>
-    <a href="<?= $_ENV['ROUTE_PREFIX']?>/login" class="btn btn-primary">Go Home</a>
+    <a href="<?= base_url()?>/login" class="btn btn-primary">Go Home</a>
 </div>
 
 </body>

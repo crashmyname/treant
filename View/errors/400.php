@@ -38,7 +38,7 @@
     <h1>400</h1>
     <h3>Bad Request</h3>
     <p>Oops! The request was invalid or cannot be processed.</p>
-    <a href="<?= $_ENV['ROUTE_PREFIX']?>" class="btn btn-primary">Go Home</a>
+    <a href="<?= base_url()?>" class="btn btn-primary">Go Home</a>
 </div>
 
 </body>

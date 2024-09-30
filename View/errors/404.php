@@ -38,7 +38,7 @@
     <h1>404</h1>
     <h3>Not Found</h3>
     <p>Oops! The page you're looking for doesn't exist.</p>
-    <a href="<?= $_ENV['ROUTE_PREFIX']?>" class="btn btn-primary">Go Home</a>
+    <a href="<?= base_url()?>" class="btn btn-primary">Go Home</a>
 </div>
 
 </body>

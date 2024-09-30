@@ -38,7 +38,7 @@
     <h1>503</h1>
     <h3>Service Unavailable</h3>
     <p>Sorry! The service is currently unavailable. Please try again later.</p>
-    <a href="<?= $_ENV['ROUTE_PREFIX']?>" class="btn btn-primary">Go Home</a>
+    <a href="<?= base_url()?>" class="btn btn-primary">Go Home</a>
 </div>
 
 </body>

@@ -38,7 +38,7 @@
     <h1>405</h1>
     <h3>Method Not Allowed</h3>
     <p>Oops! The requested method is not allowed for this URL.</p>
-    <a href="<?= $_ENV['ROUTE_PREFIX']?>" class="btn btn-primary">Go Home</a>
+    <a href="<?= base_url()?>" class="btn btn-primary">Go Home</a>
 </div>
 
 </body>
