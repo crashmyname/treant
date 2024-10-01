@@ -1,6 +1,6 @@
 <?php
 
-namespace Model;
+namespace App\Model;
 use Support\BaseModel;
 
 class User extends BaseModel

@@ -1,12 +1,12 @@
 <?php
 
-namespace Controller;
+namespace App\Controller;
 use Support\Response;
 use Support\Request;
 use Support\Validator;
 use Support\View;
 use Support\CSRFToken;
-use Model\User;
+use App\Model\User;
 
 class UserController
 {

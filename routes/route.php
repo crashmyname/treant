@@ -13,6 +13,7 @@ $request = new Request();
 $route = new Route($prefix);
 handleMiddleware();
 
+
 // DOKUMENTASI
 $route->get('/', function(){
     View::render('welcome/welcome');

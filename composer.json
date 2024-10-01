@@ -1,0 +1,23 @@
+{
+    "name": "fadli/treant",
+    "description": "A Custom Framework PHP",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Config\\": "config/",
+            "Support\\": "bin/support/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Fadli Azka Prayogi",
+            "email": "fadliazkaprayogi1@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.0"
+    }
+}

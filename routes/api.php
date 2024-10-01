@@ -5,7 +5,7 @@ use Support\Api;
 use Support\CSRFToken;
 use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
 use Support\Response;
-use Controller\UserController;
+use App\Controller\UserController;
 
 $request = new Request();
 $api = new Api($prefix.'/api');
