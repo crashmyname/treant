@@ -1,4 +1,5 @@
 <?php
+use Controller\ViewController;
 session_start();
 use Support\Request;
 use Support\Route;
@@ -15,10 +16,10 @@ $request = new Request();
 $route = new Route($prefix);
 handleMiddleware();
 $userController = new UserController();
+$test = new ViewController();
 
-
-$route->get('/template', function(){
-    View::render('test');
+$route->get('/template', function() use($test){
+    $test->index();
 });
 // DOKUMENTASI
 $route->get('/', function(){

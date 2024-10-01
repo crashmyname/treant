@@ -18,7 +18,7 @@ spl_autoload_register(function ($class) {
 
 spl_autoload_register(function ($class) {
     $prefix = 'Model\\'; // Namespace prefix for Model classes
-    $base_dir = __DIR__ . '/Model/';
+    $base_dir = __DIR__ . '/app/Model/';
 
     $len = strlen($prefix);
     if (strncmp($prefix, $class, $len) !== 0) {
@@ -35,7 +35,7 @@ spl_autoload_register(function ($class) {
 
 spl_autoload_register(function ($class) {
     $prefix = 'Controller\\'; // Namespace prefix for Controller classes
-    $base_dir = __DIR__ . '/Controller/';
+    $base_dir = __DIR__ . '/app/Controller/';
 
     $len = strlen($prefix);
     if (strncmp($prefix, $class, $len) !== 0) {

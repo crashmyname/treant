@@ -17,7 +17,6 @@ class AuthMiddleware
         if(isset($_SESSION['login_time']) && ($current_time-$_SESSION['login_time']) > $session_lifetime){
             session_unset();
             session_destroy();
-            $r = $_ENV['ROUTE_PREFIX'];
             View::render('errors/401');
             exit();
         }
