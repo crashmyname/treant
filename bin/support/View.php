@@ -1,8 +1,8 @@
 <?php
 namespace Support;
 
-class View{
-
+class View
+{
     private static $data = [];
     private static $errorHandler;
 
@@ -18,25 +18,33 @@ class View{
 
     public static function render($view, $data = [], $layout = null)
     {
-        extract($data);
-        $viewPath = __DIR__ . '/../../View/' . $view . '.php';
-        if (!file_exists($viewPath)) {
-            throw new \Exception("View file not found: $viewPath");
-        }
-        ob_start();
-        include $viewPath;
-        $content = ob_get_clean();
-
-        if ($layout) {
-            $layoutPath = __DIR__ . '/../../View/' . $layout . '.php';
-            if (file_exists($layoutPath)) {
-                include $layoutPath;
-            } else {
-                // throw new Exception("Layout file not found: $layoutPath");
-                View::render('errors/500');
+        try{
+            extract($data);
+            $viewPath = __DIR__ . '/../../View/' . $view . '.php';
+            if (!file_exists($viewPath)) {
+                throw new \Exception("View file not found: $viewPath");
             }
-        } else {
-            echo $content;
+            ob_start();
+            include $viewPath;
+            $content = ob_get_clean();
+
+            if ($layout) {
+                $layoutPath = __DIR__ . '/../../View/' . $layout . '.php';
+                if (file_exists($layoutPath)) {
+                    include $layoutPath;
+                } else {
+                    throw new \Exception("Layout file not found: $layoutPath");
+                    // View::render('errors/500');
+                }
+            } else {
+                echo $content;
+            }
+        } catch (\Exception $e){
+            // self::renderError($e);
+            if (!headers_sent()) { 
+                http_response_code(500);
+            }
+            self::renderError($e);
         }
         exit();
     }
@@ -47,8 +55,31 @@ class View{
         if (!empty($flashData)) {
             $_SESSION['flash_data'] = $flashData;
         }
-        $fullroute = $_ENV['ROUTE_PREFIX'].$route;
+        $fullroute = base_url() . $route;
         header("Location: $fullroute");
+        exit();
+    }
+
+    public static function renderError($exception)
+    {
+        static $errorDisplayed = false;
+
+        if (!$errorDisplayed) {
+            $errorDisplayed = true;
+
+            // Set response code menjadi 500
+            if (!headers_sent()) { 
+                http_response_code(500);
+            }
+
+            // Tampilkan halaman error
+            $exceptionData = [
+                'message' => $exception->getMessage(),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+            ];
+            include realpath(__DIR__ . '/../../View/errors/page_error.php');
+        }
         exit();
     }
 }
