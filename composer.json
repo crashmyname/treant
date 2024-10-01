@@ -16,8 +16,10 @@
             "email": "fadliazkaprayogi1@gmail.com"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
+        "fadli-dev/treant": "^1.0",
         "php": "^8.0"
     }
 }
