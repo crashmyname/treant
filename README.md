@@ -1,5 +1,5 @@
 # Treant MVC ✨
-- Update Versi 1.2
+- Update Versi 1.3
 
 ## Documentation ✨✨
 - Untuk Dokumentasi jelas kunjungi https://crashmyname.github.io/treant
@@ -9,16 +9,17 @@ git clone https://github.com/crashmyname/treant.git
 - Jika sudah di clone kalian akan kehalaman awal MVC ini klik get started untuk membaca dokumentasi lengkap
 
 ## Struktur Folder
+- [app]
+    - [Model]
+    - [Controller]
+    - [View]
 - [bin]
     -[support]
 - [config]
-- [Controller]
 - [logs]
-- [Model]
 - [node_moduels]
 - [public]
 - [routes]
-- [View]
 - .env
 - .env.example
 - .htacces
