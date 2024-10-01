@@ -2,9 +2,9 @@
 - Update Versi 1.2
 
 ## Documentation ✨✨
-- Untuk Dokumentasi jelas kunjungi https://crashmyname.github.io
+- Untuk Dokumentasi jelas kunjungi https://crashmyname.github.io/treant
 ```
-git clone https://github.com/crashmyname/treant
+git clone https://github.com/crashmyname/treant.git
 ```
 - Jika sudah di clone kalian akan kehalaman awal MVC ini klik get started untuk membaca dokumentasi lengkap
 
