@@ -8,13 +8,10 @@ use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
 use Support\Crypto;
 use Support\UUID;
 use Support\Response;
-use Controller\UserController;
-use Model\UserModel;
 
 $request = new Request();
 $route = new Route($prefix);
 handleMiddleware();
-$userController = new UserController();
 
 // DOKUMENTASI
 $route->get('/', function(){
