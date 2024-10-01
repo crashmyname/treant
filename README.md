@@ -14,7 +14,7 @@ git clone https://github.com/crashmyname/treant.git
     - [Controller]
     - [View]
 - [bin]
-    -[support]
+    - [support]
 - [config]
 - [logs]
 - [node_moduels]
