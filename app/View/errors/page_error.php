@@ -50,7 +50,7 @@
         <p>We're working to fix it. Please try again later.</p>
 
         <!-- Optional: link to homepage -->
-        <a href="<?= base_url() ?>">Return to Home</a>
+        <a href="<?= base_url() ?>">Return to Home</a><br>
 
         <!-- Detail error untuk debugging (optional) -->
         <div class="error-details">
