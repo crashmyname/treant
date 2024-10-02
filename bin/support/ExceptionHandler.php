@@ -21,7 +21,7 @@ class ExceptionHandler
     public static function renderErrorPage($title, $message, $exception)
     {
         // Pastikan path yang digunakan untuk view error ada
-        $viewPath = realpath(__DIR__ . '/../../app/View/errors/page_error.php');
+        $viewPath = realpath(__DIR__ . '/../../src/View/errors/page_error.php');
         
         // Debugging: Jika viewPath kosong, tampilkan pesan error
         if (!$viewPath) {

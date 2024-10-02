@@ -1,19 +1,19 @@
 <?php return array(
     'root' => array(
-        'name' => 'fadli/treant',
+        'name' => 'fadli-dev/treant',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'b0a100c4579b64a139375b991f28e0cfd65542fd',
+        'reference' => '6efc8d4314cbcc0614c7bb9b9d0a7c3ef614a9af',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
-        'fadli/treant' => array(
+        'fadli-dev/treant' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'b0a100c4579b64a139375b991f28e0cfd65542fd',
+            'reference' => '6efc8d4314cbcc0614c7bb9b9d0a7c3ef614a9af',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
