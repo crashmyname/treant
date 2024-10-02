@@ -74,7 +74,7 @@ class Database
                 'line' => $exception->getLine(),
             ];
             extract($exceptionData);
-            include __DIR__ . '/../app/View/errors/page_error.php';
+            include __DIR__ . '/../src/View/errors/page_error.php';
         }
         exit();
     }
