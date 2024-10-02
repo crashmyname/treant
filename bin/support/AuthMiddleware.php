@@ -6,7 +6,6 @@ class AuthMiddleware
 {
     public static function checkLogin() {
         if (!\Support\Session::has('user')) {
-            $r = $_ENV['ROUTE_PREFIX'];
             // header('Location: '.$r.'/login');
             View::render('errors/401');
             exit();
