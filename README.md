@@ -12,7 +12,6 @@ git clone https://github.com/crashmyname/treant.git
 - [app]
     - [Model]
     - [Controller]
-    - [View]
 - [bin]
     - [support]
 - [config]
@@ -20,6 +19,8 @@ git clone https://github.com/crashmyname/treant.git
 - [node_moduels]
 - [public]
 - [routes]
+- [src]
+    - [View]
 - .env
 - .env.example
 - .htacces
