@@ -4,7 +4,9 @@
 ## Documentation ✨✨
 - Untuk Dokumentasi jelas kunjungi https://crashmyname.github.io/treant
 ```
-git clone https://github.com/crashmyname/treant.git
+git clone https://github.com/crashmyname/treant.git 
+- Sekarang bisa menginstall menggunakan composer
+composer create-project fadli-dev/treant nama_proyek_baru "v1.1.1"
 ```
 - Jika sudah di clone kalian akan kehalaman awal MVC ini klik get started untuk membaca dokumentasi lengkap
 
@@ -43,6 +45,9 @@ git clone https://github.com/crashmyname/treant.git
   untuk menagkses template
   <link rel="stylesheet" href="<?= asset('adminlte/bootstrap.min.css') ?>">
   <script src="<?= asset('adminlte/js/bootstrap.min.js') ?>"></script>
+
+  Menambahkan Pretty_print kalian bisa mengganti var_dump dengan menggunakan pretty_print
+  pretty_print($data);
   
   ```
   atau lainnya bisa diakses di menu public.
