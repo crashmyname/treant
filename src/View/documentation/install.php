@@ -4,15 +4,15 @@
     </div>
 
     <div class="section-body">
-        <b>Pengguna tinggal Clone project ini</b>
+        <b>Pengguna bisa menginstallnya menggunakan composer</b>
         <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
-        echo 'git clone https://github.com/crashmyname/treant.git';
+        echo 'composer create-project fadli-dev/treant nama_proyek_masingmasing v1.1.1';
         echo '</code>';
         echo '</pre>';
         ?>
     </div>
-    Ubah nama project menjadi projek masing-masing;
+    Setup .env jangan lupa untuk copy file .env.example menjadi .env dan setup env nya sesuai kebutuhan masing masing ;
     <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
     echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
     echo htmlentities('.env');
