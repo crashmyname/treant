@@ -49,26 +49,6 @@
         }
     }
 
-    // Fungsi untuk mempercantik tampilan var_dump atau print_r
-    // function pretty_print($data) {
-    //     echo '<pre style="
-    //         background-color: #f4f4f4; 
-    //         border: 1px solid #ddd; 
-    //         border-radius: 5px; 
-    //         padding: 10px;
-    //         font-size: 14px;
-    //         line-height: 1.5;
-    //         color: #333;
-    //         max-width: 100%;
-    //         overflow-x: auto;
-    //     ">';
-        
-    //     // Gunakan print_r atau var_dump tergantung preferensi
-    //     print_r($data); // atau bisa juga gunakan var_dump($data);
-        
-    //     echo '</pre>';
-    // }
-
     function pretty_print($data) {
         // Tambahkan CSS untuk memperindah tampilan
         echo '
@@ -142,21 +122,6 @@
         </script>
         ';
     
-        // Fungsi untuk mendapatkan data dari objek Support\Request
-        function get_data_from_request($request) {
-            // Menggunakan refleksi untuk mengakses properti privat
-            $reflection = new ReflectionClass($request);
-            $dataProperty = $reflection->getProperty('data');
-            $dataProperty->setAccessible(true);
-            $filesProperty = $reflection->getProperty('files');
-            $filesProperty->setAccessible(true);
-    
-            return [
-                'data' => $dataProperty->getValue($request),
-                'files' => $filesProperty->getValue($request),
-            ];
-        }
-    
         // Fungsi rekursif untuk memformat data
         function format_data($data) {
             $result = '';
@@ -180,13 +145,26 @@
             return $result;
         }
     
-        // Dapatkan data dari objek request
-        $formatted_data = get_data_from_request($data);
+        // Cek jika data adalah objek dari class tertentu
+        if (is_object($data)) {
+            // Menggunakan refleksi jika data adalah objek
+            $reflection = new ReflectionClass($data);
+            $properties = $reflection->getProperties();
+            $formatted_data = [];
+            foreach ($properties as $property) {
+                $property->setAccessible(true);
+                $formatted_data[$property->getName()] = $property->getValue($data);
+            }
+        } else {
+            // Jika data adalah array, cukup gunakan data itu
+            $formatted_data = $data;
+        }
     
         // Tampilkan hasil yang sudah diformat
         echo '<div class="pretty-print">';
         echo format_data($formatted_data);
         echo '</div>';
+        exit;
     }
 
 ?>
