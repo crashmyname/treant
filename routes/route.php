@@ -8,11 +8,9 @@ use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
 use Support\Crypto;
 use Support\UUID;
 use Support\Response;
-use App\Controllers\UserController;
 
 $request = new Request();
 $route = new Route($prefix);
-$user = new UserController;
 handleMiddleware();
 
 // DOKUMENTASI
