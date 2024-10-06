@@ -78,7 +78,8 @@ class View
                 'file' => $exception->getFile(),
                 'line' => $exception->getLine(),
             ];
-            include realpath(__DIR__ . '/../../src/View/errors/page_error.php');
+            extract($exceptionData);
+            include realpath(__DIR__ . '/../../app/Handle/errors/view_404.php');
         }
         exit();
     }

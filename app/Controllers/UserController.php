@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers;
+use Support\Controller;
 use Support\Response;
 use Support\Request;
 use Support\Validator;
@@ -8,7 +9,7 @@ use Support\View;
 use Support\CSRFToken;
 use App\Models\User;
 
-class UserController
+class UserController extends Controller
 {
     protected $validator;
     public function __construct()
@@ -25,6 +26,16 @@ class UserController
 
         // Kembalikan response dalam bentuk JSON
         Response::json(['status_code'=>200,'message'=>'Berhasil get api','data'=>$users]);
+    }
+
+    public function test()
+    {
+        $users = [
+            ['id' => 1, 'name' => 'John Doe'],
+            ['id' => 2, 'name' => 'Jane Doe'],
+        ];
+        // pretty_print($users);
+        return View::render('home',['users'=>$users]);
     }
 
     public function loginapi()

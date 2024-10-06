@@ -1,6 +1,6 @@
 <?php
 namespace Support;
-use Model\User;
+use App\Models\User;
 use Support\Session;
 
 class Auth{

@@ -43,11 +43,11 @@ class Route {
             if (array_key_exists($uri, $this->routes['GET']) || array_key_exists($uri, $this->routes['POST'])) {
                 // Jika route ada tetapi method tidak sesuai
                 header("HTTP/1.1 405 Method Not Allowed");
-                View::render('errors/405',[]);
+                include __DIR__ . '/../../app/Handle/errors/405.php';
             } else {
                 // Route tidak ditemukan
                 header("HTTP/1.1 404 Not Found");
-                View::render('errors/404',[]);
+                include __DIR__ . '/../../app/Handle/errors/404.php';
             }
         }
     }

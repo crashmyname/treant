@@ -33,7 +33,7 @@ class Treant
             return;
         }
         $modelTemplate = "<?php\n\nnamespace App\Models;\nuse Support\BaseModel;\n\nclass $name extends BaseModel\n{\n    // Model logic here\n}\n";
-        $filePath = "app/Model/{$name}.php";
+        $filePath = "app/Models/{$name}.php";
         if (file_exists($filePath)) {
             echo "Model $name sudah ada!\n";
         } else {
@@ -48,8 +48,8 @@ class Treant
             echo "Nama controller harus diberikan!\n";
             return;
         }
-        $controllerTemplate = "<?php\n\nnamespace App\Controllers;\nuse Support\Request;\nuse Support\Validator;\nuse Support\View;\nuse Support\CSRFToken;\n\nclass {$name}\n{\n    // Controller logic here\n}\n";
-        $filePath = "app/Controller/{$name}.php";
+        $controllerTemplate = "<?php\n\nnamespace App\Controllers;\nuse Support\Controller;\nuse Support\Request;\nuse Support\Validator;\nuse Support\View;\nuse Support\CSRFToken;\n\nclass {$name} extends Controller\n{\n    // Controller logic here\n}\n";
+        $filePath = "app/Controllers/{$name}.php";
         if (file_exists($filePath)) {
             echo "Controller $name sudah ada!\n";
         } else {

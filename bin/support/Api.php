@@ -86,7 +86,7 @@ class Api {
     
         // Jika tidak ada rute yang cocok
         header("HTTP/1.1 404 Not Found");
-        View::render('errors/404', []);
+        include __DIR__ . '/../../app/Handle/errors/404.php';
     }
     
     private function runMiddlewares($middlewares, $request, $next) {

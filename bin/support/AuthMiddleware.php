@@ -7,7 +7,7 @@ class AuthMiddleware
     public static function checkLogin() {
         if (!\Support\Session::has('user')) {
             // header('Location: '.$r.'/login');
-            View::render('errors/401');
+            include __DIR__ . '/../../app/Handle/errors/401.php';
             exit();
         }
 
@@ -16,7 +16,7 @@ class AuthMiddleware
         if(isset($_SESSION['login_time']) && ($current_time-$_SESSION['login_time']) > $session_lifetime){
             session_unset();
             session_destroy();
-            View::render('errors/401');
+            include __DIR__ . '/../../app/Handle/errors/401.php';
             exit();
         }
         $_SESSION['login_time'] = $current_time;
