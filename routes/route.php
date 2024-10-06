@@ -15,11 +15,6 @@ $route = new Route($prefix);
 $user = new UserController;
 handleMiddleware();
 
-
-$route->get('/test', function() use($user){
-    $user->test();
-});
-
 // DOKUMENTASI
 $route->get('/', function(){
     View::render('welcome/welcome');
