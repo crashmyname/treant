@@ -28,6 +28,13 @@ class Session {
         session_destroy();
     }
 
+    public static function unset($key)
+    {
+        if (isset($_SESSION[$key])) {
+            unset($_SESSION[$key]);
+        }
+    }
+
     public static function has($key) {
         return isset($_SESSION[$key]);
     }
