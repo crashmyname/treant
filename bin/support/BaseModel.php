@@ -232,7 +232,10 @@ class BaseModel
     {
         $this->limit(1);
         $results = $this->get();
-        return !empty($results) ? $results[0] : null;
+        if(!empty($results)){
+            return new static($results[0]);
+        }
+        return null;
     }
 
     public static function all()
