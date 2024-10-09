@@ -101,7 +101,7 @@
             }
         </style>
         ';
-    
+        
         // Tambahkan JavaScript untuk collapsible functionality
         echo '
         <script>
@@ -121,31 +121,47 @@
             });
         </script>
         ';
-    
+        
         // Fungsi rekursif untuk memformat data
         function format_data($data) {
             $result = '';
-            foreach ($data as $key => $value) {
-                $result .= '<span class="key">[' . htmlspecialchars($key) . ']</span> => ';
-                if (is_array($value) || is_object($value)) {
-                    $result .= '<button class="collapsible">Object/Array</button>';
-                    $result .= '<div class="content">';
-                    $result .= format_data((array) $value);
-                    $result .= '</div>';
-                } elseif (is_string($value)) {
-                    $result .= '<span class="string">"' . htmlspecialchars($value) . '"</span><br>';
-                } elseif (is_numeric($value)) {
-                    $result .= '<span class="number">' . htmlspecialchars($value) . '</span><br>';
-                } elseif (is_bool($value)) {
-                    $result .= '<span class="bool">' . ($value ? 'true' : 'false') . '</span><br>';
+    
+            // Cek tipe data sebelum foreach
+            if (is_array($data) || is_object($data)) {
+                foreach ($data as $key => $value) {
+                    $result .= '<span class="key">[' . htmlspecialchars($key) . ']</span> => ';
+                    if (is_array($value) || is_object($value)) {
+                        $result .= '<button class="collapsible">Object/Array</button>';
+                        $result .= '<div class="content">';
+                        $result .= format_data((array) $value);
+                        $result .= '</div>';
+                    } elseif (is_string($value)) {
+                        $result .= '<span class="string">"' . htmlspecialchars($value) . '"</span><br>';
+                    } elseif (is_numeric($value)) {
+                        $result .= '<span class="number">' . htmlspecialchars($value) . '</span><br>';
+                    } elseif (is_bool($value)) {
+                        $result .= '<span class="bool">' . ($value ? 'true' : 'false') . '</span><br>';
+                    } else {
+                        $result .= '<span class="null">null</span><br>';
+                    }
+                }
+            } else {
+                // Jika bukan array/object, tampilkan langsung
+                if (is_string($data)) {
+                    $result .= '<span class="string">"' . htmlspecialchars($data) . '"</span><br>';
+                } elseif (is_numeric($data)) {
+                    $result .= '<span class="number">' . htmlspecialchars($data) . '</span><br>';
+                } elseif (is_bool($data)) {
+                    $result .= '<span class="bool">' . ($data ? 'true' : 'false') . '</span><br>';
                 } else {
                     $result .= '<span class="null">null</span><br>';
                 }
             }
+    
             return $result;
         }
     
-        // Cek jika data adalah objek dari class tertentu
+        // Cek tipe data utama
         if (is_object($data)) {
             // Menggunakan refleksi jika data adalah objek
             $reflection = new ReflectionClass($data);
@@ -156,7 +172,7 @@
                 $formatted_data[$property->getName()] = $property->getValue($data);
             }
         } else {
-            // Jika data adalah array, cukup gunakan data itu
+            // Jika data adalah array atau tipe sederhana lainnya
             $formatted_data = $data;
         }
     

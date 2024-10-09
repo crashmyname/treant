@@ -37,6 +37,23 @@ class BaseModel
         }
     }
 
+    public function beginTransaction()
+    {
+        $this->connection->beginTransaction();
+    }
+
+    // Commit transaksi
+    public function commit()
+    {
+        $this->connection->commit();
+    }
+
+    // Rollback transaksi
+    public function rollBack()
+    {
+        $this->connection->rollBack();
+    }
+
     public static function create($attributes)
     {
         $instance = new static($attributes);
@@ -274,12 +291,45 @@ class BaseModel
 
     public function save()
     {
-        if (isset($this->attributes[$this->primaryKey])) {
-            $this->update();
-        } else {
-            $columns = implode(',', array_keys($this->attributes));
-            $placeholders = ':' . implode(', :', array_keys($this->attributes));
-            $sql = "INSERT INTO {$this->table} ({$columns}) VALUES ({$placeholders})";
+        try {
+            $this->beginTransaction(); // Mulai transaksi
+
+            if (isset($this->attributes[$this->primaryKey])) {
+                $this->update();
+            } else {
+                $columns = implode(',', array_keys($this->attributes));
+                $placeholders = ':' . implode(', :', array_keys($this->attributes));
+                $sql = "INSERT INTO {$this->table} ({$columns}) VALUES ({$placeholders})";
+
+                $stmt = $this->connection->prepare($sql);
+
+                foreach ($this->attributes as $key => $value) {
+                    $stmt->bindValue(':' . $key, $value);
+                }
+
+                $stmt->execute();
+                $this->attributes[$this->primaryKey] = $this->connection->lastInsertId();
+            }
+
+            $this->commit(); // Commit transaksi jika berhasil
+        } catch (PDOException $e) {
+            $this->rollBack(); // Rollback transaksi jika gagal
+            throw $e;
+        }
+    }
+
+    public function update()
+    {
+        try {
+            $this->beginTransaction(); // Mulai transaksi
+
+            $setClause = [];
+            foreach ($this->attributes as $key => $value) {
+                $setClause[] = "{$key} = :{$key}";
+            }
+            $setClause = implode(', ', $setClause);
+
+            $sql = "UPDATE {$this->table} SET {$setClause} WHERE {$this->primaryKey} = :{$this->primaryKey}";
 
             $stmt = $this->connection->prepare($sql);
 
@@ -288,35 +338,29 @@ class BaseModel
             }
 
             $stmt->execute();
-            $this->attributes[$this->primaryKey] = $this->connection->lastInsertId();
+
+            $this->commit(); // Commit transaksi jika berhasil
+        } catch (PDOException $e) {
+            $this->rollBack(); // Rollback transaksi jika gagal
+            throw $e;
         }
-    }
-
-    public function update()
-    {
-        $setClause = [];
-        foreach ($this->attributes as $key => $value) {
-            $setClause[] = "{$key} = :{$key}";
-        }
-        $setClause = implode(', ', $setClause);
-
-        $sql = "UPDATE {$this->table} SET {$setClause} WHERE {$this->primaryKey} = :{$this->primaryKey}";
-
-        $stmt = $this->connection->prepare($sql);
-
-        foreach ($this->attributes as $key => $value) {
-            $stmt->bindValue(':' . $key, $value);
-        }
-
-        $stmt->execute();
     }
 
     public function delete()
     {
-        $sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = :{$this->primaryKey}";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':' . $this->primaryKey, $this->attributes[$this->primaryKey]);
-        $stmt->execute();
+        try {
+            $this->beginTransaction(); // Mulai transaksi
+
+            $sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = :{$this->primaryKey}";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindValue(':' . $this->primaryKey, $this->attributes[$this->primaryKey]);
+            $stmt->execute();
+
+            $this->commit(); // Commit transaksi jika berhasil
+        } catch (PDOException $e) {
+            $this->rollBack(); // Rollback transaksi jika gagal
+            throw $e;
+        }
     }
 
     public static function find($id)
