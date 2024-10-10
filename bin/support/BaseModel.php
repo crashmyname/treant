@@ -99,6 +99,27 @@ class BaseModel
         return $this;
     }
 
+    public function whereIn($column, array $values)
+    {
+        if (empty($values)) {
+            throw new \InvalidArgumentException('The values array cannot be empty for whereIn condition.');
+        }
+
+        // Generate unique placeholders for each value
+        $placeholders = [];
+        foreach ($values as $index => $value) {
+            $paramName = str_replace('.', '_', $column) . "_in_{$index}";
+            $placeholders[] = ":{$paramName}";
+            $this->whereParams[":{$paramName}"] = $value;
+        }
+
+        // Build the WHERE IN clause
+        $placeholdersString = implode(', ', $placeholders);
+        $this->whereConditions[] = "{$column} IN ({$placeholdersString})";
+
+        return $this;
+    }
+
     public function orWhere($column, $operator = '=', $value = null)
     {
         if ($value === null || $value == '') {
