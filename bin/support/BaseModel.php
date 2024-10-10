@@ -21,6 +21,7 @@ class BaseModel
     protected $distinct = '';
     protected $limit;
     protected $offset;
+    protected $orWhereConditions = [];
 
     public function __construct($attributes = [])
     {
@@ -32,7 +33,7 @@ class BaseModel
     {
         $database = new Database();
         $this->connection = $database->getConnection();
-        if($this->connection === null){
+        if ($this->connection === null) {
             die('Connection Failed');
         }
     }
@@ -94,7 +95,25 @@ class BaseModel
             $this->whereConditions[] = "{$column} {$operator} :{$paramName}";
             $this->whereParams[":{$paramName}"] = $value;
         }
-    
+
+        return $this;
+    }
+
+    public function orWhere($column, $operator = '=', $value = null)
+    {
+        if ($value === null || $value == '') {
+            if ($operator === '=') {
+                $operator = 'IS';
+            } elseif ($operator === '!=') {
+                $operator = 'IS NOT';
+            }
+            $this->orWhereConditions[] = "{$column} {$operator} NULL";
+        } else {
+            $paramName = str_replace('.', '_', $column) . '_' . count($this->whereParams);
+            $this->orWhereConditions[] = "{$column} {$operator} :{$paramName}";
+            $this->whereParams[":{$paramName}"] = $value;
+        }
+
         return $this;
     }
 
@@ -142,13 +161,13 @@ class BaseModel
     private function join($table, $first, $operator, $second, $type)
     {
         $validJoinTypes = ['INNER', 'LEFT', 'RIGHT', 'OUTER'];
-        
+
         if (in_array(strtoupper($type), $validJoinTypes)) {
             $this->joins[] = "{$type} JOIN {$table} ON {$first} {$operator} {$second}";
         } else {
             throw new \InvalidArgumentException("Invalid join type: {$type}");
         }
-        
+
         return $this;
     }
 
@@ -184,8 +203,19 @@ class BaseModel
             $sql .= ' ' . implode(' ', $this->joins);
         }
 
-        if (!empty($this->whereConditions)) {
-            $sql .= ' WHERE ' . implode(' AND ', $this->whereConditions);
+        if (!empty($this->whereConditions) || !empty($this->orWhereConditions)) {
+            $sql .= ' WHERE ';
+            $conditions = [];
+
+            if (!empty($this->whereConditions)) {
+                $conditions[] = '(' . implode(' AND ', $this->whereConditions) . ')';
+            }
+
+            if (!empty($this->orWhereConditions)) {
+                $conditions[] = '(' . implode(' OR ', $this->orWhereConditions) . ')';
+            }
+
+            $sql .= implode(' AND ', $conditions); // Gabung AND dan OR dengan benar
         }
 
         if (!empty($this->groupBy)) {
@@ -197,11 +227,11 @@ class BaseModel
         }
 
         if ($this->limit !== null) {
-            $sql .= ' LIMIT ' . (int)$this->limit;
+            $sql .= ' LIMIT ' . (int) $this->limit;
         }
 
         if ($this->offset !== null) {
-            $sql .= ' OFFSET ' . (int)$this->offset;
+            $sql .= ' OFFSET ' . (int) $this->offset;
         }
 
         $stmt = $this->connection->prepare($sql);
@@ -235,11 +265,11 @@ class BaseModel
         }
 
         if ($this->limit !== null) {
-            $sql .= ' LIMIT ' . (int)$this->limit;
+            $sql .= ' LIMIT ' . (int) $this->limit;
         }
 
         if ($this->offset !== null) {
-            $sql .= ' OFFSET ' . (int)$this->offset;
+            $sql .= ' OFFSET ' . (int) $this->offset;
         }
 
         return $sql;
@@ -249,7 +279,7 @@ class BaseModel
     {
         $this->limit(1);
         $results = $this->get();
-        if(!empty($results)){
+        if (!empty($results)) {
             return new static($results[0]);
         }
         return null;
@@ -273,8 +303,22 @@ class BaseModel
             $sql .= ' ' . implode(' ', $this->joins);
         }
 
-        if (!empty($this->whereConditions)) {
-            $sql .= ' WHERE ' . implode(' AND ', $this->whereConditions);
+        if (!empty($this->whereConditions) || !empty($this->orWhereConditions)) {
+            $sql .= ' WHERE ';
+            $conditions = [];
+
+            // Memasukkan where conditions
+            if (!empty($this->whereConditions)) {
+                $conditions[] = '(' . implode(' AND ', $this->whereConditions) . ')';
+            }
+
+            // Memasukkan orWhere conditions
+            if (!empty($this->orWhereConditions)) {
+                $conditions[] = '(' . implode(' OR ', $this->orWhereConditions) . ')';
+            }
+
+            // Gabungkan semua kondisi
+            $sql .= implode(' AND ', $conditions);
         }
 
         $stmt = $this->connection->prepare($sql);
