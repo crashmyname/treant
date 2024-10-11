@@ -38,23 +38,6 @@ class BaseModel
         }
     }
 
-    public function beginTransaction()
-    {
-        $this->connection->beginTransaction();
-    }
-
-    // Commit transaksi
-    public function commit()
-    {
-        $this->connection->commit();
-    }
-
-    // Rollback transaksi
-    public function rollBack()
-    {
-        $this->connection->rollBack();
-    }
-
     public static function create($attributes)
     {
         $instance = new static($attributes);
