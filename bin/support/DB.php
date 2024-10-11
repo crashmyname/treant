@@ -26,7 +26,7 @@ class DB
         ];
 
         // Coba membaca file .env
-        $envFilePath = __DIR__ . '/../.env';
+        $envFilePath = __DIR__ . '/../../.env';
         if (file_exists($envFilePath)) {
             $env = parse_ini_file($envFilePath);
             if ($env !== false) {
