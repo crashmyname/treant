@@ -5,6 +5,7 @@ namespace Support;
 use PDO;
 use PDOException;
 use Config\Database;
+use Support\DB;
 
 class BaseModel
 {
@@ -43,6 +44,23 @@ class BaseModel
         $instance = new static($attributes);
         $instance->save();
         return $instance;
+    }
+
+    public function beginTransaction()
+    {
+        $this->connection->beginTransaction();
+    }
+
+    // Commit Transaksi
+    public function commit()
+    {
+        $this->connection->commit();
+    }
+
+    // Rollback Transaksi
+    public function rollback()
+    {
+        $this->connection->rollback();
     }
 
     public static function query()
@@ -339,6 +357,7 @@ class BaseModel
 
     public function save()
     {
+        $this->connection = DB::getConnection();
         if (isset($this->attributes[$this->primaryKey])) {
             $this->update();
         } else {
@@ -373,6 +392,33 @@ class BaseModel
             $stmt->bindValue(':' . $key, $value);
         }
 
+        $stmt->execute();
+    }
+    public function updated($data)
+    {
+        // Buat klausa SET untuk SQL query
+        $this->connection = DB::getConnection();
+        $setClause = [];
+        foreach ($data as $key => $value) {
+            $setClause[] = "{$key} = :{$key}";
+        }
+        $setClause = implode(', ', $setClause);
+
+        // Siapkan SQL query untuk update
+        $sql = "UPDATE {$this->table} SET {$setClause} WHERE {$this->primaryKey} = :{$this->primaryKey}";
+
+        // Siapkan statement
+        $stmt = $this->connection->prepare($sql);
+
+        // Bind data baru yang akan diupdate
+        foreach ($data as $key => $value) {
+            $stmt->bindValue(':' . $key, $value);
+        }
+
+        // Bind primary key untuk WHERE clause
+        $stmt->bindValue(':' . $this->primaryKey, $this->attributes[$this->primaryKey]);
+
+        // Eksekusi query
         $stmt->execute();
     }
 

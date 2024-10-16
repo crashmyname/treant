@@ -1,12 +1,10 @@
 <?php
-
 namespace Support;
 
 use PDO;
 use PDOException;
-use Config\Database;
 
-class DB
+class Database
 {
     private static $conn = null;
 
@@ -98,36 +96,5 @@ class DB
         }
         exit();
     }
-
-    // Eksekusi query
-    public static function query($sql, $params = [])
-    {
-        $stmt = self::getConnection()->prepare($sql);
-        foreach ($params as $key => $value) {
-            $stmt->bindValue($key, $value);
-        }
-        $stmt->execute();
-        return $stmt;
-    }
-
-    // Fungsi untuk mengambil semua hasil query
-    public static function fetchAll($sql, $params = [])
-    {
-        $stmt = self::query($sql, $params);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    // Fungsi untuk mengambil satu baris hasil query
-    public static function fetch($sql, $params = [])
-    {
-        $stmt = self::query($sql, $params);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    // Fungsi untuk menghitung jumlah baris hasil query
-    public static function count($sql, $params = [])
-    {
-        $stmt = self::query($sql, $params);
-        return $stmt->rowCount();
-    }
 }
+?>

@@ -1,8 +1,16 @@
 <?php
 namespace Support;
 
+use Config\Database;
+
 class Validator {
     protected $errors = [];
+
+    public static function make($data, $rules) {
+        $validator = new self(); // Buat instansi baru dari Validator
+        $validator->validate($data, $rules);
+        return $validator->errors; // Kembalikan error
+    }
 
     public function validate($data, $rules) {
         foreach ($rules as $field => $rule) {
@@ -20,9 +28,27 @@ class Validator {
                 }
             }
         }
-
-        return $this->errors;
     }
+
+    // public function validate($data, $rules) {
+    //     foreach ($rules as $field => $rule) {
+    //         $ruleSet = explode('|', $rule);
+    //         foreach ($ruleSet as $r) {
+    //             $method = 'validate' . ucfirst($r);
+    //             if (method_exists($this, $method)) {
+    //                 $this->$method($field, $data[$field] ?? null);
+    //             } elseif (strpos($r, ':') !== false) {
+    //                 list($ruleName, $parameter) = explode(':', $r);
+    //                 $method = 'validate' . ucfirst($ruleName);
+    //                 if (method_exists($this, $method)) {
+    //                     $this->$method($field, $data[$field] ?? null, $parameter);
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     return $this->errors;
+    // }
 
     protected function validateRequired($field, $value) {
         if (is_null($value) || $value === '') {
@@ -129,6 +155,48 @@ class Validator {
             $this->errors[$field][] = "$field must be one of the following types: " . implode(', ', $allowedTypes) . ".";
         }
     }
-        
+
+    protected function validateUnique($field, $value, $table) {
+        if ($this->isValueExists($table, $field, $value)) {
+            $this->errors[$field][] = "$field must be unique.";
+        }
+    }
+    
+    private $connection;
+
+    public function __construct() {
+        $this->connect();
+    }
+
+    private function connect() {
+        $database = new Database();
+        $this->connection = $database->getConnection();
+        if ($this->connection === null) {
+            die('Connection Failed');
+        }
+    }
+    private function isValueExists($table, $field, $value) {
+        $stmt = $this->connection->prepare("SELECT COUNT(*) FROM $table WHERE $field = ?");
+        $stmt->execute([$value]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    protected function validatePassword($field, $value) {
+        $minLength = 8;
+        $hasUppercase = preg_match('/[A-Z]/', $value);
+        $hasLowercase = preg_match('/[a-z]/', $value);
+        $hasNumber = preg_match('/\d/', $value);
+        $hasSpecialChar = preg_match('/[^a-zA-Z\d]/', $value);
+    
+        if (strlen($value) < $minLength || !$hasUppercase || !$hasLowercase || !$hasNumber || !$hasSpecialChar) {
+            $this->errors[$field][] = "$field must be at least $minLength characters long and contain uppercase letters, lowercase letters, numbers, and special characters.";
+        }
+    }
+
+    protected function validateInArray($field, $value, $allowedValues) {
+        if (!in_array($value, $allowedValues)) {
+            $this->errors[$field][] = "$field must be one of the following: " . implode(', ', $allowedValues) . ".";
+        }
+    }    
 }
 ?>
