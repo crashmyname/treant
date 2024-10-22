@@ -18,11 +18,9 @@ Route::get('/dokumentasi', function(){
     $title = "Get Started";
     View::render('documentation/install',['title'=>$title],'documentation/doc');
 });
-Route::group([AuthMiddleware::class], function(){
-    Route::get('/dokumentasi/omodel', function(){
-        $title = "Old Model";
-        View::render('documentation/old-model',['title'=>$title],'documentation/doc');
-    });
+Route::get('/dokumentasi/omodel', function(){
+    $title = "Old Model";
+    View::render('documentation/old-model',['title'=>$title],'documentation/doc');
 });
 Route::get('/dokumentasi/nmodel', function(){
     $title = "New Model";
