@@ -31,8 +31,8 @@
         <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
         echo '$yourmodel = YourModel::where("kondisi","=","$kondisi");<br>';
-        echo '$yourmodel = YourModel::whereDate();<rb>';
-        echo '$yourmodel = YourModel::whereMonth();<rb>';
+        echo '$yourmodel = YourModel::whereDate();<br>';
+        echo '$yourmodel = YourModel::whereMonth();<br>';
         echo '$yourmodel = YourModel::whereYear();';
         echo '</code>';
         echo '</pre>';

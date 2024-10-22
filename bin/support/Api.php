@@ -1,122 +1,116 @@
 <?php
-
 namespace Support;
 
 class Api {
-    private $api = [];
-    private $prefix;
+    private static $routes = [];
+    private static $prefix;
+    private static $groupMiddlewares = []; // Menyimpan middleware grup sementara
 
-    public function __construct($prefix = '') {
-        $this->api['GET'] = [];
-        $this->api['POST'] = [];
-        $this->prefix = rtrim($prefix, '/');
+    // Inisialisasi API dengan prefix
+    public static function init($prefix = '') {
+        self::$routes['GET'] = [];
+        self::$routes['POST'] = [];
+        self::$prefix = rtrim($prefix, '/');
     }
 
-    public function get($uri, $handler, $middlewares = []) {
-        // Simpan route GET
-        $this->api['GET'][$uri] = ['handler' => $handler, 'middlewares' => $middlewares];
+    // Menambahkan rute GET dengan middleware
+    public static function get($uri, $handler, $middlewares = []) {
+        $middlewares = array_merge(self::$groupMiddlewares, $middlewares);
+        self::$routes['GET'][$uri] = [
+            'handler' => $handler,
+            'middlewares' => $middlewares
+        ];
+        return new self; // Untuk chaining
     }
 
-    public function post($uri, $handler, $middlewares = []) {
-        // Simpan route POST
-        $this->api['POST'][$uri] = ['handler' => $handler, 'middlewares' => $middlewares];
+    // Menambahkan rute POST dengan middleware
+    public static function post($uri, $handler, $middlewares = []) {
+        $middlewares = array_merge(self::$groupMiddlewares, $middlewares);
+        self::$routes['POST'][$uri] = [
+            'handler' => $handler,
+            'middlewares' => $middlewares
+        ];
+        return new self;
     }
 
-    public function middlewareGroup($middlewares, $callback) {
-        // Simpan rute-rute yang sudah ada
-        $currentApi = $this->api;
-    
-        // Definisikan rute-rute baru dalam grup middleware
-        $callback($this);
-    
-        // Tambahkan middleware grup ke setiap rute yang baru saja didaftarkan
-        foreach ($this->api['GET'] as $uri => &$route) {
-            if (!isset($currentApi['GET'][$uri])) {
-                $route['middlewares'] = array_merge($middlewares, $route['middlewares']);
-            }
-        }
-    
-        foreach ($this->api['POST'] as $uri => &$route) {
-            if (!isset($currentApi['POST'][$uri])) {
-                $route['middlewares'] = array_merge($middlewares, $route['middlewares']);
-            }
-        }
-    }
-    
+    // Menambahkan grup middleware ke beberapa rute
+    public static function group(array $middlewares, \Closure $routes) {
+        self::$groupMiddlewares = $middlewares;
 
-    public function dispatch() {
+        call_user_func($routes);
+
+        self::$groupMiddlewares = [];
+    }
+
+    // Dispatch routing
+    public static function dispatch() {
         $method = $_SERVER['REQUEST_METHOD'];
-        $uri = strtok($_SERVER['REQUEST_URI'], '?'); // Mendapatkan URI tanpa query string
-    
-        // Cek apakah URI memiliki prefix, jika iya, hapus prefix dari URI
-        if (strpos($uri, $this->prefix) === 0) {
-            $uri = substr($uri, strlen($this->prefix));
+        $uri = strtok($_SERVER['REQUEST_URI'], '?');
+
+        // Hilangkan prefix dari URI jika ada
+        if (strpos($uri, self::$prefix) === 0) {
+            $uri = substr($uri, strlen(self::$prefix));
         }
-    
-        // Debug: Cetak rute yang tersedia
-        error_log("Available Routes: " . print_r($this->api, true));
-    
-        // Iterasi melalui rute yang didaftarkan untuk mencocokkan dengan URI
-        foreach ($this->api[$method] as $routeUri => $route) {
-            // Ubah parameter seperti {id} menjadi regex
-            $pattern = preg_replace('/\{[a-zA-Z]+\}/', '([a-zA-Z0-9_-]+)', $routeUri);
-            $pattern = str_replace('/', '\/', $pattern);
-    
-            if (preg_match('/^' . $pattern . '$/', $uri, $matches)) {
-                array_shift($matches); // Hapus match penuh (0-index)
-    
-                $handler = $route['handler'];
-                $middlewares = $route['middlewares'];
-    
-                // Jika handler adalah array [ControllerClass, 'method'], instansiasi controller
-                if (is_array($handler) && class_exists($handler[0]) && method_exists($handler[0], $handler[1])) {
-                    $controller = new $handler[0]; // Instansiasi kelas controller
-                    $method = $handler[1]; // Ambil nama metode
-                    $handler = [$controller, $method]; // Buat handler dari instansi controller dan metode
+
+        // Cari rute yang sesuai
+        $route = self::findRoute($method, $uri);
+
+        if ($route) {
+            $handler = $route['handler'];
+            $middlewares = $route['middlewares'];
+            $params = $route['params'] ?? [];
+
+            // Jalankan middleware
+            foreach ($middlewares as $middleware) {
+                if (is_string($middleware)) {
+                    $middlewareInstance = new $middleware();
+                    if (method_exists($middlewareInstance, 'handle')) {
+                        $middlewareInstance->handle();
+                    }
+                } elseif (is_callable($middleware)) {
+                    call_user_func($middleware);
                 }
-    
-                // Jalankan middleware dan handler
-                $request = new Request();
-                $this->runMiddlewares($middlewares, $request, function() use ($handler, $matches) {
-                    call_user_func_array($handler, $matches); // Kirim parameter ke handler
-                });
-                return;
             }
-        }
-    
-        // Jika tidak ada rute yang cocok
-        header("HTTP/1.1 404 Not Found");
-        include __DIR__ . '/../../app/Handle/errors/404.php';
-    }
-    
-    private function runMiddlewares($middlewares, $request, $next) {
-        $index = 0;
-        $middlewareCount = count($middlewares);
-    
-        error_log("Middleware Count: $middlewareCount");
-    
-        $middlewareHandler = function() use (&$index, $middlewares, $request, $next, $middlewareCount) {
-            error_log("Processing middleware index: $index with count: $middlewareCount");
-    
-            if ($index < $middlewareCount) {
-                $middleware = $middlewares[$index++];
-                if (is_string($middleware) && class_exists($middleware)) {
-                    $middleware = new $middleware;
-                }
-    
-                if (is_object($middleware) && method_exists($middleware, 'handle')) {
-                    $middleware->handle($request, $middlewareHandler);
-                } else {
-                    throw new \Exception('Middleware tidak valid');
-                }
+
+            // Jalankan handler
+            if (is_array($handler) && count($handler) === 2) {
+                [$controller, $method] = $handler;
+                $controllerInstance = new $controller;
+                call_user_func_array([$controllerInstance, $method], $params);
             } else {
-                $next();
+                call_user_func_array($handler, $params);
             }
-        };
-    
-        $middlewareHandler();
+        } else {
+            // Tangani error 404 atau 405
+            if (self::routeExists($uri)) {
+                header("HTTP/1.1 405 Method Not Allowed");
+                include __DIR__ . '/../../app/Handle/errors/405.php';
+            } else {
+                header("HTTP/1.1 404 Not Found");
+                include __DIR__ . '/../../app/Handle/errors/404.php';
+            }
+        }
+    }
+
+    // Mencari rute berdasarkan metode dan URI
+    private static function findRoute($method, $uri) {
+        foreach (self::$routes[$method] as $routeUri => $route) {
+            // Mencocokkan URI dengan parameter
+            $routePattern = preg_replace('/\{[a-zA-Z0-9_]+\}/', '([a-zA-Z0-9_]+)', $routeUri);
+            if (preg_match('#^' . $routePattern . '$#', $uri, $matches)) {
+                // Ambil parameter dari URI
+                array_shift($matches); // Hapus elemen pertama yang merupakan keseluruhan URI yang dicocokkan
+                $route['params'] = $matches; // Tambahkan parameter ke route
+                return $route;
+            }
+        }
+        return null; // Tidak ada rute yang ditemukan
     }
     
-    
+
+    // Cek apakah route ada
+    private static function routeExists($uri) {
+        return isset(self::$routes['GET'][$uri]) || isset(self::$routes['POST'][$uri]);
+    }
 }
 ?>

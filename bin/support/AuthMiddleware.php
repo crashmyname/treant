@@ -1,49 +1,62 @@
 <?php
 namespace Support;
-use Support\View;
 
 class AuthMiddleware
 {
-    public static function checkLogin() {
-        if (!\Support\Session::has('user')) {
-            // header('Location: '.$r.'/login');
+    public function handle() {
+        // Pengecekan login
+        if (!$this->checkLogin()) {
             include __DIR__ . '/../../app/Handle/errors/401.php';
             exit();
+        }
+        
+        // Token check, jika Anda ingin juga memvalidasi token di middleware ini
+        // Jika Anda hanya membutuhkan login, Anda bisa menghilangkan bagian ini.
+        if (!$this->checkToken()) {
+            include __DIR__ . '/../../app/Handle/errors/401.php';
+            exit();
+        }
+    }
+
+    public function checkLogin() {
+        if (!\Support\Session::has('user')) {
+            return false;
         }
 
         $session_lifetime = 3600;
         $current_time = time();
-        if(isset($_SESSION['login_time']) && ($current_time-$_SESSION['login_time']) > $session_lifetime){
+        
+        if (isset($_SESSION['login_time']) && ($current_time - $_SESSION['login_time']) > $session_lifetime) {
             session_unset();
             session_destroy();
-            include __DIR__ . '/../../app/Handle/errors/401.php';
-            exit();
+            return false;
         }
+        
         $_SESSION['login_time'] = $current_time;
+        return true;
     }
 
-    public static function checkToken()
-    {
-        // Cek apakah header Authorization ada
+    public function checkToken() {
         $headers = getallheaders();
-        
+
+        // Jika tidak ada token di header
         if (!isset($headers['Authorization'])) {
             header('Content-Type: application/json');
             header("HTTP/1.1 401 Unauthorized");
             echo json_encode(['error' => 'Token tidak ditemukan']);
-            exit();
+            return false;
         }
 
         // Ambil token dari header
         $authHeader = $headers['Authorization'];
         list($bearer, $token) = explode(' ', $authHeader);
 
-        // Validasi format
+        // Validasi format token
         if (strtolower($bearer) !== 'bearer' || empty($token)) {
             header('Content-Type: application/json');
             header("HTTP/1.1 401 Unauthorized");
             echo json_encode(['error' => 'Format token salah']);
-            exit();
+            return false;
         }
 
         // Validasi token
@@ -51,10 +64,10 @@ class AuthMiddleware
             header('Content-Type: application/json');
             header("HTTP/1.1 401 Unauthorized");
             echo json_encode(['error' => 'Token tidak valid']);
-            exit();
+            return false;
         }
+
+        return true;
     }
 }
-
-
 ?>

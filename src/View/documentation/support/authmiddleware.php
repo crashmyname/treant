@@ -29,9 +29,11 @@ AuthMiddleware::checkToken(); <-- untuk cek token jika ada penggunaan api');
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
         echo htmlentities('use Support\AuthMiddleware;
 
-$route->get("/user", function() use ($userController) {
-    AuthMiddleware::checkLogin(); //<-- Cara pemanggilannya
-    $userController->index();
+Route::group([AuthMiddleware::class], function(){
+    Route::get("/dokumentasi/omodel", function(){
+        $title = "Old Model";
+        View::render("documentation/old-model",["title"=>$title],"documentation/doc");
+    });
 });');
         echo '</code>';
         echo '</pre>';
@@ -41,9 +43,11 @@ $route->get("/user", function() use ($userController) {
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
         echo htmlentities('use Support\AuthMiddleware;
 
-$route->get("/api/user", function() use ($userController) {
-    AuthMiddleware::checkToken();
-    $userController->userapi();
+Api::group([AuthMiddleware::class], function(){
+    Api::get("/dokumentasi/omodel", function(){
+        $title = "Old Model";
+        View::render("documentation/old-model",["title"=>$title],"documentation/doc");
+    });
 });');
         echo '</code>';
         echo '</pre>';
