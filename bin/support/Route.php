@@ -76,13 +76,22 @@ class Route
         self::$groupMiddlewares = [];
     }
 
-    // Menambahkan nama rute
     public static function name($name)
     {
-        // Simpan nama rute berdasarkan URI terakhir yang ditambahkan
-        $lastRoute = array_key_last(self::$routes['GET']);
-        self::$names[$name] = $lastRoute;
-        return new self();
+        // Memeriksa rute untuk GET, POST, PUT, atau DELETE
+        foreach (['GET', 'POST', 'PUT', 'DELETE'] as $method) {
+            if (!empty(self::$routes[$method])) {
+                $lastRoute = array_key_last(self::$routes[$method]);
+                self::$names[$name] = $lastRoute;
+
+                // Debug log untuk memeriksa nama dan URI yang dipetakan
+                error_log("Route name '{$name}' mapped to URI '{$lastRoute}'");
+
+                return new self(); // Kembali ke chaining
+            }
+        }
+
+        throw new \Exception("No routes found for naming '{$name}'");
     }
 
     // Mengambil rute berdasarkan nama dan parameter
@@ -94,7 +103,7 @@ class Route
             foreach ($params as $key => $value) {
                 $uri = str_replace('{' . $key . '}', $value, $uri);
             }
-            return self::$prefix . $uri;
+            return self::$prefix . '/' . trim($uri, '/');
         }
         throw new \Exception("Route dengan nama '{$name}' tidak ditemukan.");
     }
@@ -124,6 +133,9 @@ class Route
             $middlewares = $route['middlewares'];
             $params = $route['params'] ?? [];
 
+            // Buat instance Request
+            $request = new \Support\Request();
+
             // Jalankan middleware
             foreach ($middlewares as $middleware) {
                 if (is_string($middleware)) {
@@ -140,6 +152,22 @@ class Route
             if (is_array($handler) && count($handler) === 2) {
                 [$controller, $method] = $handler;
                 $controllerInstance = new $controller();
+
+                // Cek apakah metode menerima request sebagai parameter
+                $reflection = new \ReflectionMethod($controllerInstance, $method);
+                $paramsCount = $reflection->getNumberOfParameters();
+
+                // Mengatur parameter
+                if ($paramsCount > 0) {
+                    $parameters = $reflection->getParameters(); // Mendapatkan semua parameter
+
+                    // Periksa jika parameter pertama adalah Request
+                    if ($parameters[0]->getType() && $parameters[0]->getType()->getName() === 'Support\Request') {
+                        array_unshift($params, $request); // Tambahkan Request sebagai parameter pertama
+                    }
+                }
+
+                // Panggil metode controller dengan parameter yang sesuai
                 call_user_func_array([$controllerInstance, $method], $params);
             } else {
                 call_user_func_array($handler, $params);
@@ -161,7 +189,8 @@ class Route
     {
         foreach (self::$routes[$method] as $routeUri => $route) {
             // Mencocokkan URI dengan parameter
-            $routePattern = preg_replace('/\{[a-zA-Z0-9_]+\}/', '([a-zA-Z0-9_]+)', $routeUri);
+            // $routePattern = preg_replace('/\{[a-zA-Z0-9_]+\}/', '([a-zA-Z0-9_]+)', $routeUri);
+            $routePattern = preg_replace('/\{[a-zA-Z0-9_]+\}/', '([a-zA-Z0-9_\-]+)', $routeUri);
             if (preg_match('#^' . $routePattern . '$#', $uri, $matches)) {
                 // Ambil parameter dari URI
                 array_shift($matches); // Hapus elemen pertama yang merupakan keseluruhan URI yang dicocokkan

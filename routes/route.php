@@ -1,4 +1,5 @@
 <?php
+use App\Controllers\UserController;
 session_start();
 use Support\Request;
 use Support\Route;
@@ -13,11 +14,11 @@ handleMiddleware();
 Route::init($prefix);
 Route::get('/',function(){
     View::render('welcome/welcome');
-})->name('home');
+});
 Route::get('/dokumentasi', function(){
     $title = "Get Started";
     View::render('documentation/install',['title'=>$title],'documentation/doc');
-});
+})->name('instalasi');
 Route::get('/dokumentasi/omodel', function(){
     $title = "Old Model";
     View::render('documentation/old-model',['title'=>$title],'documentation/doc');

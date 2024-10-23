@@ -46,7 +46,7 @@
       <div class="container">
         <h1 class="display-4">Welcome to Treant <a href="<?= base_url() ?>/version.json">MVC</a></h1>
         <p class="lead">A simple and elegant framework to kickstart your PHP projects.</p>
-        <a href="<?= base_url()?>/dokumentasi" class="btn btn-primary btn-lg">Get Started</a>
+        <a href="<?= route('instalasi')?>" class="btn btn-primary btn-lg">Get Started</a>
       </div>
     </section>
 

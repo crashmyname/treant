@@ -48,6 +48,38 @@ class View
         }
         exit();
     }
+    public static function error($view, $data = [], $layout = null)
+    {
+        try{
+            extract($data);
+            $viewPath = __DIR__ . '/../../app/Handle/' . $view . '.php';
+            if (!file_exists($viewPath)) {
+                throw new \Exception("View file not found: $viewPath");
+            }
+            ob_start();
+            include $viewPath;
+            $content = ob_get_clean();
+
+            if ($layout) {
+                $layoutPath = __DIR__ . '/../../app/Handle/' . $layout . '.php';
+                if (file_exists($layoutPath)) {
+                    include $layoutPath;
+                } else {
+                    throw new \Exception("Layout file not found: $layoutPath");
+                    // View::render('errors/500');
+                }
+            } else {
+                echo $content;
+            }
+        } catch (\Exception $e){
+            // self::renderError($e);
+            if (!headers_sent()) { 
+                http_response_code(500);
+            }
+            self::renderError($e);
+        }
+        exit();
+    }
 
     public static function redirectTo($route, $flashData = [])
     {

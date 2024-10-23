@@ -1,4 +1,5 @@
 <?php
+use Support\Route;
     function asset($path)
     {
         $baseURL = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
@@ -181,6 +182,9 @@
         echo format_data($formatted_data);
         echo '</div>';
         exit;
+    }
+    function route($name, $params = []) {
+        return Route::route($name, $params);
     }
 
 ?>
