@@ -6,7 +6,7 @@
 ```
 git clone https://github.com/crashmyname/treant.git 
 - Sekarang bisa menginstall menggunakan composer
-composer create-project fadli-dev/treant nama_proyek_baru "v1.1.1"
+composer create-project fadli-dev/treant nama_proyek_baru "v1.3"
 ```
 - Jika sudah di clone kalian akan kehalaman awal MVC ini klik get started untuk membaca dokumentasi lengkap
 
