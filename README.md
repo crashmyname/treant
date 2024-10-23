@@ -12,8 +12,10 @@ composer create-project fadli-dev/treant nama_proyek_baru "v1.1.1"
 
 ## Struktur Folder
 - [app]
-    - [Model]
-    - [Controller]
+    - [Models]
+    - [Handle]
+        - [errors]
+    - [Controllers]
 - [bin]
     - [support]
 - [config]
@@ -23,6 +25,7 @@ composer create-project fadli-dev/treant nama_proyek_baru "v1.1.1"
 - [routes]
 - [src]
     - [View]
+- [vendor]
 - .env
 - .env.example
 - .htacces
