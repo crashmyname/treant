@@ -1,5 +1,4 @@
 <?php
-use App\Controllers\UserController;
 session_start();
 use Support\Request;
 use Support\Route;
