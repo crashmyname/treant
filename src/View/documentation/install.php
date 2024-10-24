@@ -7,7 +7,7 @@
         <b>Pengguna bisa menginstallnya menggunakan composer</b>
         <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
-        echo 'composer create-project fadli-dev/treant nama_proyek_masingmasing v1.1.1';
+        echo 'composer create-project fadli-dev/treant nama_proyek_masingmasing v1.3';
         echo '</code>';
         echo '</pre>';
         ?>

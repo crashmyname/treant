@@ -50,38 +50,38 @@
             <li class="menu-header">Me And U</li>
             <li class="<?= $title == "Get Started" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi"><i class="fas fa-fire"></i> <span>Getting Started</span></a></li>
             <li class="menu-header">Starter</li>
-            <li class="<?= $title == "CLI" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/cli"><i class="fas fa-fire"></i> <span>CLI</span></a></li>
-            <li class="<?= $title == "ORM" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/orm"><i class="fas fa-fire"></i> <span>ORM</span></a></li>
+            <li class="<?= $title == "CLI" ? "active" : ""?>"><a class="nav-link" href="<?= route('cli')?>"><i class="fas fa-fire"></i> <span>CLI</span></a></li>
+            <li class="<?= $title == "ORM" ? "active" : ""?>"><a class="nav-link" href="<?= route('orm')?>"><i class="fas fa-fire"></i> <span>ORM</span></a></li>
             <li class="dropdown <?= $title == "Old Model" || $title == "New Model" ? "active" : ""?>">
               <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Model</span></a>
               <ul class="dropdown-menu">
-                <li class="<?= $title == "Old Model" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/omodel">Old Model</a></li>
-                <li class="<?= $title == "New Model" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/nmodel">New Model</a></li>
+                <li class="<?= $title == "Old Model" ? "active" : ""?>"><a class="nav-link" href="<?= route('old-model') ?>">Old Model</a></li>
+                <li class="<?= $title == "New Model" ? "active" : ""?>"><a class="nav-link" href="<?= route('new-model')?>">New Model</a></li>
               </ul>
             </li>
-            <li class="<?= $title == "Controller" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/controller"><i class="far fa-square"></i> <span>Controller</span></a></li>
+            <li class="<?= $title == "Controller" ? "active" : ""?>"><a class="nav-link" href="<?= route('controller')?>"><i class="far fa-square"></i> <span>Controller</span></a></li>
             <li class="dropdown <?= $title == "Asset" || $title == "Auth" || $title == "Cors" || $title == "Crypto" || $title == "DataTable" || $title == "Date" || $title == "Http" || $title == "Mailer" || $title == "Rate Limiter" || $title == "Request" || $title == "Response" || $title == "UUID" || $title == "Validator" || $title == "CSRF" ? "active" : ""?>">
               <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Support</span></a>
               <ul class="dropdown-menu">
-                <li class="<?= $title == "Asset" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/support/asset">Asset</a></li>
-                <li class="<?= $title == "Auth" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/support/auth">AuthMiddleware</a></li>
-                <li class="<?= $title == "Cors" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/support/cors">Cors</a></li>
-                <li class="<?= $title == "Crypto" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/support/crypto">Crypto</a></li>
-                <li class="<?= $title == "CSRF" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/support/csrf">Csrf</a></li>
-                <li class="<?= $title == "DataTable" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/support/datatable">Data table</a></li>
-                <li class="<?= $title == "Date" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/support/date">Date</a></li>
-                <li class="<?= $title == "Http" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/support/http">Http</a></li>
-                <li class="<?= $title == "Mailer" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/support/mailer">Mailer</a></li>
-                <li class="<?= $title == "Rate Limiter" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/support/ratelimiter">Rate Limiter</a></li>
-                <li class="<?= $title == "Request" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/support/request">Request</a></li>
-                <li class="<?= $title == "Response" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/support/response">Response</a></li>
-                <li class="<?= $title == "UUID" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/support/uuid">UUID</a></li>
-                <li class="<?= $title == "Validator" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/support/validator">Validator</a></li>
+                <li class="<?= $title == "Asset" ? "active" : ""?>"><a class="nav-link" href="<?= route('asset')?>">Asset</a></li>
+                <li class="<?= $title == "Auth" ? "active" : ""?>"><a class="nav-link" href="<?= route('auth')?>">AuthMiddleware</a></li>
+                <li class="<?= $title == "Cors" ? "active" : ""?>"><a class="nav-link" href="<?= route('cors')?>">Cors</a></li>
+                <li class="<?= $title == "Crypto" ? "active" : ""?>"><a class="nav-link" href="<?= route('crypto')?>">Crypto</a></li>
+                <li class="<?= $title == "CSRF" ? "active" : ""?>"><a class="nav-link" href="<?= route('csrf')?>">Csrf</a></li>
+                <li class="<?= $title == "DataTable" ? "active" : ""?>"><a class="nav-link" href="<?= route('datatable')?>">Data table</a></li>
+                <li class="<?= $title == "Date" ? "active" : ""?>"><a class="nav-link" href="<?= route('date')?>">Date</a></li>
+                <li class="<?= $title == "Http" ? "active" : ""?>"><a class="nav-link" href="<?= route('http')?>">Http</a></li>
+                <li class="<?= $title == "Mailer" ? "active" : ""?>"><a class="nav-link" href="<?= route('mailer')?>">Mailer</a></li>
+                <li class="<?= $title == "Rate Limiter" ? "active" : ""?>"><a class="nav-link" href="<?= route('ratelimiter')?>">Rate Limiter</a></li>
+                <li class="<?= $title == "Request" ? "active" : ""?>"><a class="nav-link" href="<?= route('request')?>">Request</a></li>
+                <li class="<?= $title == "Response" ? "active" : ""?>"><a class="nav-link" href="<?= route('response')?>">Response</a></li>
+                <li class="<?= $title == "UUID" ? "active" : ""?>"><a class="nav-link" href="<?= route('uuid')?>">UUID</a></li>
+                <li class="<?= $title == "Validator" ? "active" : ""?>"><a class="nav-link" href="<?= route('validator')?>">Validator</a></li>
               </ul>
             </li>
-            <li class="<?= $title == "View" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/view"><i class="far fa-square"></i> <span>View</span></a></li>
-            <li class="<?= $title == "Route" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/route"><i class="far fa-square"></i> <span>Route</span></a></li>
-            <li class="<?= $title == "Env" ? "active" : ""?>"><a class="nav-link" href="<?= base_url()?>/dokumentasi/env"><i class="far fa-square"></i> <span>ENV</span></a></li>
+            <li class="<?= $title == "View" ? "active" : ""?>"><a class="nav-link" href="<?= route('view')?>"><i class="far fa-square"></i> <span>View</span></a></li>
+            <li class="<?= $title == "Route" ? "active" : ""?>"><a class="nav-link" href="<?= route('route')?>"><i class="far fa-square"></i> <span>Route</span></a></li>
+            <li class="<?= $title == "Env" ? "active" : ""?>"><a class="nav-link" href="<?= route('env')?>"><i class="far fa-square"></i> <span>ENV</span></a></li>
             
       </div>
 
