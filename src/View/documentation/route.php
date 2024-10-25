@@ -79,12 +79,13 @@ echo 'Route::get("/",function(){
         ?>
         <b>Contoh Pemanggilan Route dengan NAME</b>
         <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
+        echo htmlentities('<?php');
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
-        echo 'Route::delete("/yourpath/{id}",[YourController::class,"destroy"],[AuthMiddleware::class]);
-&lt;form action="/resource/delete/{id}" method="POST"&gt;
-    &lt;input type="hidden" name="_method" value="DELETE"&gt;
-    &lt;input type="submit" value="Delete"&gt;
-&lt;/form&gt;
+        echo 'Route::get("/dokumentasi", function(){
+    $title = "Get Started";
+    View::render("documentation/install",["title"=>$title],"documentation/doc");
+})->name("instalasi");
+&lt;a href="&lt;?= route("instalasi")?&gt"&gt Install &lt;/a&gt
 ';
         echo '</code>';
         echo '</pre>';

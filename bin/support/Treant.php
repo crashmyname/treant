@@ -16,11 +16,12 @@ class Treant
     {
         $command = $argv[1] ?? null;
         $argument = $argv[2] ?? null;
+        $options = array_slice($argv, 3);
 
         // Cek apakah perintah dikenali
         if ($command && isset($this->commands[$command])) {
             $method = $this->commands[$command];
-            $this->$method($argument);
+            $this->$method($argument, $options);
         } else {
             echo "Perintah tidak ditemukan!\n";
         }
@@ -42,13 +43,24 @@ class Treant
         }
     }
 
-    protected function createController($name)
+    protected function createController($name, $options = [])
     {
         if (!$name) {
             echo "Nama controller harus diberikan!\n";
             return;
         }
-        $controllerTemplate = "<?php\n\nnamespace App\Controllers;\nuse Support\Controller;\nuse Support\Request;\nuse Support\Validator;\nuse Support\View;\nuse Support\CSRFToken;\n\nclass {$name} extends Controller\n{\n    // Controller logic here\n}\n";
+        $isResource = in_array('--resource', $options);
+        $controllerTemplate = "<?php\n\nnamespace App\Controllers;\nuse Support\Controller;\nuse Support\Request;\nuse Support\Validator;\nuse Support\View;\nuse Support\CSRFToken;\n\nclass {$name} extends Controller\n{\n";
+        if ($isResource) {
+            $controllerTemplate .= "    public function index()\n    {\n        // Tampilkan semua resource\n    }\n\n";
+            $controllerTemplate .= "    public function show(\$id)\n    {\n        // Tampilkan resource dengan ID: \$id\n    }\n\n";
+            $controllerTemplate .= "    public function store(Request \$request)\n    {\n        // Simpan resource baru\n    }\n\n";
+            $controllerTemplate .= "    public function update(Request \$request, \$id)\n    {\n        // Update resource dengan ID: \$id\n    }\n\n";
+            $controllerTemplate .= "    public function destroy(\$id)\n    {\n        // Hapus resource dengan ID: \$id\n    }\n";
+        } else {
+            $controllerTemplate .= "    // Controller logic here\n";
+        }
+        $controllerTemplate .= "}\n";
         $filePath = "app/Controllers/{$name}.php";
         if (file_exists($filePath)) {
             echo "Controller $name sudah ada!\n";
