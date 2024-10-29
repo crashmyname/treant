@@ -99,12 +99,20 @@ class Route
     {
         if (isset(self::$names[$name])) {
             $uri = self::$names[$name];
-            // Gantikan parameter {param} di URL dengan nilai dari $params
+
+            // Mengganti parameter {param} di URL dengan nilai dari $params
             foreach ($params as $key => $value) {
                 $uri = str_replace('{' . $key . '}', $value, $uri);
             }
+
+            // Menentukan apakah prefix harus ditambahkan
+            if (php_sapi_name() === 'cli-server' || PHP_SAPI === 'cli') {
+                return '/' . trim($uri, '/'); // Tidak menggunakan prefix saat dijalankan dari PHP CLI
+            }
+
             return self::$prefix . '/' . trim($uri, '/');
         }
+
         throw new \Exception("Route dengan nama '{$name}' tidak ditemukan.");
     }
 

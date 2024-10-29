@@ -1,6 +1,6 @@
 <?php
 namespace Support;
-require_once __DIR__ . '/Asset.php';
+require_once __DIR__ . '/helper.php';
 require_once __DIR__ . '/Prefix.php';
 
 class Treant

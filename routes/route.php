@@ -1,5 +1,4 @@
 <?php
-session_start();
 use Support\Request;
 use Support\Route;
 use Support\View;
@@ -13,6 +12,9 @@ handleMiddleware();
 Route::init($prefix);
 Route::get('/',function(){
     View::render('welcome/welcome');
+});
+Route::group([AuthMiddleware::class], function(){
+
 });
 Route::get('/dokumentasi', function(){
     $title = "Get Started";

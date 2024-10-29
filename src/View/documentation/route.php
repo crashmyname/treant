@@ -12,7 +12,6 @@
         echo htmlentities('<?php');
         echo '<br>';
         echo '
-session_start();
 use Support\Request;
 use Support\Route;
 use Support\View;
@@ -22,7 +21,6 @@ use Support\Crypto;
 use Support\UUID;
 use Support\Response;
 use App\Controllers\YourController;
-use Model\YourModel;
 handleMiddleware();
 
 Route::init($prefix);
@@ -79,7 +77,6 @@ echo 'Route::get("/",function(){
         ?>
         <b>Contoh Pemanggilan Route dengan NAME</b>
         <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
-        echo htmlentities('<?php');
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
         echo 'Route::get("/dokumentasi", function(){
     $title = "Get Started";
@@ -87,6 +84,15 @@ echo 'Route::get("/",function(){
 })->name("instalasi");
 &lt;a href="&lt;?= route("instalasi")?&gt"&gt Install &lt;/a&gt
 ';
+        echo '</code>';
+        echo '</pre>';
+        ?>
+        <b>Contoh Penggunaan Group Middleware</b>
+        <?php echo '<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow: auto;">';
+        echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
+        echo 'Route::group([AuthMiddleware::class], function(){
+        // Place Your route here....
+});';
         echo '</code>';
         echo '</pre>';
         ?>
