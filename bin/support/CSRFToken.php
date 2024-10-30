@@ -9,7 +9,8 @@ class CSRFToken {
 
         $token = bin2hex(random_bytes(32));
         $_SESSION['csrf_token'] = $token;
-        return $token;
+        $csrf = "<input type='hidden' value='{$token}' name='csrf_token'>";
+        return $csrf;
     }
 
     public static function validateToken($token) {

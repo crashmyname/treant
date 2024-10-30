@@ -1,4 +1,6 @@
 <?php
+
+use App\Controllers\UserController;
 use Support\Request;
 use Support\Route;
 use Support\View;
@@ -13,6 +15,10 @@ Route::init($prefix);
 Route::get('/',function(){
     View::render('welcome/welcome');
 });
+Route::get('/test', function(){
+    View::render('test');
+});
+Route::post('/test', [UserController::class, 'store'])->name('testpost');
 Route::group([AuthMiddleware::class], function(){
 
 });

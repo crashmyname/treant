@@ -123,7 +123,7 @@ class Route
 
         // Cek apakah ada override method (untuk PUT/DELETE) via _method
         if ($method === 'POST' && isset($_POST['_method'])) {
-            $method = strtoupper($_POST['_method']); // Ubah method menjadi PUT/DELETE jika ada _method
+            $method = strtoupper($_POST['_method']); // Ubah method menjadi PUT/DELETE jika ada
         }
 
         $uri = strtok($_SERVER['REQUEST_URI'], '?');
@@ -153,6 +153,15 @@ class Route
                     }
                 } elseif (is_callable($middleware)) {
                     call_user_func($middleware);
+                }
+            }
+
+            // Validasi CSRF token untuk metode POST
+            if ($method === 'POST') {
+                // Cek CSRF token
+                if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $request->get('csrf_token'))) {
+                    throw new \Exception('Invalid CSRF token');
+                    exit();
                 }
             }
 

@@ -11,11 +11,19 @@ class ExceptionHandler
         $line = $exception->getLine();
 
         // Coba tampilkan error dalam format yang lebih user-friendly
-        self::renderErrorPage(
-            'An error occurred',
-            'Something went wrong: ' . $message,
-            $exception
-        );
+        if ($message === 'Invalid CSRF token') {
+            self::renderErrorPage(
+                'Invalid Request',
+                'The CSRF token provided is invalid. Please try again.',
+                $exception
+            );
+        } else {
+            self::renderErrorPage(
+                'An error occurred',
+                'Something went wrong: ' . $message,
+                $exception
+            );
+        }
     }
 
     public static function renderErrorPage($title, $message, $exception)

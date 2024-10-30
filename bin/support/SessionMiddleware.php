@@ -4,7 +4,11 @@ namespace Support;
 class SessionMiddleware {
     public static function start() {
         if (session_status() === PHP_SESSION_NONE) {
-            session_start(); // Memulai session jika belum dimulai
+            session_start([
+                'cookie_lifetime' => 86400,
+                'cookie_secure' => true,
+                'cookie_httponly' => true,
+            ]); // Memulai session jika belum dimulai
         }
     }
 

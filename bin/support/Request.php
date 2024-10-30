@@ -66,6 +66,10 @@ class Request {
         return $this->data;
     }
 
+    public function get($key) {
+        return $this->data[$key] ?? null; // Mengembalikan null jika tidak ada kunci
+    }
+
     public function file($key) {
         return $this->files[$key] ?? null;
     }

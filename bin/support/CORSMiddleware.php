@@ -5,6 +5,7 @@ class CORSMiddleware
 {
     public static function handle()
     {
+        setSecurityHeaders();
         error_log("Handling CORS: " . print_r($_SERVER, true));
         // Izinkan akses dari semua domain, bisa diatur menjadi domain tertentu
         header("Access-Control-Allow-Origin: *");

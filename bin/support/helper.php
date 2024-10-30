@@ -373,4 +373,24 @@ use Support\Route;
         return strtolower($string);
     }
 
+    function crsfToken(){
+        if(empty($_SESSION['csrf_token'])){
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        $token = $_SESSION['csrf_token'];
+        $csrf = "<input type='hidden' name='csrf_token' value='{$token}'>";
+        return $csrf;
+    }
+
+    function verifyCsrfToken($token){
+        return $token === $_SESSION['csrf_token'];
+    }
+    
+    function setSecurityHeaders() {
+        header("Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;");
+        header("X-Content-Type-Options: nosniff");
+        header("X-Frame-Options: SAMEORIGIN");
+        header("Strict-Transport-Security: max-age=31536000; includeSubDomains; preload");
+    }
+
 ?>
