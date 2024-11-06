@@ -113,7 +113,7 @@ class Route
             return self::$prefix . '/' . trim($uri, '/');
         }
 
-        throw new \Exception("Route dengan nama '{$name}' tidak ditemukan.");
+        self::renderErrorPage("Route dengan nama '{$name}' tidak ditemukan.");
     }
 
     // Dispatch routing
@@ -223,5 +223,68 @@ class Route
     {
         return isset(self::$routes['GET'][$uri]) || isset(self::$routes['POST'][$uri]);
     }
+
+    // Fungsi untuk menampilkan halaman error
+private static function renderErrorPage($message)
+{
+    // Pastikan tidak ada output lain yang dikirim sebelum HTML error ditampilkan
+    ob_clean(); // Membersihkan output buffer, jika ada yang terkirim sebelumnya
+    header('Content-Type: text/html; charset=utf-8');
+    $url = base_url();
+    echo "
+        <!DOCTYPE html>
+        <html lang='en'>
+        <head>
+            <meta charset='UTF-8'>
+            <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+            <title>Error</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f9;
+                    color: #333;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    margin: 0;
+                }
+                .error-container {
+                    background-color: #fff;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    padding: 20px;
+                    max-width: 600px;
+                    width: 100%;
+                    text-align: center;
+                }
+                h1 {
+                    color: #e74c3c;
+                    font-size: 2em;
+                }
+                p {
+                    font-size: 1.2em;
+                    margin: 15px 0;
+                }
+                a {
+                    color: #3498db;
+                    text-decoration: none;
+                }
+                a:hover {
+                    text-decoration: underline;
+                }
+            </style>
+        </head>
+        <body>
+            <div class='error-container'>
+                <h1>Error: {$message}</h1>
+                <p>Something went wrong while processing the request.</p>
+                <p><a href='{$url}'>Return to Home</a></p>
+            </div>
+        </body>
+        </html>
+    ";
+    exit(); // Menghentikan eksekusi skrip setelah error page ditampilkan
+}
 }
 ?>

@@ -15,9 +15,7 @@ Route::init($prefix);
 Route::get('/',function(){
     View::render('welcome/welcome');
 });
-Route::get('/test', function(){
-    View::render('test');
-});
+Route::get('/test', [UserController::class, 'index']);
 Route::post('/test', [UserController::class, 'store'])->name('testpost');
 Route::group([AuthMiddleware::class], function(){
 

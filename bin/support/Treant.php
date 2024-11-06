@@ -50,7 +50,7 @@ class Treant
             return;
         }
         $isResource = in_array('--resource', $options);
-        $controllerTemplate = "<?php\n\nnamespace App\Controllers;\nuse Support\Controller;\nuse Support\Request;\nuse Support\Validator;\nuse Support\View;\nuse Support\CSRFToken;\n\nclass {$name} extends Controller\n{\n";
+        $controllerTemplate = "<?php\n\nnamespace App\Controllers;\nuse Support\BaseController;\nuse Support\Request;\nuse Support\Validator;\nuse Support\View;\nuse Support\CSRFToken;\n\nclass {$name} extends BaseController\n{\n";
         if ($isResource) {
             $controllerTemplate .= "    public function index()\n    {\n        // Tampilkan semua resource\n    }\n\n";
             $controllerTemplate .= "    public function show(\$id)\n    {\n        // Tampilkan resource dengan ID: \$id\n    }\n\n";

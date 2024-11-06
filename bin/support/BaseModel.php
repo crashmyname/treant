@@ -359,7 +359,7 @@ class BaseModel
     {
         $this->connection = DB::getConnection();
         if (isset($this->attributes[$this->primaryKey])) {
-            $this->update();
+            $this->updates();
         } else {
             $columns = implode(',', array_keys($this->attributes));
             $placeholders = ':' . implode(', :', array_keys($this->attributes));
