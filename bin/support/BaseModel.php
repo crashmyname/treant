@@ -376,7 +376,7 @@ class BaseModel
         }
     }
 
-    public function update()
+    public function updates()
     {
         $setClause = [];
         foreach ($this->attributes as $key => $value) {
@@ -394,7 +394,7 @@ class BaseModel
 
         $stmt->execute();
     }
-    public function updated($data)
+    public function update($data)
     {
         // Buat klausa SET untuk SQL query
         $this->connection = DB::getConnection();
@@ -420,6 +420,42 @@ class BaseModel
 
         // Eksekusi query
         $stmt->execute();
+    }
+
+    public function hasOne($relatedModel, $foreignKey, $localKey = 'id')
+    {
+        $relatedInstance = new $relatedModel();
+        $relatedInstance->where($foreignKey, '=', $this->attributes[$localKey]);
+        return $relatedInstance->first();
+    }
+
+    // One-to-Many relationship
+    public function hasMany($relatedModel, $foreignKey, $localKey = 'id')
+    {
+        $relatedInstance = new $relatedModel();
+        return $relatedInstance->where($foreignKey, '=', $this->attributes[$localKey])->get();
+    }
+
+    // Belongs-to relationship
+    public function belongsTo($relatedModel, $foreignKey, $ownerKey = 'id')
+    {
+        $relatedInstance = new $relatedModel();
+        return $relatedInstance->where($ownerKey, '=', $this->attributes[$foreignKey])->first();
+    }
+
+    // Many-to-Many relationship
+    public function belongsToMany($relatedModel, $pivotTable, $foreignKey, $relatedKey, $localKey = 'id', $relatedLocalKey = 'id')
+    {
+        $relatedInstance = new $relatedModel();
+        $query = "SELECT {$relatedInstance->table}.* FROM {$relatedInstance->table} 
+                  INNER JOIN {$pivotTable} ON {$relatedInstance->table}.{$relatedLocalKey} = {$pivotTable}.{$relatedKey}
+                  WHERE {$pivotTable}.{$foreignKey} = :local_key";
+
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindValue(':local_key', $this->attributes[$localKey]);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function delete()
