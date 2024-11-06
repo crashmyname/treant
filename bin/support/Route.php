@@ -159,9 +159,10 @@ class Route
             // Validasi CSRF token untuk metode POST
             if ($method === 'POST') {
                 // Cek CSRF token
-                if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $request->get('csrf_token'))) {
+                $csrfToken = $request->get('csrf_token');
+
+                if (empty($csrfToken) || !isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
                     throw new \Exception('Invalid CSRF token');
-                    exit();
                 }
             }
 

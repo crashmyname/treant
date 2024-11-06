@@ -246,4 +246,17 @@ use Support\BaseController;
         header("Strict-Transport-Security: max-age=31536000; includeSubDomains; preload");
     }
 
+    function back() {
+        // Cek apakah ada referer, jika ada maka kembalikan ke halaman sebelumnya
+        if (isset($_SERVER['HTTP_REFERER'])) {
+            header("Location: " . $_SERVER['HTTP_REFERER']);
+            exit();
+        } else {
+            // Jika tidak ada referer, arahkan ke halaman default (misalnya homepage)
+            header("Location: /");
+            exit();
+        }
+    }
+    
+
 ?>
