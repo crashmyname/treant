@@ -1,5 +1,4 @@
 <?php
-
 use App\Controllers\UserController;
 use Support\Request;
 use Support\Route;
@@ -17,6 +16,8 @@ Route::get('/',function(){
 });
 Route::get('/test', [UserController::class, 'index']);
 Route::post('/test', [UserController::class, 'store'])->name('testpost');
+Route::get('/module',[UserController::class, 'module']);
+Route::post('/module', [UserController::class, 'create']);
 Route::group([AuthMiddleware::class], function(){
 
 });
