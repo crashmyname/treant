@@ -82,35 +82,28 @@ use Support\BaseController;
     }
     
     function generateRandomString($length = 10) {
-        return substr(bin2hex(random_bytes($length)), 0, $length);
+        $basecontroller = new BaseController();
+        return $basecontroller->generateRandomString($length);
     }
 
     function toJson($data) {
-        header('Content-Type: application/json');
-        echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        exit();
+        $basecontroller = new BaseController();
+        return $basecontroller->toJson($data);
     }
     
     function fromJson($json, $assoc = true) {
-        return json_decode($json, $assoc);
+        $basecontroller = new BaseController();
+        return $basecontroller->fromJson($json, $assoc);
     }
 
     function paginate($totalItems, $perPage = 10, $page = 1, $url = '?') {
-        $totalPages = ceil($totalItems / $perPage);
-        $output = '<nav><ul class="pagination">';
-    
-        for ($i = 1; $i <= $totalPages; $i++) {
-            $output .= '<li class="page-item' . ($page == $i ? ' active' : '') . '">';
-            $output .= '<a class="page-link" href="' . $url . 'page=' . $i . '">' . $i . '</a>';
-            $output .= '</li>';
-        }
-    
-        $output .= '</ul></nav>';
-        return $output;
+        $basecontroller = new BaseController();
+        return $basecontroller->paginate($totalItems, $perPage, $page, $url);
     }
 
     function pathJoin(...$paths) {
-        return preg_replace('#/+#', '/', join('/', $paths));
+        $basecontroller = new BaseController();
+        return $basecontroller->pathJoin($paths);
     }
 
     function rateLimit($key, $maxAttempts = 5, $seconds = 60) {

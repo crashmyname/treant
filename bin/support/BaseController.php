@@ -215,4 +215,36 @@ class BaseController {
     {
         return substr(bin2hex(random_bytes($length)), 0, $length);
     }
+
+    public function toJson($data)
+    {
+        header('Content-Type: application/json');
+        echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        exit();
+    }
+    
+    public function fromJson($json, $assoc)
+    {
+        return json_decode($json, $assoc);
+    }
+
+    public function paginate($totalItems, $perPage, $page, $url)
+    {
+        $totalPages = ceil($totalItems / $perPage);
+        $output = '<nav><ul class="pagination">';
+    
+        for ($i = 1; $i <= $totalPages; $i++) {
+            $output .= '<li class="page-item' . ($page == $i ? ' active' : '') . '">';
+            $output .= '<a class="page-link" href="' . $url . 'page=' . $i . '">' . $i . '</a>';
+            $output .= '</li>';
+        }
+    
+        $output .= '</ul></nav>';
+        return $output;
+    }
+
+    public function pathJoin(...$paths)
+    {
+        return preg_replace('#/+#', '/', join('/', $paths));
+    }
 }
