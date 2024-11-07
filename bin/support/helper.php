@@ -107,148 +107,138 @@ use Support\BaseController;
     }
 
     function rateLimit($key, $maxAttempts = 5, $seconds = 60) {
-        $currentAttempts = $_SESSION[$key] ?? 0;
-    
-        if ($currentAttempts >= $maxAttempts) {
-            return false; // Terlalu banyak percobaan
-        }
-    
-        $_SESSION[$key] = $currentAttempts + 1;
-        return true;
+        $basecontroller = new BaseController();
+        return $basecontroller->rateLimit($key,$maxAttempts,$seconds);
     }
 
     function generateSlug($text) {
-        return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $text), '-'));
+        $basecontroller = new BaseController();
+        return $basecontroller->generateSlug($text);
     }
 
     function sortByKey($array, $key) {
-        usort($array, function($a, $b) use ($key) {
-            return $a[$key] <=> $b[$key];
-        });
-        return $array;
+        $basecontroller = new BaseController();
+        return $basecontroller->sortByKey($array,$key);
     }
 
     function htmlEscape($string) {
-        return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+        $basecontroller = new BaseController();
+        return $basecontroller->htmlEscape($string);
     }
 
     function buildUrl($base, $params = []) {
-        return $base . '?' . http_build_query($params);
+        $basecontroller = new BaseController();
+        return $basecontroller->buildUrl($base,$params);
     }
     
     function currentUrl() {
-        return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        $basecontroller = new BaseController();
+        return $basecontroller->currentUrl();
     }
 
     function formatNumber($number, $decimals = 2) {
-        return number_format($number, $decimals, '.', ',');
+        $basecontroller = new BaseController();
+        return $basecontroller->formatNumber($number,$decimals);
     }
 
     function isValidEmail($email) {
-        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+        $basecontroller = new BaseController();
+        return $basecontroller->isValidEmail($email);
     }
     
     function isValidUrl($url) {
-        return filter_var($url, FILTER_VALIDATE_URL) !== false;
+        $basecontroller = new BaseController();
+        return $basecontroller->isValidUrl($url);
     }
 
     function setFlashMessage($key, $message) {
-        $_SESSION[$key] = $message;
+        $basecontroller = new BaseController();
+        return $basecontroller->setFlashMessage($key,$message);
     }
     
     function getFlashMessage($key) {
-        if (isset($_SESSION[$key])) {
-            $message = $_SESSION[$key];
-            unset($_SESSION[$key]);
-            return $message;
-        }
-        return null;
+        $basecontroller = new BaseController();
+        return $basecontroller->getFlashMessage($key);
     }
 
     function encrypt($data, $key) {
-        return openssl_encrypt($data, 'AES-128-ECB', $key);
+        $basecontroller = new BaseController();
+        return $basecontroller->encrypt($data,$key);
     }
     
     function decrypt($data, $key) {
-        return openssl_decrypt($data, 'AES-128-ECB', $key);
+        $basecontroller = new BaseController();
+        return $basecontroller->decrypt($data,$key);
     }
 
     function arrayPluck($array, $key) {
-        return array_map(function($item) use ($key) {
-            return is_array($item) && isset($item[$key]) ? $item[$key] : null;
-        }, $array);
+        $basecontroller = new BaseController();
+        return $basecontroller->arrayPluck($array,$key);
     }
 
     function formatCurrency($amount, $currency = 'USD') {
-        return $currency . ' ' . number_format($amount, 2);
+        $basecontroller = new BaseController();
+        return $basecontroller->formatCurrency($amount,$currency);
     }
 
     function hashPassword($password) {
-        return password_hash($password, PASSWORD_BCRYPT);
+        $basecontroller = new BaseController();
+        return $basecontroller->hashPassword($password);
     }
     
     function verifyPassword($password, $hash) {
-        return password_verify($password, $hash);
+        $basecontroller = new BaseController();
+        return $basecontroller->verifyPassword($password,$hash);
     }
 
     function logMessage($message, $level = 'INFO') {
-        $logfile = 'app.log';
-        $time = date('Y-m-d H:i:s');
-        file_put_contents($logfile, "[$time] [$level] $message" . PHP_EOL, FILE_APPEND);
+        $basecontroller = new BaseController();
+        return $basecontroller->logMessage($message,$level);
     }
 
     function arrayFilterByKey($array, $key, $value) {
-        return array_filter($array, function($item) use ($key, $value) {
-            return isset($item[$key]) && $item[$key] === $value;
-        });
+        $basecontroller = new BaseController();
+        return $basecontroller->arrayFilterByKey($array,$key,$value);
     }
 
     function toTitleCase($string) {
-        return ucwords(strtolower($string));
+        $basecontroller = new BaseController();
+        return $basecontroller->toTitleCase($string);
     }
     
     function toSentenceCase($string) {
-        return ucfirst(strtolower($string));
+        $basecontroller = new BaseController();
+        return $basecontroller->toSentenceCase($string);
     }
 
-    function toUppercase($string){
-        return strtoupper($string);
+    function toUpperCase($string){
+        $basecontroller = new BaseController();
+        return $basecontroller->toUpperCase($string);
     }
 
-    function toLowercase($string){
-        return strtolower($string);
+    function toLowerCase($string){
+        $basecontroller = new BaseController();
+        return $basecontroller->toLowerCase($string);
     }
 
     function crsfToken(){
-        if(empty($_SESSION['csrf_token'])){
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        }
-        $token = $_SESSION['csrf_token'];
-        $csrf = "<input type='hidden' name='csrf_token' value='{$token}'>";
-        return $csrf;
+        $basecontroller = new BaseController();
+        return $basecontroller->csrfToken();
     }
 
     function verifyCsrfToken($token){
-        return $token === $_SESSION['csrf_token'];
+        $basecontroller = new BaseController();
+        return $basecontroller->verifyCsrfToken($token);
     }
     
     function setSecurityHeaders() {
-        header("Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;");
-        header("X-Content-Type-Options: nosniff");
-        header("X-Frame-Options: SAMEORIGIN");
-        header("Strict-Transport-Security: max-age=31536000; includeSubDomains; preload");
+        $basecontroller = new BaseController();
+        return $basecontroller->setSecurityHeaders();
     }
 
     function back() {
-        // Cek apakah ada referer, jika ada maka kembalikan ke halaman sebelumnya
-        if (isset($_SERVER['HTTP_REFERER'])) {
-            header("Location: " . $_SERVER['HTTP_REFERER']);
-            exit();
-        } else {
-            // Jika tidak ada referer, arahkan ke halaman default (misalnya homepage)
-            header("Location: /");
-            exit();
-        }
+        $basecontroller = new BaseController();
+        return $basecontroller->back();
     }
     
 

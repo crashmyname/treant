@@ -247,4 +247,174 @@ class BaseController {
     {
         return preg_replace('#/+#', '/', join('/', $paths));
     }
+
+    public function rateLimit($key, $maxAttempts = 5, $seconds = 60)
+    {
+        $currentAttempts = $_SESSION[$key] ?? 0;
+    
+        if ($currentAttempts >= $maxAttempts) {
+            return false; // Terlalu banyak percobaan
+        }
+    
+        $_SESSION[$key] = $currentAttempts + 1;
+        return true;
+    }
+
+    public function generateSlug($text)
+    {
+        return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $text), '-'));
+    }
+
+    public function sortByKey($array, $key)
+    {
+        usort($array, function($a, $b) use ($key) {
+            return $a[$key] <=> $b[$key];
+        });
+        return $array;
+    }
+
+    public function htmlEscape($string)
+    {
+        return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+    }
+
+    public function buildUrl($base,$params = [])
+    {
+        return $base . '?' . http_build_query($params);
+    }
+
+    public function currentUrl()
+    {
+        return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    }
+
+    public function formatNumber($number, $decimals = 2)
+    {
+        return number_format($number, $decimals, '.', ',');
+    }
+
+    public function csrfToken()
+    {
+        if(empty($_SESSION['csrf_token'])){
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        $token = $_SESSION['csrf_token'];
+        $csrf = "<input type='hidden' name='csrf_token' value='{$token}'>";
+        return $csrf;
+    }
+
+    public function verifyCsrfToken($token)
+    {
+        return $token === $_SESSION['csrf_token'];
+    }
+
+    public function isValidEmail($email)
+    {
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+    }
+
+    public function isValidUrl($url)
+    {
+        return filter_var($url, FILTER_VALIDATE_URL) !== false;
+    }
+
+    public function setFlashMessage($key, $message)
+    {
+        $_SESSION[$key] = $message;
+    }
+
+    public function getFlashMessage($key)
+    {
+        if (isset($_SESSION[$key])) {
+            $message = $_SESSION[$key];
+            unset($_SESSION[$key]);
+            return $message;
+        }
+        return null;
+    }
+
+    public function encrypt($data, $key)
+    {
+        return openssl_encrypt($data, 'AES-128-ECB', $key);
+    }
+
+    public function decrypt($data, $key)
+    {
+        return openssl_decrypt($data, 'AES-128-ECB', $key);
+    }
+
+    public function arrayPluck($array, $key)
+    {
+        return array_map(function($item) use ($key) {
+            return is_array($item) && isset($item[$key]) ? $item[$key] : null;
+        }, $array);
+    }
+
+    public function formatCurrency($amount, $currency)
+    {
+        return $currency . ' ' . number_format($amount, 2);
+    }
+
+    public function hashPassword($password)
+    {
+        return password_hash($password, PASSWORD_BCRYPT);
+    }
+
+    public function verifyPassword($password,$hash)
+    {
+        return password_verify($password, $hash);
+    }
+
+    public function logMessage($message, $level)
+    {
+        $logfile = 'app.log';
+        $time = date('Y-m-d H:i:s');
+        file_put_contents($logfile, "[$time] [$level] $message" . PHP_EOL, FILE_APPEND);
+    }
+
+    public function arrayFilterByKey($array,$key,$value)
+    {
+        return array_filter($array, function($item) use ($key, $value) {
+            return isset($item[$key]) && $item[$key] === $value;
+        });
+    }
+
+    public function toTitleCase($string)
+    {
+        return ucwords(strtolower($string));
+    }
+
+    public function toSentenceCase($string)
+    {
+        return ucfirst(strtolower($string));
+    }
+
+    public function toUpperCase($string)
+    {
+        return strtoupper($string);
+    }
+
+    public function toLowerCase($string)
+    {
+        return strtolower($string);
+    }
+
+    public function setSecurityHeaders()
+    {
+        header("Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;");
+        header("X-Content-Type-Options: nosniff");
+        header("X-Frame-Options: SAMEORIGIN");
+        header("Strict-Transport-Security: max-age=31536000; includeSubDomains; preload");
+    }
+
+    public function back()
+    {
+        if (isset($_SERVER['HTTP_REFERER'])) {
+            header("Location: " . $_SERVER['HTTP_REFERER']);
+            exit();
+        } else {
+            header("Location: /");
+            exit();
+        }
+    }
 }
