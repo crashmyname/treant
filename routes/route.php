@@ -1,10 +1,12 @@
 <?php
+use App\Controllers\MonitoringController;
 use App\Controllers\UserController;
 use Support\Route;
 use Support\View;
+use Support\LogController;
 use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
 
-handleMiddleware();
+// handleMiddleware();
 Route::init($prefix);
 Route::get('/',function(){
     View::render('welcome/welcome');
@@ -12,6 +14,8 @@ Route::get('/',function(){
 Route::get('/test', [UserController::class, 'index']);
 Route::post('/test', [UserController::class, 'store'])->name('testpost');
 Route::get('/module',[UserController::class, 'module']);
+Route::get('/monitor',[UserController::class, 'monitor']);
+
 Route::post('/module', [UserController::class, 'create']);
 Route::group([AuthMiddleware::class], function(){
 
