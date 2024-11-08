@@ -53,6 +53,16 @@ class Request {
         return $sanitized;
     }
 
+    public function only(array $keys) {
+        $filteredData = [];
+        foreach ($keys as $key) {
+            if (isset($this->data[$key])) {
+                $filteredData[$key] = $this->data[$key];
+            }
+        }
+        return $filteredData;
+    }    
+
     public static function isAjax()
     {
         return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';

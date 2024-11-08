@@ -1,13 +1,8 @@
 <?php
 use App\Controllers\UserController;
-use Support\Request;
 use Support\Route;
 use Support\View;
-use Support\CSRFToken;
 use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
-use Support\Crypto;
-use Support\UUID;
-use Support\Response;
 
 handleMiddleware();
 Route::init($prefix);

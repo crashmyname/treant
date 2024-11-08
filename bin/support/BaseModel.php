@@ -11,6 +11,8 @@ class BaseModel
 {
     protected $table;
     protected $primaryKey = 'id';
+    protected $fillable = [];
+    protected $guarded = [];
     protected $attributes = [];
     protected $connection;
     protected $selectColumns = ['*'];
@@ -26,7 +28,7 @@ class BaseModel
 
     public function __construct($attributes = [])
     {
-        $this->attributes = $attributes;
+        $this->attributes = $this->filterAttributes($attributes);
         $this->connect();
     }
 
@@ -37,6 +39,26 @@ class BaseModel
         if ($this->connection === null) {
             die('Connection Failed');
         }
+    }
+
+    private function filterAttributes($attributes)
+    {
+        // Jika fillable diisi, hanya ambil atribut yang ada di fillable
+        if (!empty($this->fillable)) {
+            return array_intersect_key($attributes, array_flip($this->fillable));
+        }
+
+        // Jika guarded diisi, buang atribut yang ada di guarded
+        if (!empty($this->guarded)) {
+            return array_diff_key($attributes, array_flip($this->guarded));
+        }
+
+        return $attributes;
+    }
+
+    public function fill(array $attributes)
+    {
+        $this->attributes = array_merge($this->attributes, $this->filterAttributes($attributes));
     }
 
     public static function create($attributes)
