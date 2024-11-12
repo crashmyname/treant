@@ -69,4 +69,15 @@ spl_autoload_register(function ($class) {
 require_once __DIR__ . '/bin/support/helper.php';
 require_once __DIR__ . '/bin/support/Prefix.php';
 require_once __DIR__ . '/bin/support/Rc.php';
+Use Support\Route;
+Use Support\Api;
+$uri = trim($_SERVER['REQUEST_URI']);
+$apiPrefix = '/' . basename(__DIR__) . '/api';
+    
+    // Cek apakah URI mengarah ke API
+    if (strpos($uri, $apiPrefix) === 0) {
+        return Api::init($prefix.'/api');
+    } else {
+        Route::init($prefix);
+    }
 ?>

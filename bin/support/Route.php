@@ -226,13 +226,13 @@ class Route
     }
 
     // Fungsi untuk menampilkan halaman error
-private static function renderErrorPage($message)
-{
-    // Pastikan tidak ada output lain yang dikirim sebelum HTML error ditampilkan
-    ob_clean(); // Membersihkan output buffer, jika ada yang terkirim sebelumnya
-    header('Content-Type: text/html; charset=utf-8');
-    $url = base_url();
-    echo "
+    private static function renderErrorPage($message)
+    {
+        // Pastikan tidak ada output lain yang dikirim sebelum HTML error ditampilkan
+        ob_clean(); // Membersihkan output buffer, jika ada yang terkirim sebelumnya
+        header('Content-Type: text/html; charset=utf-8');
+        $url = base_url();
+        echo "
         <!DOCTYPE html>
         <html lang='en'>
         <head>
@@ -285,7 +285,7 @@ private static function renderErrorPage($message)
         </body>
         </html>
     ";
-    exit(); // Menghentikan eksekusi skrip setelah error page ditampilkan
-}
+        exit(); // Menghentikan eksekusi skrip setelah error page ditampilkan
+    }
 }
 ?>

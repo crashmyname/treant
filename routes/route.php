@@ -1,24 +1,11 @@
 <?php
-use App\Controllers\MonitoringController;
-use App\Controllers\UserController;
 use Support\Route;
 use Support\View;
-use Support\LogController;
 use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
 
 // handleMiddleware();
-Route::init($prefix);
 Route::get('/',function(){
     View::render('welcome/welcome');
-});
-Route::get('/test', [UserController::class, 'index']);
-Route::post('/test', [UserController::class, 'store'])->name('testpost');
-Route::get('/module',[UserController::class, 'module']);
-Route::get('/monitor',[UserController::class, 'monitor']);
-
-Route::post('/module', [UserController::class, 'create']);
-Route::group([AuthMiddleware::class], function(){
-
 });
 Route::get('/dokumentasi', function(){
     $title = "Get Started";
@@ -112,5 +99,3 @@ Route::get('/dokumentasi/support/validator', function(){
     $title = "Validator";
     View::render('documentation/support/validator',['title'=>$title],'documentation/doc');
 })->name('validator');
-Route::dispatch();
-?>

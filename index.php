@@ -4,6 +4,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Support\CORSMiddleware;
 use Support\ExceptionHandler;
 use Support\RouteExceptionHandler;
+use Support\Route;
+use Support\Api;
 
 // Jalankan middleware untuk menangani CORS
 CORSMiddleware::handle();
@@ -17,9 +19,11 @@ try {
     if (strpos($uri, $apiPrefix) === 0) {
         $uri = substr($uri, strlen($apiPrefix));
         require_once __DIR__ . '/routes/api.php';
+        Api::dispatch();
     } else {
         try {
             require_once __DIR__ . '/routes/route.php';
+            Route::dispatch();
         } catch (\Error $e) {
             if ($e instanceof \Error && strpos($e->getMessage(), 'Class') !== false) {
                 RouteExceptionHandler::handle($e);
@@ -34,5 +38,4 @@ try {
 } catch (\Error $e) {
     ExceptionHandler::handle($e);
 }
-
 ?>
