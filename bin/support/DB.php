@@ -9,7 +9,9 @@ use Config\Database;
 class DB
 {
     private static $conn = null;
-
+    protected $table;
+    protected $query;
+    protected $params = [];
     public static function getConnection()
     {
         // Cek apakah koneksi sudah ada, jika sudah ada maka gunakan yang ada
@@ -45,7 +47,7 @@ class DB
         try {
             $dsn = "{$_ENV['DB_CONNECTION']}:host={$_ENV['DB_HOST']};port={$_ENV['DB_PORT']};dbname={$_ENV['DB_DATABASE']}";
             self::$conn = new PDO($dsn, $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD']);
-            self::$conn->exec("set names utf8");
+            self::$conn->exec('set names utf8');
             self::$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             // Log kesalahan ke file log, buat file log jika tidak ada
@@ -75,6 +77,84 @@ class DB
         return self::getConnection()->rollback();
     }
 
+    public static function table($table)
+    {
+        $instance = new self();
+        $instance->table = $table;
+        return $instance;
+    }
+
+    public function select($columns = ['*'])
+    {
+        $this->query = 'SELECT ' . implode(', ', $columns) . ' FROM ' . $this->table;
+        return $this;
+    }
+
+    public function where($column, $operator, $value)
+    {
+        $placeholder = ':' . str_replace('.', '_', $column);
+        $this->query .= " WHERE $column $operator $placeholder";
+        $this->params[$placeholder] = $value;
+        return $this;
+    }
+
+    public function get()
+    {
+        $stmt = self::getConnection()->prepare($this->query);
+        $stmt->execute($this->params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function first()
+    {
+        $stmt = self::getConnection()->prepare($this->query . ' LIMIT 1');
+        $stmt->execute($this->params);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function insert($data)
+    {
+        $columns = implode(', ', array_keys($data));
+        $placeholders = implode(', ', array_map(fn($col) => ":$col", array_keys($data)));
+        $this->query = "INSERT INTO $this->table ($columns) VALUES ($placeholders)";
+
+        $stmt = self::getConnection()->prepare($this->query);
+        foreach ($data as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+        return $stmt->execute();
+    }
+
+    public function update($data)
+    {
+        $setClause = implode(', ', array_map(fn($col) => "$col = :$col", array_keys($data)));
+        $this->query = "UPDATE $this->table SET $setClause " . $this->query;
+
+        $stmt = self::getConnection()->prepare($this->query);
+        foreach (array_merge($data, $this->params) as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+        return $stmt->execute();
+    }
+
+    public function delete()
+    {
+        $this->query = "DELETE FROM $this->table " . $this->query;
+
+        $stmt = self::getConnection()->prepare($this->query);
+        foreach ($this->params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        return $stmt->execute();
+    }
+
+    public static function raw($query, $params = [])
+    {
+        $stmt = self::getConnection()->prepare($query);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public static function renderError($exception)
     {
         static $errorDisplayed = false;
@@ -83,7 +163,7 @@ class DB
             $errorDisplayed = true;
 
             // Set response code menjadi 500
-            if (!headers_sent()) { 
+            if (!headers_sent()) {
                 http_response_code(500);
             }
 
@@ -110,21 +190,18 @@ class DB
         return $stmt;
     }
 
-    // Fungsi untuk mengambil semua hasil query
     public static function fetchAll($sql, $params = [])
     {
         $stmt = self::query($sql, $params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Fungsi untuk mengambil satu baris hasil query
     public static function fetch($sql, $params = [])
     {
         $stmt = self::query($sql, $params);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Fungsi untuk menghitung jumlah baris hasil query
     public static function count($sql, $params = [])
     {
         $stmt = self::query($sql, $params);
