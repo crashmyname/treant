@@ -7,7 +7,6 @@ use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
 Route::get('/',function(){
     View::render('welcome/welcome');
 });
-
 Route::get('/dokumentasi', function(){
     $title = "Get Started";
     View::render('documentation/install',['title'=>$title],'documentation/doc');

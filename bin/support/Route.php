@@ -2,6 +2,7 @@
 namespace Support;
 
 use Support\View;
+use Support\SessionMiddleware;
 
 class Route
 {
@@ -119,6 +120,7 @@ class Route
     // Dispatch routing
     public static function dispatch()
     {
+        SessionMiddleware::start();
         $method = $_SERVER['REQUEST_METHOD'];
 
         // Cek apakah ada override method (untuk PUT/DELETE) via _method
