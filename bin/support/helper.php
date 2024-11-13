@@ -201,6 +201,11 @@ use Support\BaseController;
         return $basecontroller->arrayFilterByKey($array,$key,$value);
     }
 
+    function method($method){
+        $basecontroller = new BaseController();
+        return $basecontroller->Method($method);
+    }
+
     function toTitleCase($string) {
         $basecontroller = new BaseController();
         return $basecontroller->toTitleCase($string);
@@ -221,7 +226,7 @@ use Support\BaseController;
         return $basecontroller->toLowerCase($string);
     }
 
-    function crsfToken(){
+    function csrf(){
         $basecontroller = new BaseController();
         return $basecontroller->csrfToken();
     }

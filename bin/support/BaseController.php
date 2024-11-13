@@ -308,6 +308,11 @@ class BaseController {
         return $token === $_SESSION['csrf_token'];
     }
 
+    public function Method($method)
+    {
+        return "<input type='hidden' name='_method' value='{$method}'>";
+    }
+
     public function isValidEmail($email)
     {
         return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
