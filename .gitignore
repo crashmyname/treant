@@ -6,3 +6,4 @@ UserController copy.php
 module.php
 monitor.php
 monitoring.php
+.env
