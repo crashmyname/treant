@@ -71,13 +71,19 @@ require_once __DIR__ . '/bin/support/Prefix.php';
 require_once __DIR__ . '/bin/support/Rc.php';
 Use Support\Route;
 Use Support\Api;
-$uri = trim($_SERVER['REQUEST_URI']);
-$apiPrefix = '/' . basename(__DIR__) . '/api';
-    
+if (php_sapi_name() === 'cli') {
+    // Script berjalan di CLI, handle CLI commands di sini
+    echo "Starting cli......";
+} else {
+    // Script berjalan di server web, aman untuk menggunakan $_SERVER['REQUEST_URI']
+    $uri = isset($_SERVER['REQUEST_URI']) ? trim($_SERVER['REQUEST_URI']) : '/';
+    $apiPrefix = '/' . basename(__DIR__) . '/api';
+
     // Cek apakah URI mengarah ke API
     if (strpos($uri, $apiPrefix) === 0) {
-        return Api::init($prefix.'/api');
+        Api::init($prefix . '/api');
     } else {
         Route::init($prefix);
     }
+}
 ?>
