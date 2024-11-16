@@ -8,6 +8,7 @@ class SessionMiddleware {
                 'cookie_lifetime' => 86400,
                 'cookie_secure' => true,
                 'cookie_httponly' => true,
+                'cooke_samesite' => 'Srict',
             ]); // Memulai session jika belum dimulai
         }
     }
@@ -39,6 +40,24 @@ class SessionMiddleware {
             session_unset(); // Menghapus semua data dari session
             session_destroy(); // Menghancurkan session
         }
+    }
+    public static function validateDeviceFingerprint() {
+        // Ambil IP dan User-Agent sebagai fingerprint perangkat
+        $fingerprint = md5($_SERVER['HTTP_USER_AGENT'] . $_SERVER['REMOTE_ADDR']);
+        
+        // Cek apakah fingerprint yang disimpan di sesi cocok dengan fingerprint perangkat saat ini
+        if (self::get('device_fingerprint') !== $fingerprint) {
+            self::destroy(); // Hancurkan session jika fingerprint tidak cocok
+            header("Location: /login"); // Redirect ke halaman login
+            exit;
+        }
+    }
+
+    // Fungsi untuk menyimpan fingerprint perangkat saat login
+    public static function storeDeviceFingerprint() {
+        // Simpan fingerprint perangkat saat login
+        $fingerprint = md5($_SERVER['HTTP_USER_AGENT'] . $_SERVER['REMOTE_ADDR']);
+        self::set('device_fingerprint', $fingerprint); // Menyimpan fingerprint di session
     }
 }
 ?>
