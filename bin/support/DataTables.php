@@ -14,7 +14,20 @@ class DataTables
     public function __construct(array $data)
     {
         $this->data = $data;
-        $this->columns = !empty($data) ? array_keys($data[0]) : [];
+
+        // Cek apakah data pertama adalah array atau objek
+        if (!empty($data)) {
+            // Jika data pertama adalah array, gunakan array_keys untuk mendapatkan kolom
+            if (is_array($data[0])) {
+                $this->columns = array_keys($data[0]);
+            }
+            // Jika data pertama adalah objek (stdClass), ubah menjadi array untuk mendapatkan kolom
+            elseif (is_object($data[0])) {
+                $this->columns = array_keys((array) $data[0]);
+            }
+        } else {
+            $this->columns = [];
+        }
     }
 
     public function make(bool $jsonEncode = false)
@@ -29,24 +42,29 @@ class DataTables
         $orderDir = isset($_REQUEST['order'][0]['dir']) ? $_REQUEST['order'][0]['dir'] : 'asc';
 
         // Kolom yang tersedia untuk pengurutan
-        $orderColumn = $this->columns[$orderColumnIndex] ?? $this->columns[0] ?? null;
+        $orderColumn = $this->columns[$orderColumnIndex] ?? ($this->columns[0] ?? null);
 
         // Filter data berdasarkan pencarian
         $filteredData = array_filter($this->data, function ($item) use ($searchValue) {
-            foreach ($item as $value) {
-                if (stripos((string)$value, $searchValue) !== false) {
+            foreach ($item as $key => $value) {
+                // Menangani baik array maupun objek
+                $value = is_object($item) ? $item->$key : $value; // Mengakses nilai dengan cara objek atau array
+                if (stripos((string) $value, $searchValue) !== false) {
                     return true;
                 }
             }
             return false;
         });
 
-        // Pengurutan data
+        // Pengurutan data (menangani baik array maupun objek)
         usort($filteredData, function ($a, $b) use ($orderColumn, $orderDir) {
+            $aValue = is_object($a) ? $a->$orderColumn : $a[$orderColumn];
+            $bValue = is_object($b) ? $b->$orderColumn : $b[$orderColumn];
+
             if ($orderDir === 'asc') {
-                return $a[$orderColumn] <=> $b[$orderColumn];
+                return $aValue <=> $bValue;
             } else {
-                return $b[$orderColumn] <=> $a[$orderColumn];
+                return $bValue <=> $aValue;
             }
         });
 
@@ -57,10 +75,10 @@ class DataTables
 
         // Menyiapkan data untuk respons DataTables
         $response = [
-            "draw" => $draw,
-            "recordsTotal" => $totalRecords,
-            "recordsFiltered" => $totalFiltered,
-            "data" => $filteredData
+            'draw' => $draw,
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $totalFiltered,
+            'data' => $filteredData,
         ];
 
         if ($jsonEncode) {

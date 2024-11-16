@@ -239,7 +239,7 @@ class BaseModel
         return $this;
     }
 
-    public function get()
+    public function get($fetchStyle = PDO::FETCH_OBJ)
     {
         $sql = "SELECT {$this->distinct} " . implode(', ', $this->selectColumns) . " FROM {$this->table}";
 
@@ -285,7 +285,7 @@ class BaseModel
         }
 
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll($fetchStyle);
     }
 
     public function toSql()
@@ -329,13 +329,13 @@ class BaseModel
         return null;
     }
 
-    public static function all()
+    public static function all($fetchStyle = PDO::FETCH_OBJ)
     {
         $instance = new static();
         $sql = "SELECT * FROM {$instance->table}";
         $stmt = $instance->connection->prepare($sql);
         $stmt->execute();
-        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $data = $stmt->fetchAll($fetchStyle);
         return $data;
     }
 
@@ -488,18 +488,18 @@ class BaseModel
         $stmt->execute();
     }
 
-    public static function find($id)
+    public static function find($id,$fetchStyle = PDO::FETCH_OBJ)
     {
         $instance = new static();
         $sql = "SELECT * FROM {$instance->table} WHERE {$instance->primaryKey} = :id";
         $stmt = $instance->connection->prepare($sql);
-        $stmt->bindValue(':id', $id);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch($fetchStyle);
 
         if ($data) {
-            return new static($data);
+            return new static((array)$data);
         }
 
         return null;

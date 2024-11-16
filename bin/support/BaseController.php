@@ -2,6 +2,7 @@
 
 namespace Support;
 use Support\View;
+use ReflectionClass;
 
 class BaseController {
     
