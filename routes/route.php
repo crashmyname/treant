@@ -1,5 +1,4 @@
 <?php
-use App\Controllers\UserController;
 use Support\Route;
 use Support\View;
 use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
@@ -7,18 +6,6 @@ use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
 // handleMiddleware();
 Route::get('/',function(){
     View::render('welcome/welcome');
-});
-Route::get('/test', [UserController::class, 'index']);
-Route::post('/testpost', [UserController::class, 'store']);
-Route::put('/testi/{id}/update', [UserController::class, 'update'])->name('update');
-Route::delete('/testi/{id}/delete', [UserController::class, 'destroy'])->name('destroy');
-Route::get('/testi/{id}/show', [UserController::class, 'show']);
-Route::get('/module',[UserController::class, 'module']);
-Route::get('/monitor',[UserController::class, 'monitor']);
-
-Route::post('/module', [UserController::class, 'create']);
-Route::group([AuthMiddleware::class], function(){
-
 });
 Route::get('/dokumentasi', function(){
     $title = "Get Started";
