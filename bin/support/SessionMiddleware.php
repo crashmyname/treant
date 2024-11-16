@@ -8,7 +8,7 @@ class SessionMiddleware {
                 'cookie_lifetime' => 86400,
                 'cookie_secure' => true,
                 'cookie_httponly' => true,
-                'cooke_samesite' => 'Srict',
+                'cookie_samesite' => 'Srict',
             ]); // Memulai session jika belum dimulai
         }
     }
