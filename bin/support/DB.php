@@ -14,51 +14,9 @@ class DB
     protected $params = [];
     public static function getConnection()
     {
-        // Cek apakah koneksi sudah ada, jika sudah ada maka gunakan yang ada
-        if (self::$conn !== null) {
-            return self::$conn;
+        if (self::$conn === null) {
+            self::$conn = Database::getConnection();
         }
-
-        // Nilai default untuk variabel lingkungan
-        $defaultEnv = [
-            'DB_CONNECTION' => 'mysql',
-            'DB_HOST' => '127.0.0.1',
-            'DB_PORT' => '3306',
-            'DB_DATABASE' => 'defaultdb', // Gunakan nama database default
-            'DB_USERNAME' => 'root',
-            'DB_PASSWORD' => '',
-        ];
-
-        // Coba membaca file .env
-        $envFilePath = __DIR__ . '/../../.env';
-        if (file_exists($envFilePath)) {
-            $env = parse_ini_file($envFilePath);
-            if ($env !== false) {
-                foreach ($defaultEnv as $key => $value) {
-                    $_ENV[$key] = isset($env[$key]) && $env[$key] !== '' ? $env[$key] : $value;
-                }
-            } else {
-                $_ENV = $defaultEnv;
-            }
-        } else {
-            $_ENV = $defaultEnv;
-        }
-
-        try {
-            $dsn = "{$_ENV['DB_CONNECTION']}:host={$_ENV['DB_HOST']};port={$_ENV['DB_PORT']};dbname={$_ENV['DB_DATABASE']}";
-            self::$conn = new PDO($dsn, $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD']);
-            self::$conn->exec('set names utf8');
-            self::$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
-            // Log kesalahan ke file log, buat file log jika tidak ada
-            $logDir = __DIR__ . '/../logs';
-            if (!is_dir($logDir)) {
-                mkdir($logDir, 0777, true);
-            }
-            error_log('Connection failed: ' . $e->getMessage(), 3, $logDir . '/error.log');
-            self::renderError($e);
-        }
-
         return self::$conn;
     }
 
@@ -98,18 +56,18 @@ class DB
         return $this;
     }
 
-    public function get()
+    public function get($fetchStyle = PDO::FETCH_OBJ)
     {
         $stmt = self::getConnection()->prepare($this->query);
         $stmt->execute($this->params);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll($fetchStyle);
     }
 
-    public function first()
+    public function first($fetchStyle = PDO::FETCH_OBJ)
     {
         $stmt = self::getConnection()->prepare($this->query . ' LIMIT 1');
         $stmt->execute($this->params);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch($fetchStyle);
     }
 
     public function insert($data)
@@ -125,16 +83,41 @@ class DB
         return $stmt->execute();
     }
 
-    public function update($data)
+    public function update($data, $whereColumn = 'user_id')
     {
+        // Bangun bagian SET dengan menggunakan named placeholders
         $setClause = implode(', ', array_map(fn($col) => "$col = :$col", array_keys($data)));
-        $this->query = "UPDATE $this->table SET $setClause " . $this->query;
 
-        $stmt = self::getConnection()->prepare($this->query);
-        foreach (array_merge($data, $this->params) as $key => $value) {
-            $stmt->bindValue(":$key", $value);
+        // Gabungkan query UPDATE dengan bagian SET
+        $this->query = "UPDATE $this->table SET $setClause";
+
+        // Menambahkan kondisi WHERE dengan kolom yang diterima (misalnya user_id, atau kolom lain)
+        if (!empty($this->params) && isset($this->params[":$whereColumn"])) {
+            // Tambahkan kondisi WHERE dengan kolom yang dinamis
+            $whereClause = " WHERE $whereColumn = :$whereColumn";
+            $this->query .= $whereClause;
         }
-        return $stmt->execute();
+
+        try {
+            // Persiapkan query untuk eksekusi
+            $stmt = self::getConnection()->prepare($this->query);
+
+            // Bind parameter untuk bagian SET
+            foreach ($data as $key => $value) {
+                $stmt->bindValue(":$key", $value);
+            }
+
+            // Bind parameter untuk bagian WHERE (dinamis, menggunakan kolom yang diberikan)
+            if (!empty($this->params) && isset($this->params[":$whereColumn"])) {
+                // Bind parameter dinamis sesuai dengan kolom WHERE
+                $stmt->bindValue(":$whereColumn", $this->params[":$whereColumn"]);
+            }
+
+            // Eksekusi query
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            self::renderError($e);
+        }
     }
 
     public function delete()
@@ -148,11 +131,39 @@ class DB
         return $stmt->execute();
     }
 
-    public static function raw($query, $params = [])
+    public static function raw($query, $params = [], $fetchStyle = PDO::FETCH_OBJ)
     {
         $stmt = self::getConnection()->prepare($query);
         $stmt->execute($params);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll($fetchStyle);
+    }
+    // Eksekusi query
+    public static function query($sql, $params = [])
+    {
+        $stmt = self::getConnection()->prepare($sql);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        $stmt->execute();
+        return $stmt;
+    }
+
+    public static function fetchAll($sql, $params = [], $fetchStyle = PDO::FETCH_OBJ)
+    {
+        $stmt = self::query($sql, $params);
+        return $stmt->fetchAll($fetchStyle);
+    }
+
+    public static function fetch($sql, $params = [], $fetchStyle = PDO::FETCH_OBJ)
+    {
+        $stmt = self::query($sql, $params);
+        return $stmt->fetch($fetchStyle);
+    }
+
+    public static function count($sql, $params = [])
+    {
+        $stmt = self::query($sql, $params);
+        return $stmt->rowCount();
     }
 
     public static function renderError($exception)
@@ -174,37 +185,8 @@ class DB
                 'line' => $exception->getLine(),
             ];
             extract($exceptionData);
-            include __DIR__ . '/../src/View/errors/page_error.php';
+            include __DIR__ . '/../../app/Handle/errors/page_error.php';
         }
         exit();
-    }
-
-    // Eksekusi query
-    public static function query($sql, $params = [])
-    {
-        $stmt = self::getConnection()->prepare($sql);
-        foreach ($params as $key => $value) {
-            $stmt->bindValue($key, $value);
-        }
-        $stmt->execute();
-        return $stmt;
-    }
-
-    public static function fetchAll($sql, $params = [])
-    {
-        $stmt = self::query($sql, $params);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public static function fetch($sql, $params = [])
-    {
-        $stmt = self::query($sql, $params);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public static function count($sql, $params = [])
-    {
-        $stmt = self::query($sql, $params);
-        return $stmt->rowCount();
     }
 }

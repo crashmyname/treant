@@ -7,100 +7,104 @@ use PDOException;
 class Database
 {
     private static $conn;
-    private static $defaultConfig = [];
-    private static $customConfig = []; // Untuk menyimpan konfigurasi database khusus
+    private static $connectionPool = [];
 
     public static function init()
     {
-        // Memuat file .env
         self::loadEnv();
+    }
 
-        // Inisialisasi default config dari environment
-        self::$defaultConfig = [
-            'DB_CONNECTION' => $_ENV['DB_CONNECTION'] ?? 'mysql', // default ke MySQL
-            'DB_HOST' => $_ENV['DB_HOST'] ?? '127.0.0.1',
-            'DB_PORT' => $_ENV['DB_PORT'] ?? '3306', // default ke port MySQL
-            'DB_DATABASE' => $_ENV['DB_DATABASE'] ?? 'defaultdb',
-            'DB_USERNAME' => $_ENV['DB_USERNAME'] ?? 'root',
-            'DB_PASSWORD' => $_ENV['DB_PASSWORD'] ?? '',
-        ];
-
-        // Memuat database custom jika ada (misalnya database dinamis)
-        self::$customConfig = [
-            'custom_db' => [
-                'DB_CONNECTION' => $_ENV['DB_CONNECTION'] ?? 'mysql',
-                'DB_HOST' => $_ENV['DB_HOST'] ?? '127.0.0.1',
-                'DB_PORT' => $_ENV['DB_PORT'] ?? '3306',
-                'DB_DATABASE' => $_ENV['DB_CUSTOM_DINAMIS'] ?? 'custom_db', // Set sesuai yang dibutuhkan
-                'DB_USERNAME' => $_ENV['DB_USERNAME'] ?? 'root',
-                'DB_PASSWORD' => $_ENV['DB_PASSWORD'] ?? '',
-            ],
-        ];
+    public static function getConnectionByDatabase($databaseName)
+    {
+        if (!isset(self::$connectionPool[$databaseName])) {
+            self::setDatabaseConfig($databaseName);
+            self::$connectionPool[$databaseName] = self::$conn;
+        }
+        return self::$connectionPool[$databaseName];
     }
 
     public static function getConnection()
     {
         if (self::$conn === null) {
-            self::connect(self::$defaultConfig);
+            self::setDatabaseConfig('default');
         }
         return self::$conn;
+    }
+
+    private static function setDatabaseConfig($databaseName)
+    {
+        $config = $databaseName === 'default' ? self::getDefaultConfig() : self::getCustomConfig($databaseName);
+        self::connect($config);
     }
 
     private static function connect($config)
     {
         try {
-            // Menentukan jenis database dari konfigurasi
             $dsn = self::getDsn($config);
             self::$conn = new PDO($dsn, $config['DB_USERNAME'], $config['DB_PASSWORD']);
-            self::$conn->exec("set names utf8");
             self::$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            self::setDbEncoding($config['DB_CONNECTION']);
         } catch (PDOException $e) {
             self::handleConnectionError($e);
         }
     }
 
+    private static function getDefaultConfig()
+    {
+        return [
+            'DB_CONNECTION' => $_ENV['DB_CONNECTION'] ?? 'mysql',
+            'DB_HOST' => $_ENV['DB_HOST'] ?? '127.0.0.1',
+            'DB_PORT' => $_ENV['DB_PORT'] ?? '3306',
+            'DB_DATABASE' => $_ENV['DB_DATABASE'] ?? 'defaultdb',
+            'DB_USERNAME' => $_ENV['DB_USERNAME'] ?? 'root',
+            'DB_PASSWORD' => $_ENV['DB_PASSWORD'] ?? '',
+        ];
+    }
+
+    private static function getCustomConfig($databaseName)
+    {
+        return [
+            'DB_CONNECTION' => $_ENV['DB_CONNECTION'] ?? 'mysql',
+            'DB_HOST' => $_ENV['DB_HOST'] ?? '127.0.0.1',
+            'DB_PORT' => $_ENV['DB_PORT'] ?? '3306',
+            'DB_DATABASE' => $_ENV['DB_CUSTOM_DINAMIS'] ?? 'custom_db',
+            'DB_USERNAME' => $_ENV['DB_USERNAME'] ?? 'root',
+            'DB_PASSWORD' => $_ENV['DB_PASSWORD'] ?? '',
+        ];
+    }
+
     private static function getDsn($config)
     {
         $connection = $config['DB_CONNECTION'];
-
         switch ($connection) {
-            case 'mysql': // mysql
+            case 'mysql':
                 return "mysql:host={$config['DB_HOST']};port={$config['DB_PORT']};dbname={$config['DB_DATABASE']}";
-            case 'pgsql': // pgsql
+            case 'pgsql':
                 return "pgsql:host={$config['DB_HOST']};port={$config['DB_PORT']};dbname={$config['DB_DATABASE']}";
-            case 'sqlsrv': // SQL Server
+            case 'sqlsrv':
                 return "sqlsrv:Server={$config['DB_HOST']},{$config['DB_PORT']};Database={$config['DB_DATABASE']}";
-            case 'sqlite': // Sqlite
-                return "sqlite:{$config['DB_DATABASE']}"; // Path to SQLite file
-            case 'oci': // Oracle
-                return "oci:dbname={$config['DB_HOST']}:{$config['DB_PORT']}/{$config['DB_DATABASE']}";
-            case 'access': // Microsoft Access
-                return "odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq={$config['DB_DATABASE']}";
-            case 'db2': // DB2
-                return "db2:host={$config['DB_HOST']};port={$config['DB_PORT']};dbname={$config['DB_DATABASE']}";
+            case 'sqlite':
+                return "sqlite:{$config['DB_DATABASE']}";
             default:
                 throw new PDOException("Unsupported database connection type: {$connection}");
         }
     }
 
-    public static function setDatabaseConfig($databaseName)
+    private static function setDbEncoding($connection)
     {
-        // Jika nama database ada dalam custom config, gunakan itu
-        if (isset(self::$customConfig[$databaseName])) {
-            self::connect(self::$customConfig[$databaseName]);
-        } else {
-            // Jika tidak, gunakan default config
-            self::connect(self::$defaultConfig);
+        switch (strtolower($connection)) {
+            case 'mysql':
+                self::$conn->exec('SET NAMES utf8mb4');
+                break;
+            case 'pgsql':
+                self::$conn->exec("SET client_encoding TO 'UTF8'");
+                break;
+            default:
+                break;
         }
     }
 
-    public static function reconnect($databaseName)
-    {
-        self::$conn = null; // Tutup koneksi saat ini
-        self::setDatabaseConfig($databaseName); // Reconnect dengan database baru
-    }
-
-    private static function handleConnectionError($exception)
+    public static function handleConnectionError($exception)
     {
         $logDir = __DIR__ . '/../logs';
         if (!is_dir($logDir)) {
@@ -129,25 +133,21 @@ class Database
         exit();
     }
 
-    // Fungsi untuk memuat .env
     private static function loadEnv()
     {
-        $envFilePath = __DIR__ . '/../.env'; // Sesuaikan path dengan struktur folder Anda
+        $envFilePath = __DIR__ . '/../.env';
         if (file_exists($envFilePath)) {
             $env = parse_ini_file($envFilePath);
             if ($env !== false) {
                 foreach ($env as $key => $value) {
-                    $_ENV[$key] = $value; // Menyimpan variabel ke $_ENV
+                    $_ENV[$key] = $value;
                 }
-            } else {
-                echo "Error parsing .env file.";
             }
-        } else {
-            echo "File .env tidak ditemukan.";
         }
     }
 }
 
-Database::init(); // Initialize default config on load
+Database::init();
+
 
 ?>
