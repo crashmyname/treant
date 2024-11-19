@@ -42,6 +42,18 @@ class DB
         return $instance;
     }
 
+    public function lockForUpdate()
+    {
+        $this->query .= ' FOR UPDATE';
+        return $this;
+    }
+
+    public function sharedLock()
+    {
+        $this->query .= ' LOCK IN SHARE MODE';
+        return $this;
+    }
+
     public function select($columns = ['*'])
     {
         $this->query = 'SELECT ' . implode(', ', $columns) . ' FROM ' . $this->table;

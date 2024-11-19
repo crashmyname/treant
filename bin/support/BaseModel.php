@@ -479,6 +479,74 @@ class BaseModel
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function lockForUpdate()
+    {
+        $sql = "SELECT {$this->distinct} " . implode(', ', $this->selectColumns) . " FROM {$this->table}";
+
+        if (!empty($this->joins)) {
+            $sql .= ' ' . implode(' ', $this->joins);
+        }
+
+        if (!empty($this->whereConditions) || !empty($this->orWhereConditions)) {
+            $sql .= ' WHERE ';
+            $conditions = [];
+
+            if (!empty($this->whereConditions)) {
+                $conditions[] = '(' . implode(' AND ', $this->whereConditions) . ')';
+            }
+
+            if (!empty($this->orWhereConditions)) {
+                $conditions[] = '(' . implode(' OR ', $this->orWhereConditions) . ')';
+            }
+
+            $sql .= implode(' AND ', $conditions);
+        }
+
+        $sql .= ' FOR UPDATE';
+
+        $stmt = $this->connection->prepare($sql);
+
+        foreach ($this->whereParams as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+    public function sharedLock()
+    {
+        $sql = "SELECT {$this->distinct} " . implode(', ', $this->selectColumns) . " FROM {$this->table}";
+
+        if (!empty($this->joins)) {
+            $sql .= ' ' . implode(' ', $this->joins);
+        }
+
+        if (!empty($this->whereConditions) || !empty($this->orWhereConditions)) {
+            $sql .= ' WHERE ';
+            $conditions = [];
+
+            if (!empty($this->whereConditions)) {
+                $conditions[] = '(' . implode(' AND ', $this->whereConditions) . ')';
+            }
+
+            if (!empty($this->orWhereConditions)) {
+                $conditions[] = '(' . implode(' OR ', $this->orWhereConditions) . ')';
+            }
+
+            $sql .= implode(' AND ', $conditions);
+        }
+
+        $sql .= ' LOCK IN SHARE MODE';
+
+        $stmt = $this->connection->prepare($sql);
+
+        foreach ($this->whereParams as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
 
     public function delete()
     {
@@ -488,7 +556,7 @@ class BaseModel
         $stmt->execute();
     }
 
-    public static function find($id,$fetchStyle = PDO::FETCH_OBJ)
+    public static function find($id, $fetchStyle = PDO::FETCH_OBJ)
     {
         $instance = new static();
         $sql = "SELECT * FROM {$instance->table} WHERE {$instance->primaryKey} = :id";
@@ -499,7 +567,7 @@ class BaseModel
         $data = $stmt->fetch($fetchStyle);
 
         if ($data) {
-            return new static((array)$data);
+            return new static((array) $data);
         }
 
         return null;
