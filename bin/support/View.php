@@ -44,7 +44,8 @@ class View
             if (!headers_sent()) { 
                 http_response_code(500);
             }
-            self::renderError($e);
+            // self::renderError($e);
+            ErrorHandler::handleException($e);
         }
         exit();
     }
@@ -76,7 +77,8 @@ class View
             if (!headers_sent()) { 
                 http_response_code(500);
             }
-            self::renderError($e);
+            // self::renderError($e);
+            ErrorHandler::handleException($e);
         }
         exit();
     }

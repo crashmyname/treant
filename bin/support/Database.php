@@ -39,7 +39,7 @@ class Database
             self::$conn->exec("set names utf8");
             self::$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            self::renderError($e);
+            ErrorHandler::handleException($e);
         }
 
         return self::$conn;

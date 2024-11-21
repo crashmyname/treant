@@ -429,6 +429,7 @@ class BaseController {
 
     public function view($view, $data = [], $layout = null)
     {
+        setSecurityHeaders();
         try{
             extract($data);
             $viewPath = __DIR__ . '/../../src/View/' . $view . '.php';
@@ -453,7 +454,8 @@ class BaseController {
             if (!headers_sent()) { 
                 http_response_code(500);
             }
-            View::renderError($e);
+            // View::renderError($e);
+            ErrorHandler::handleException($e);
         }
         exit();
     }

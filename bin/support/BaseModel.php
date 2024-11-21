@@ -34,10 +34,15 @@ class BaseModel
 
     private function connect()
     {
-        $database = new Database();
-        $this->connection = $database->getConnection();
-        if ($this->connection === null) {
-            die('Connection Failed');
+        try{
+            $database = new Database();
+            $this->connection = $database->getConnection();
+            if ($this->connection === null) {
+                throw new \Exception('Database connection failed.');
+            }
+        } catch (\Exception $e){
+            ErrorHandler::handleException($e);
+            die();
         }
     }
 
@@ -63,9 +68,14 @@ class BaseModel
 
     public static function create($attributes)
     {
-        $instance = new static($attributes);
-        $instance->save();
-        return $instance;
+        try{
+            $instance = new static($attributes);
+            $instance->save();
+            return $instance;
+        } catch(\Exception $e){
+            ErrorHandler::handleException($e);
+            return null;
+        }
     }
 
     public function beginTransaction()
@@ -241,51 +251,56 @@ class BaseModel
 
     public function get($fetchStyle = PDO::FETCH_OBJ)
     {
-        $sql = "SELECT {$this->distinct} " . implode(', ', $this->selectColumns) . " FROM {$this->table}";
-
-        if (!empty($this->joins)) {
-            $sql .= ' ' . implode(' ', $this->joins);
-        }
-
-        if (!empty($this->whereConditions) || !empty($this->orWhereConditions)) {
-            $sql .= ' WHERE ';
-            $conditions = [];
-
-            if (!empty($this->whereConditions)) {
-                $conditions[] = '(' . implode(' AND ', $this->whereConditions) . ')';
+        try{
+            $sql = "SELECT {$this->distinct} " . implode(', ', $this->selectColumns) . " FROM {$this->table}";
+    
+            if (!empty($this->joins)) {
+                $sql .= ' ' . implode(' ', $this->joins);
             }
-
-            if (!empty($this->orWhereConditions)) {
-                $conditions[] = '(' . implode(' OR ', $this->orWhereConditions) . ')';
+    
+            if (!empty($this->whereConditions) || !empty($this->orWhereConditions)) {
+                $sql .= ' WHERE ';
+                $conditions = [];
+    
+                if (!empty($this->whereConditions)) {
+                    $conditions[] = '(' . implode(' AND ', $this->whereConditions) . ')';
+                }
+    
+                if (!empty($this->orWhereConditions)) {
+                    $conditions[] = '(' . implode(' OR ', $this->orWhereConditions) . ')';
+                }
+    
+                $sql .= implode(' AND ', $conditions); // Gabung AND dan OR dengan benar
             }
-
-            $sql .= implode(' AND ', $conditions); // Gabung AND dan OR dengan benar
+    
+            if (!empty($this->groupBy)) {
+                $sql .= ' GROUP BY ' . $this->groupBy;
+            }
+    
+            if (!empty($this->orderBy)) {
+                $sql .= ' ORDER BY ' . implode(', ', $this->orderBy);
+            }
+    
+            if ($this->limit !== null) {
+                $sql .= ' LIMIT ' . (int) $this->limit;
+            }
+    
+            if ($this->offset !== null) {
+                $sql .= ' OFFSET ' . (int) $this->offset;
+            }
+    
+            $stmt = $this->connection->prepare($sql);
+    
+            foreach ($this->whereParams as $key => $value) {
+                $stmt->bindValue($key, $value);
+            }
+    
+            $stmt->execute();
+            return $stmt->fetchAll($fetchStyle);
+        } catch(\Exception $e){
+            ErrorHandler::handleException($e);
+            return [];
         }
-
-        if (!empty($this->groupBy)) {
-            $sql .= ' GROUP BY ' . $this->groupBy;
-        }
-
-        if (!empty($this->orderBy)) {
-            $sql .= ' ORDER BY ' . implode(', ', $this->orderBy);
-        }
-
-        if ($this->limit !== null) {
-            $sql .= ' LIMIT ' . (int) $this->limit;
-        }
-
-        if ($this->offset !== null) {
-            $sql .= ' OFFSET ' . (int) $this->offset;
-        }
-
-        $stmt = $this->connection->prepare($sql);
-
-        foreach ($this->whereParams as $key => $value) {
-            $stmt->bindValue($key, $value);
-        }
-
-        $stmt->execute();
-        return $stmt->fetchAll($fetchStyle);
     }
 
     public function toSql()
@@ -331,90 +346,109 @@ class BaseModel
 
     public static function all($fetchStyle = PDO::FETCH_OBJ)
     {
-        $instance = new static();
-        $sql = "SELECT * FROM {$instance->table}";
-        $stmt = $instance->connection->prepare($sql);
-        $stmt->execute();
-        $data = $stmt->fetchAll($fetchStyle);
-        return $data;
+        try{
+            $instance = new static();
+            $sql = "SELECT * FROM {$instance->table}";
+            $stmt = $instance->connection->prepare($sql);
+            $stmt->execute();
+            $data = $stmt->fetchAll($fetchStyle);
+            return $data;
+        } catch(\Exception $e){
+            ErrorHandler::handleException($e);
+            return [];
+        }
     }
 
     public function count()
     {
-        $sql = "SELECT COUNT(*) as count FROM {$this->table}";
+        try{
 
-        if (!empty($this->joins)) {
-            $sql .= ' ' . implode(' ', $this->joins);
-        }
-
-        if (!empty($this->whereConditions) || !empty($this->orWhereConditions)) {
-            $sql .= ' WHERE ';
-            $conditions = [];
-
-            // Memasukkan where conditions
-            if (!empty($this->whereConditions)) {
-                $conditions[] = '(' . implode(' AND ', $this->whereConditions) . ')';
+            $sql = "SELECT COUNT(*) as count FROM {$this->table}";
+    
+            if (!empty($this->joins)) {
+                $sql .= ' ' . implode(' ', $this->joins);
             }
-
-            // Memasukkan orWhere conditions
-            if (!empty($this->orWhereConditions)) {
-                $conditions[] = '(' . implode(' OR ', $this->orWhereConditions) . ')';
+    
+            if (!empty($this->whereConditions) || !empty($this->orWhereConditions)) {
+                $sql .= ' WHERE ';
+                $conditions = [];
+    
+                // Memasukkan where conditions
+                if (!empty($this->whereConditions)) {
+                    $conditions[] = '(' . implode(' AND ', $this->whereConditions) . ')';
+                }
+    
+                // Memasukkan orWhere conditions
+                if (!empty($this->orWhereConditions)) {
+                    $conditions[] = '(' . implode(' OR ', $this->orWhereConditions) . ')';
+                }
+    
+                // Gabungkan semua kondisi
+                $sql .= implode(' AND ', $conditions);
             }
-
-            // Gabungkan semua kondisi
-            $sql .= implode(' AND ', $conditions);
+    
+            $stmt = $this->connection->prepare($sql);
+    
+            foreach ($this->whereParams as $key => $value) {
+                $stmt->bindValue($key, $value);
+            }
+    
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            return $result['count'];
+        } catch(\Exception $e){
+            ErrorHandler::handleException($e);
+            return 0;
         }
-
-        $stmt = $this->connection->prepare($sql);
-
-        foreach ($this->whereParams as $key => $value) {
-            $stmt->bindValue($key, $value);
-        }
-
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $result['count'];
     }
 
     public function save()
     {
-        $this->connection = DB::getConnection();
-        if (isset($this->attributes[$this->primaryKey])) {
-            $this->updates();
-        } else {
-            $columns = implode(',', array_keys($this->attributes));
-            $placeholders = ':' . implode(', :', array_keys($this->attributes));
-            $sql = "INSERT INTO {$this->table} ({$columns}) VALUES ({$placeholders})";
-
-            $stmt = $this->connection->prepare($sql);
-
-            foreach ($this->attributes as $key => $value) {
-                $stmt->bindValue(':' . $key, $value);
+        try{
+            $this->connection = DB::getConnection();
+            if (isset($this->attributes[$this->primaryKey])) {
+                $this->updates();
+            } else {
+                $columns = implode(',', array_keys($this->attributes));
+                $placeholders = ':' . implode(', :', array_keys($this->attributes));
+                $sql = "INSERT INTO {$this->table} ({$columns}) VALUES ({$placeholders})";
+    
+                $stmt = $this->connection->prepare($sql);
+    
+                foreach ($this->attributes as $key => $value) {
+                    $stmt->bindValue(':' . $key, $value);
+                }
+    
+                $stmt->execute();
+                $this->attributes[$this->primaryKey] = $this->connection->lastInsertId();
             }
-
-            $stmt->execute();
-            $this->attributes[$this->primaryKey] = $this->connection->lastInsertId();
+        } catch (\Exception $e){
+            ErrorHandler::handleException($e);
         }
     }
 
     public function updates()
     {
-        $setClause = [];
-        foreach ($this->attributes as $key => $value) {
-            $setClause[] = "{$key} = :{$key}";
+        try{
+            $setClause = [];
+            foreach ($this->attributes as $key => $value) {
+                $setClause[] = "{$key} = :{$key}";
+            }
+            $setClause = implode(', ', $setClause);
+    
+            $sql = "UPDATE {$this->table} SET {$setClause} WHERE {$this->primaryKey} = :{$this->primaryKey}";
+    
+            $stmt = $this->connection->prepare($sql);
+    
+            foreach ($this->attributes as $key => $value) {
+                $stmt->bindValue(':' . $key, $value);
+            }
+    
+            $stmt->execute();
+        } catch(\Exception $e){
+            ErrorHandler::handleException($e);
         }
-        $setClause = implode(', ', $setClause);
-
-        $sql = "UPDATE {$this->table} SET {$setClause} WHERE {$this->primaryKey} = :{$this->primaryKey}";
-
-        $stmt = $this->connection->prepare($sql);
-
-        foreach ($this->attributes as $key => $value) {
-            $stmt->bindValue(':' . $key, $value);
-        }
-
-        $stmt->execute();
     }
     public function update($data)
     {
@@ -550,10 +584,14 @@ class BaseModel
 
     public function delete()
     {
-        $sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = :{$this->primaryKey}";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':' . $this->primaryKey, $this->attributes[$this->primaryKey]);
-        $stmt->execute();
+        try{
+            $sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = :{$this->primaryKey}";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindValue(':' . $this->primaryKey, $this->attributes[$this->primaryKey]);
+            $stmt->execute();
+        } catch(\Exception $e){
+            ErrorHandler::handleException($e);
+        }
     }
 
     public static function find($id, $fetchStyle = PDO::FETCH_OBJ)

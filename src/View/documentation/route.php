@@ -12,18 +12,12 @@
         echo htmlentities('<?php');
         echo '<br>';
         echo '
-use Support\Request;
 use Support\Route;
 use Support\View;
-use Support\CSRFToken;
 use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
-use Support\Crypto;
-use Support\UUID;
-use Support\Response;
 use App\Controllers\YourController;
-handleMiddleware();
+handleMiddleware(); //<-- jika diperlukan rate limiter
 
-Route::init($prefix);
 Route::get("/",function(){
     View::render("welcome/welcome");
 })->name("home");
@@ -55,7 +49,8 @@ echo 'Route::get("/",function(){
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
         echo 'Route::put("/yourpath/{id}",[YourController::class,"store"],[AuthMiddleware::class]);
 &lt;form action="/resource/update/{id}" method="POST"&gt;
-    &lt;input type="hidden" name="_method" value="PUT"&gt;
+    &lt;?= method("PUT");?&gt;
+    &lt;?= csrf();?&gt;
     &lt;input type="submit" value="Update"&gt;
 &lt;/form&gt;
 
@@ -68,7 +63,8 @@ echo 'Route::get("/",function(){
         echo '<code style="font-family: Consolas, \'Courier New\', monospace;">';
         echo 'Route::delete("/yourpath/{id}",[YourController::class,"destroy"],[AuthMiddleware::class]);
 &lt;form action="/resource/delete/{id}" method="POST"&gt;
-    &lt;input type="hidden" name="_method" value="DELETE"&gt;
+    &lt;?= method("DELETE");?&gt;
+    &lt;?= csrf();?&gt;
     &lt;input type="submit" value="Delete"&gt;
 &lt;/form&gt;
 ';
