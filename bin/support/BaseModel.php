@@ -10,6 +10,7 @@ use Support\DB;
 class BaseModel
 {
     protected $table;
+    protected static $dynamicTable = null;
     protected $primaryKey = 'id';
     protected $fillable = [];
     protected $guarded = [];
@@ -34,13 +35,13 @@ class BaseModel
 
     private function connect()
     {
-        try{
+        try {
             $database = new Database();
             $this->connection = $database->getConnection();
             if ($this->connection === null) {
                 throw new \Exception('Database connection failed.');
             }
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             ErrorHandler::handleException($e);
             die();
         }
@@ -64,18 +65,6 @@ class BaseModel
     public function fill(array $attributes)
     {
         $this->attributes = array_merge($this->attributes, $this->filterAttributes($attributes));
-    }
-
-    public static function create($attributes)
-    {
-        try{
-            $instance = new static($attributes);
-            $instance->save();
-            return $instance;
-        } catch(\Exception $e){
-            ErrorHandler::handleException($e);
-            return null;
-        }
     }
 
     public function beginTransaction()
@@ -251,26 +240,73 @@ class BaseModel
 
     public function get($fetchStyle = PDO::FETCH_OBJ)
     {
+        try {
+            $table = self::$dynamicTable ?? $this->table;
+
+            $sql = "SELECT {$this->distinct} " . implode(', ', $this->selectColumns) . " FROM {$table}";
+
+            if (!empty($this->joins)) {
+                $sql .= ' ' . implode(' ', $this->joins);
+            }
+
+            if (!empty($this->whereConditions) || !empty($this->orWhereConditions)) {
+                $sql .= ' WHERE ';
+                $conditions = [];
+
+                if (!empty($this->whereConditions)) {
+                    $conditions[] = '(' . implode(' AND ', $this->whereConditions) . ')';
+                }
+
+                if (!empty($this->orWhereConditions)) {
+                    $conditions[] = '(' . implode(' OR ', $this->orWhereConditions) . ')';
+                }
+
+                $sql .= implode(' AND ', $conditions); // Gabung AND dan OR dengan benar
+            }
+
+            if (!empty($this->groupBy)) {
+                $sql .= ' GROUP BY ' . $this->groupBy;
+            }
+
+            if (!empty($this->orderBy)) {
+                $sql .= ' ORDER BY ' . implode(', ', $this->orderBy);
+            }
+
+            if ($this->limit !== null) {
+                $sql .= ' LIMIT ' . (int) $this->limit;
+            }
+
+            if ($this->offset !== null) {
+                $sql .= ' OFFSET ' . (int) $this->offset;
+            }
+
+            $stmt = $this->connection->prepare($sql);
+
+            foreach ($this->whereParams as $key => $value) {
+                $stmt->bindValue($key, $value);
+            }
+
+            $stmt->execute();
+            return $stmt->fetchAll($fetchStyle);
+        } catch (\Exception $e) {
+            ErrorHandler::handleException($e);
+            return [];
+        }
+    }
+
+    public function toSql()
+    {
         try{
-            $sql = "SELECT {$this->distinct} " . implode(', ', $this->selectColumns) . " FROM {$this->table}";
+
+            $table = self::$dynamicTable ?? $this->table;
+            $sql = "SELECT {$this->distinct} " . implode(', ', $this->selectColumns) . " FROM {$table}";
     
             if (!empty($this->joins)) {
                 $sql .= ' ' . implode(' ', $this->joins);
             }
     
-            if (!empty($this->whereConditions) || !empty($this->orWhereConditions)) {
-                $sql .= ' WHERE ';
-                $conditions = [];
-    
-                if (!empty($this->whereConditions)) {
-                    $conditions[] = '(' . implode(' AND ', $this->whereConditions) . ')';
-                }
-    
-                if (!empty($this->orWhereConditions)) {
-                    $conditions[] = '(' . implode(' OR ', $this->orWhereConditions) . ')';
-                }
-    
-                $sql .= implode(' AND ', $conditions); // Gabung AND dan OR dengan benar
+            if (!empty($this->whereConditions)) {
+                $sql .= ' WHERE ' . implode(' AND ', $this->whereConditions);
             }
     
             if (!empty($this->groupBy)) {
@@ -289,49 +325,10 @@ class BaseModel
                 $sql .= ' OFFSET ' . (int) $this->offset;
             }
     
-            $stmt = $this->connection->prepare($sql);
-    
-            foreach ($this->whereParams as $key => $value) {
-                $stmt->bindValue($key, $value);
-            }
-    
-            $stmt->execute();
-            return $stmt->fetchAll($fetchStyle);
-        } catch(\Exception $e){
+            return $sql;
+        } catch (\Exception $e){
             ErrorHandler::handleException($e);
-            return [];
         }
-    }
-
-    public function toSql()
-    {
-        $sql = "SELECT {$this->distinct} " . implode(', ', $this->selectColumns) . " FROM {$this->table}";
-
-        if (!empty($this->joins)) {
-            $sql .= ' ' . implode(' ', $this->joins);
-        }
-
-        if (!empty($this->whereConditions)) {
-            $sql .= ' WHERE ' . implode(' AND ', $this->whereConditions);
-        }
-
-        if (!empty($this->groupBy)) {
-            $sql .= ' GROUP BY ' . $this->groupBy;
-        }
-
-        if (!empty($this->orderBy)) {
-            $sql .= ' ORDER BY ' . implode(', ', $this->orderBy);
-        }
-
-        if ($this->limit !== null) {
-            $sql .= ' LIMIT ' . (int) $this->limit;
-        }
-
-        if ($this->offset !== null) {
-            $sql .= ' OFFSET ' . (int) $this->offset;
-        }
-
-        return $sql;
     }
 
     public function first()
@@ -344,16 +341,25 @@ class BaseModel
         return null;
     }
 
+    public static function setTable($tablecustom)
+    {
+        $instance = new static();
+        $tablePrefix = $instance->table;
+        self::$dynamicTable = $tablePrefix . $tablecustom;
+        return new static();
+    }
+
     public static function all($fetchStyle = PDO::FETCH_OBJ)
     {
-        try{
+        try {
             $instance = new static();
+            $instance->table = self::$dynamicTable ?? $instance->table ?? 'default_table';
             $sql = "SELECT * FROM {$instance->table}";
             $stmt = $instance->connection->prepare($sql);
             $stmt->execute();
             $data = $stmt->fetchAll($fetchStyle);
             return $data;
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             ErrorHandler::handleException($e);
             return [];
         }
@@ -361,92 +367,125 @@ class BaseModel
 
     public function count()
     {
-        try{
+        try {
+            $table = self::$dynamicTable ?? $this->table;
+            $sql = "SELECT COUNT(*) as count FROM {$table}";
 
-            $sql = "SELECT COUNT(*) as count FROM {$this->table}";
-    
             if (!empty($this->joins)) {
                 $sql .= ' ' . implode(' ', $this->joins);
             }
-    
+
             if (!empty($this->whereConditions) || !empty($this->orWhereConditions)) {
                 $sql .= ' WHERE ';
                 $conditions = [];
-    
+
                 // Memasukkan where conditions
                 if (!empty($this->whereConditions)) {
                     $conditions[] = '(' . implode(' AND ', $this->whereConditions) . ')';
                 }
-    
+
                 // Memasukkan orWhere conditions
                 if (!empty($this->orWhereConditions)) {
                     $conditions[] = '(' . implode(' OR ', $this->orWhereConditions) . ')';
                 }
-    
+
                 // Gabungkan semua kondisi
                 $sql .= implode(' AND ', $conditions);
             }
-    
+
             $stmt = $this->connection->prepare($sql);
-    
+
             foreach ($this->whereParams as $key => $value) {
                 $stmt->bindValue($key, $value);
             }
-    
+
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
             return $result['count'];
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             ErrorHandler::handleException($e);
             return 0;
         }
     }
 
+    public static function create($attributes)
+    {
+        try {
+            $instance = new static($attributes);
+            if (self::$dynamicTable) {
+                $instance->table = self::$dynamicTable; // Gunakan tabel yang telah diset secara statis
+            }
+            // Jika properti $table kosong, set ke default tabel model
+            if (!$instance->table) {
+                $instance->table = isset($instance->table) ? $instance->table : 'default_table'; // Default based on the model
+            }
+            $instance->save();
+            return $instance;
+        } catch (\Exception $e) {
+            ErrorHandler::handleException($e);
+            return null;
+        }
+    }
+
     public function save()
     {
-        try{
+        try {
             $this->connection = DB::getConnection();
+
             if (isset($this->attributes[$this->primaryKey])) {
-                $this->updates();
+                $this->updates(); // Menggunakan update jika sudah ada primary key
             } else {
+                // Menyiapkan kolom dan placeholders
                 $columns = implode(',', array_keys($this->attributes));
                 $placeholders = ':' . implode(', :', array_keys($this->attributes));
-                $sql = "INSERT INTO {$this->table} ({$columns}) VALUES ({$placeholders})";
-    
+
+                $table = self::$dynamicTable ?? $this->table;
+                // Menambahkan RETURNING untuk mengambil nilai primary key
+                $sql = "INSERT INTO {$table} ({$columns}) VALUES ({$placeholders}) RETURNING {$this->primaryKey}";
+
+                // Menyiapkan statement
                 $stmt = $this->connection->prepare($sql);
-    
+
+                // Mengikat parameter
                 foreach ($this->attributes as $key => $value) {
                     $stmt->bindValue(':' . $key, $value);
                 }
-    
+
+                // Eksekusi query
                 $stmt->execute();
-                $this->attributes[$this->primaryKey] = $this->connection->lastInsertId();
+
+                // Mengambil ID yang baru dimasukkan menggunakan RETURNING
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $this->attributes[$this->primaryKey] = $result[$this->primaryKey]; // Menyimpan ID yang baru dimasukkan
             }
-        } catch (\Exception $e){
-            ErrorHandler::handleException($e);
+        } catch (\Exception $e) {
+            ErrorHandler::handleException($e); // Menangani error
         }
     }
 
     public function updates()
     {
-        try{
+        try {
+            if (empty($this->table)) {
+                $this->table = 'default_table'; // Fallback jika table tidak diatur
+            }
             $setClause = [];
             foreach ($this->attributes as $key => $value) {
                 $setClause[] = "{$key} = :{$key}";
             }
             $setClause = implode(', ', $setClause);
-    
+
             $sql = "UPDATE {$this->table} SET {$setClause} WHERE {$this->primaryKey} = :{$this->primaryKey}";
-    
+
             $stmt = $this->connection->prepare($sql);
-    
+
             foreach ($this->attributes as $key => $value) {
                 $stmt->bindValue(':' . $key, $value);
             }
-    
+
             $stmt->execute();
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             ErrorHandler::handleException($e);
         }
     }
@@ -460,8 +499,9 @@ class BaseModel
         }
         $setClause = implode(', ', $setClause);
 
+        $table = self::$dynamicTable ?? $this->table;
         // Siapkan SQL query untuk update
-        $sql = "UPDATE {$this->table} SET {$setClause} WHERE {$this->primaryKey} = :{$this->primaryKey}";
+        $sql = "UPDATE {$table} SET {$setClause} WHERE {$this->primaryKey} = :{$this->primaryKey}";
 
         // Siapkan statement
         $stmt = $this->connection->prepare($sql);
@@ -476,6 +516,110 @@ class BaseModel
 
         // Eksekusi query
         $stmt->execute();
+    }
+    public function delete()
+    {
+        try {
+            $table = self::$dynamicTable ?? $this->table;
+            $sql = "DELETE FROM {$table} WHERE {$this->primaryKey} = :{$this->primaryKey}";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindValue(':' . $this->primaryKey, $this->attributes[$this->primaryKey]);
+            $stmt->execute();
+        } catch (\Exception $e) {
+            ErrorHandler::handleException($e);
+        }
+    }
+    public function lockForUpdate()
+    {
+        if (empty($this->table)) {
+            $this->table = 'default_table'; // Fallback jika table tidak diatur
+        }
+        $sql = "SELECT {$this->distinct} " . implode(', ', $this->selectColumns) . " FROM {$this->table}";
+
+        if (!empty($this->joins)) {
+            $sql .= ' ' . implode(' ', $this->joins);
+        }
+
+        if (!empty($this->whereConditions) || !empty($this->orWhereConditions)) {
+            $sql .= ' WHERE ';
+            $conditions = [];
+
+            if (!empty($this->whereConditions)) {
+                $conditions[] = '(' . implode(' AND ', $this->whereConditions) . ')';
+            }
+
+            if (!empty($this->orWhereConditions)) {
+                $conditions[] = '(' . implode(' OR ', $this->orWhereConditions) . ')';
+            }
+
+            $sql .= implode(' AND ', $conditions);
+        }
+
+        $sql .= ' FOR UPDATE';
+
+        $stmt = $this->connection->prepare($sql);
+
+        foreach ($this->whereParams as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+    public function sharedLock()
+    {
+        if (empty($this->table)) {
+            $this->table = 'default_table'; // Fallback jika table tidak diatur
+        }
+        $sql = "SELECT {$this->distinct} " . implode(', ', $this->selectColumns) . " FROM {$this->table}";
+
+        if (!empty($this->joins)) {
+            $sql .= ' ' . implode(' ', $this->joins);
+        }
+
+        if (!empty($this->whereConditions) || !empty($this->orWhereConditions)) {
+            $sql .= ' WHERE ';
+            $conditions = [];
+
+            if (!empty($this->whereConditions)) {
+                $conditions[] = '(' . implode(' AND ', $this->whereConditions) . ')';
+            }
+
+            if (!empty($this->orWhereConditions)) {
+                $conditions[] = '(' . implode(' OR ', $this->orWhereConditions) . ')';
+            }
+
+            $sql .= implode(' AND ', $conditions);
+        }
+
+        $sql .= ' LOCK IN SHARE MODE';
+
+        $stmt = $this->connection->prepare($sql);
+
+        foreach ($this->whereParams as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public static function find($id, $fetchStyle = PDO::FETCH_OBJ)
+    {
+        $instance = new static();
+        $table = self::$dynamicTable ?? $instance->table;
+        $sql = "SELECT * FROM {$table} WHERE {$instance->primaryKey} = :id";
+        $stmt = $instance->connection->prepare($sql);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $data = $stmt->fetch($fetchStyle);
+
+        if ($data) {
+            return new static((array) $data);
+        }
+
+        return null;
     }
 
     public function hasOne($relatedModel, $foreignKey, $localKey = 'id')
@@ -512,103 +656,6 @@ class BaseModel
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function lockForUpdate()
-    {
-        $sql = "SELECT {$this->distinct} " . implode(', ', $this->selectColumns) . " FROM {$this->table}";
-
-        if (!empty($this->joins)) {
-            $sql .= ' ' . implode(' ', $this->joins);
-        }
-
-        if (!empty($this->whereConditions) || !empty($this->orWhereConditions)) {
-            $sql .= ' WHERE ';
-            $conditions = [];
-
-            if (!empty($this->whereConditions)) {
-                $conditions[] = '(' . implode(' AND ', $this->whereConditions) . ')';
-            }
-
-            if (!empty($this->orWhereConditions)) {
-                $conditions[] = '(' . implode(' OR ', $this->orWhereConditions) . ')';
-            }
-
-            $sql .= implode(' AND ', $conditions);
-        }
-
-        $sql .= ' FOR UPDATE';
-
-        $stmt = $this->connection->prepare($sql);
-
-        foreach ($this->whereParams as $key => $value) {
-            $stmt->bindValue($key, $value);
-        }
-
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_OBJ);
-    }
-    public function sharedLock()
-    {
-        $sql = "SELECT {$this->distinct} " . implode(', ', $this->selectColumns) . " FROM {$this->table}";
-
-        if (!empty($this->joins)) {
-            $sql .= ' ' . implode(' ', $this->joins);
-        }
-
-        if (!empty($this->whereConditions) || !empty($this->orWhereConditions)) {
-            $sql .= ' WHERE ';
-            $conditions = [];
-
-            if (!empty($this->whereConditions)) {
-                $conditions[] = '(' . implode(' AND ', $this->whereConditions) . ')';
-            }
-
-            if (!empty($this->orWhereConditions)) {
-                $conditions[] = '(' . implode(' OR ', $this->orWhereConditions) . ')';
-            }
-
-            $sql .= implode(' AND ', $conditions);
-        }
-
-        $sql .= ' LOCK IN SHARE MODE';
-
-        $stmt = $this->connection->prepare($sql);
-
-        foreach ($this->whereParams as $key => $value) {
-            $stmt->bindValue($key, $value);
-        }
-
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_OBJ);
-    }
-
-    public function delete()
-    {
-        try{
-            $sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = :{$this->primaryKey}";
-            $stmt = $this->connection->prepare($sql);
-            $stmt->bindValue(':' . $this->primaryKey, $this->attributes[$this->primaryKey]);
-            $stmt->execute();
-        } catch(\Exception $e){
-            ErrorHandler::handleException($e);
-        }
-    }
-
-    public static function find($id, $fetchStyle = PDO::FETCH_OBJ)
-    {
-        $instance = new static();
-        $sql = "SELECT * FROM {$instance->table} WHERE {$instance->primaryKey} = :id";
-        $stmt = $instance->connection->prepare($sql);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $data = $stmt->fetch($fetchStyle);
-
-        if ($data) {
-            return new static((array) $data);
-        }
-
-        return null;
     }
 
     public function toArray()
