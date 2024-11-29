@@ -231,6 +231,11 @@ use Support\BaseController;
         return $basecontroller->csrfToken();
     }
 
+    function csrfToken(){
+        $basecontroller = new BaseController();
+        return $basecontroller->csrfMeta();
+    }
+
     function verifyCsrfToken($token){
         $basecontroller = new BaseController();
         return $basecontroller->verifyCsrfToken($token);

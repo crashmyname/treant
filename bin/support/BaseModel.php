@@ -29,6 +29,9 @@ class BaseModel
 
     public function __construct($attributes = [])
     {
+        if (is_object($attributes)) {
+            $attributes = (array) $attributes;
+        }
         $this->attributes = $this->filterAttributes($attributes);
         $this->connect();
     }
@@ -296,37 +299,36 @@ class BaseModel
 
     public function toSql()
     {
-        try{
-
+        try {
             $table = self::$dynamicTable ?? $this->table;
             $sql = "SELECT {$this->distinct} " . implode(', ', $this->selectColumns) . " FROM {$table}";
-    
+
             if (!empty($this->joins)) {
                 $sql .= ' ' . implode(' ', $this->joins);
             }
-    
+
             if (!empty($this->whereConditions)) {
                 $sql .= ' WHERE ' . implode(' AND ', $this->whereConditions);
             }
-    
+
             if (!empty($this->groupBy)) {
                 $sql .= ' GROUP BY ' . $this->groupBy;
             }
-    
+
             if (!empty($this->orderBy)) {
                 $sql .= ' ORDER BY ' . implode(', ', $this->orderBy);
             }
-    
+
             if ($this->limit !== null) {
                 $sql .= ' LIMIT ' . (int) $this->limit;
             }
-    
+
             if ($this->offset !== null) {
                 $sql .= ' OFFSET ' . (int) $this->offset;
             }
-    
+
             return $sql;
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             ErrorHandler::handleException($e);
         }
     }
@@ -341,6 +343,13 @@ class BaseModel
         return null;
     }
 
+    public static function setCustomTable($parameter)
+    {
+        $instance = new static();
+        self::$dynamicTable = $parameter;
+        return $instance;
+    }
+
     public static function setTable($tablecustom)
     {
         $instance = new static();
@@ -353,7 +362,7 @@ class BaseModel
     {
         try {
             $instance = new static();
-            $instance->table = self::$dynamicTable ?? $instance->table ?? 'default_table';
+            $instance->table = self::$dynamicTable ?? ($instance->table ?? 'default_table');
             $sql = "SELECT * FROM {$instance->table}";
             $stmt = $instance->connection->prepare($sql);
             $stmt->execute();
@@ -442,7 +451,7 @@ class BaseModel
 
                 $table = self::$dynamicTable ?? $this->table;
                 // Menambahkan RETURNING untuk mengambil nilai primary key
-                $sql = "INSERT INTO {$table} ({$columns}) VALUES ({$placeholders}) RETURNING {$this->primaryKey}";
+                $sql = "INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})";
 
                 // Menyiapkan statement
                 $stmt = $this->connection->prepare($sql);
@@ -455,9 +464,8 @@ class BaseModel
                 // Eksekusi query
                 $stmt->execute();
 
-                // Mengambil ID yang baru dimasukkan menggunakan RETURNING
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                $this->attributes[$this->primaryKey] = $result[$this->primaryKey]; // Menyimpan ID yang baru dimasukkan
+                // Mengambil ID yang baru dimasukkan
+                $this->attributes[$this->primaryKey] = $this->connection->lastInsertId(); // Menyimpan ID yang baru dimasukkan
             }
         } catch (\Exception $e) {
             ErrorHandler::handleException($e); // Menangani error
@@ -625,7 +633,15 @@ class BaseModel
     public function hasOne($relatedModel, $foreignKey, $localKey = 'id')
     {
         $relatedInstance = new $relatedModel();
-        $relatedInstance->where($foreignKey, '=', $this->attributes[$localKey]);
+        if (isset($this->attributes[$localKey])) {
+            $localValue = $this->attributes[$localKey];
+        } else {
+            error_log("Atribut '{$localKey}' tidak ditemukan.");
+            return null; // Atau tangani kesalahan sesuai kebutuhan
+        }
+    
+        // Memastikan bahwa nilai yang akan digunakan untuk query adalah nilai dari atribut
+        $relatedInstance->where($foreignKey, '=', $localValue);
         return $relatedInstance->first();
     }
 
@@ -657,6 +673,39 @@ class BaseModel
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function with($relations)
+    {
+        // Jika relations adalah array, lakukan iterasi untuk setiap relasi
+        if (is_array($relations)) {
+            foreach ($relations as $relation) {
+                $this->load($relation); // Pastikan load relasi
+            }
+        } else {
+            $this->load($relations);
+        }
+
+        return $this; // Kembalikan instance model yang sudah dimuat relasinya
+    }
+
+    public function load($relation)
+{
+    // Mengecek apakah relasi yang diminta ada di model ini
+    if (method_exists($this, $relation)) {
+        // Panggil metode relasi dan muat datanya
+        $relationInstance = $this->{$relation}(); // Mengambil relasi yang diminta
+        
+        // Jika relasi memiliki query builder, kita bisa mengakses datanya
+        if (method_exists($relationInstance, 'get')) {
+            $this->{$relation} = $relationInstance->get(); // Mengambil hasil relasi
+        } else {
+            // Jika relasi tidak mengembalikan query builder, kita anggap hasilnya sudah ada
+            $this->{$relation} = $relationInstance;
+        }
+    }
+
+    return $this;
+}
+
 
     public function toArray()
     {

@@ -301,14 +301,28 @@ class BaseController {
         if(empty($_SESSION['csrf_token'])){
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
-        $token = $_SESSION['csrf_token'];
-        $csrf = "<input type='hidden' name='csrf_token' value='{$token}'>";
+        $token = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(32));
+        $csrf = '<input type="hidden" name="csrf_token" value="' . htmlspecialchars($token, ENT_QUOTES, 'UTF-8') . '">';
         return $csrf;
+    }
+
+    public function csrfMeta()
+    {
+        if(empty($_SESSION['csrf_token'])){
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        $token = $_SESSION['csrf_token'];
+        return "<meta name='csrf-token' content='{$token}'>";
     }
 
     public function verifyCsrfToken($token)
     {
-        return $token === $_SESSION['csrf_token'];
+        $isValid = hash_equals($_SESSION['csrf_token'] ?? '', $token);
+        if ($isValid) {
+            // Regenerasi token baru setelah validasi berhasil
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        return $isValid;
     }
 
     public function Method($method)

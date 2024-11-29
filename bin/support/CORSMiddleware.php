@@ -5,7 +5,7 @@ class CORSMiddleware
 {
     public static function handle()
     {
-        setSecurityHeaders();
+        // setSecurityHeaders();
         error_log("Handling CORS: " . print_r($_SERVER, true));
         // Izinkan akses dari semua domain, bisa diatur menjadi domain tertentu
         header("Access-Control-Allow-Origin: *");
@@ -14,7 +14,7 @@ class CORSMiddleware
         header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 
         // Izinkan header tertentu
-        header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+        header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN");
 
         // Izinkan penggunaan credentials (seperti cookies)
         header("Access-Control-Allow-Credentials: true");

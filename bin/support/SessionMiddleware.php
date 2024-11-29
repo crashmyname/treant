@@ -4,18 +4,24 @@ namespace Support;
 class SessionMiddleware {
     public static function start() {
         if (session_status() === PHP_SESSION_NONE) {
+            ini_set('session.cookie_samesite','None');
+            ini_set('session.cookie_secure',true);
             session_start([
                 'cookie_lifetime' => 86400,
-                'cookie_secure' => true,
+                'cookie_secure' => false,
                 'cookie_httponly' => true,
-                'cookie_samesite' => 'Srict',
+                'cookie_samesite' => 'None',
             ]); // Memulai session jika belum dimulai
+            if (!isset($_SESSION['csrf_token'])) {
+                $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            }
         }
     }
 
     public static function regenerate() {
         if (session_status() === PHP_SESSION_ACTIVE) {
             session_regenerate_id(true); // Mengganti ID session untuk meningkatkan keamanan
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
     }
 
