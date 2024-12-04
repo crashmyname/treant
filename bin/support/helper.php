@@ -266,5 +266,12 @@ use Support\BaseController;
             return __DIR__ . '/../../public/' . $path;
         }
     }
+
+    function createToken()
+    {
+        $token = bin2hex(random_bytes(32));
+        $_SESSION['token'] = $token;
+        return $token;
+    }
     
 ?>

@@ -24,5 +24,12 @@ class CSRFToken {
         }
         return false;
     }
+
+    public static function createToken()
+    {
+        $token = bin2hex(random_bytes(32));
+        $_SESSION['token'] = $token;
+        return $token;
+    }
 }
 ?>

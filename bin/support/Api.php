@@ -2,6 +2,7 @@
 namespace Support;
 
 use Support\View;
+use Support\SessionMiddleware;
 
 class Api
 {
@@ -83,8 +84,8 @@ class Api
                 return new self(); // Kembali ke chaining
             }
         }
-
-        throw new \Exception("No routes found for naming '{$name}'");
+        // throw new \Exception("No routes found for naming '{$name}'");
+        ErrorHandler::handleException($name);
     }
     public static function route($name, $params = [])
     {
@@ -110,70 +111,93 @@ class Api
     // Dispatch routing
     public static function dispatch()
     {
-        $method = $_SERVER['REQUEST_METHOD'];
-        if ($method === 'POST' && isset($_POST['_method'])) {
-            $method = strtoupper($_POST['_method']); // Ubah method menjadi PUT/DELETE jika ada
-        }
-
-        $uri = strtok($_SERVER['REQUEST_URI'], '?');
-
-        // Hilangkan prefix dari URI jika ada
-        if (strpos($uri, self::$prefix) === 0) {
-            $uri = substr($uri, strlen(self::$prefix));
-        }
-
-        // Cari rute yang sesuai
-        $route = self::findRoute($method, $uri);
-
-        if ($route) {
-            $handler = $route['handler'];
-            $middlewares = $route['middlewares'];
-            $params = $route['params'] ?? [];
-
-            $request = new \Support\Request();
-            // Jalankan middleware
-            foreach ($middlewares as $middleware) {
-                if (is_string($middleware)) {
-                    $middlewareInstance = new $middleware();
-                    if (method_exists($middlewareInstance, 'handle')) {
-                        $middlewareInstance->handle();
-                    }
-                } elseif (is_callable($middleware)) {
-                    call_user_func($middleware);
-                }
+        try{
+            // CORSMiddleware::handle();
+            SessionMiddleware::start();
+            $method = $_SERVER['REQUEST_METHOD'];
+    
+            // Cek apakah ada override method (untuk PUT/DELETE) via _method
+            if ($method === 'POST' && isset($_POST['_method'])) {
+                $method = strtoupper($_POST['_method']); // Ubah method menjadi PUT/DELETE jika ada
             }
-
-            // Jalankan handler
-            if (is_array($handler) && count($handler) === 2) {
-                [$controller, $method] = $handler;
-                $controllerInstance = new $controller();
-                $reflection = new \ReflectionMethod($controllerInstance, $method);
-                $paramsCount = $reflection->getNumberOfParameters();
-
-                // Mengatur parameter
-                if ($paramsCount > 0) {
-                    $parameters = $reflection->getParameters(); // Mendapatkan semua parameter
-
-                    // Periksa jika parameter pertama adalah Request
-                    if ($parameters[0]->getType() && $parameters[0]->getType()->getName() === 'Support\Request') {
-                        array_unshift($params, $request); // Tambahkan Request sebagai parameter pertama
+    
+            $uri = strtok($_SERVER['REQUEST_URI'], '?');
+    
+            // Hilangkan prefix dari URI jika ada
+            if (strpos($uri, self::$prefix) === 0) {
+                $uri = substr($uri, strlen(self::$prefix));
+            }
+    
+            // Cari rute yang sesuai
+            $route = self::findRoute($method, $uri);
+    
+            if ($route) {
+                $handler = $route['handler'];
+                $middlewares = $route['middlewares'];
+                $params = $route['params'] ?? [];
+    
+                // Buat instance Request
+                $request = new \Support\Request();
+    
+                // Jalankan middleware
+                foreach ($middlewares as $middleware) {
+                    if (is_string($middleware)) {
+                        $middlewareInstance = new $middleware();
+                        if (method_exists($middlewareInstance, 'handle')) {
+                            $middlewareInstance->handle();
+                        }
+                    } elseif (is_callable($middleware)) {
+                        call_user_func($middleware);
                     }
                 }
-
-                // Panggil metode controller dengan parameter yang sesuai
-                call_user_func_array([$controllerInstance, $method], $params);
+    
+                // Validasi CSRF token untuk metode POST
+                if ($method === 'POST') {
+                    // Cek CSRF token
+                    $csrfToken = $request->get('csrf_token') ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
+    
+                    if (empty($csrfToken) || !isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
+                        throw new \Exception('Invalid CSRF token');
+                    }
+                }
+    
+                // Jalankan handler
+                if (is_array($handler) && count($handler) === 2) {
+                    [$controller, $method] = $handler;
+                    $controllerInstance = new $controller();
+    
+                    // Cek apakah metode menerima request sebagai parameter
+                    $reflection = new \ReflectionMethod($controllerInstance, $method);
+                    $paramsCount = $reflection->getNumberOfParameters();
+    
+                    // Mengatur parameter
+                    if ($paramsCount > 0) {
+                        $parameters = $reflection->getParameters(); // Mendapatkan semua parameter
+    
+                        // Periksa jika parameter pertama adalah Request
+                        if ($parameters[0]->getType() && $parameters[0]->getType()->getName() === 'Support\Request') {
+                            array_unshift($params, $request); // Tambahkan Request sebagai parameter pertama
+                        }
+                    }
+    
+                    // Panggil metode controller dengan parameter yang sesuai
+                    call_user_func_array([$controllerInstance, $method], $params);
+                } else {
+                    call_user_func_array($handler, $params);
+                }
             } else {
-                call_user_func_array($handler, $params);
+                // Tangani error 404 atau 405
+                if (self::routeExists($uri)) {
+                    header('HTTP/1.1 405 Method Not Allowed');
+                    include __DIR__ . '/../../app/Handle/errors/405.php';
+                } else {
+                    header('HTTP/1.1 404 Not Found');
+                    include __DIR__ . '/../../app/Handle/errors/404.php';
+                }
             }
-        } else {
-            // Tangani error 404 atau 405
-            if (self::routeExists($uri)) {
-                header('HTTP/1.1 405 Method Not Allowed');
-                include __DIR__ . '/../../app/Handle/errors/405.php';
-            } else {
-                header('HTTP/1.1 404 Not Found');
-                include __DIR__ . '/../../app/Handle/errors/404.php';
-            }
+        } catch (\Exception $e) {
+        // Tangkap kesalahan dan kirimkan ke handler error
+        ErrorHandler::handleException($e);
         }
     }
 
