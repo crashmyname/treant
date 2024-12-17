@@ -260,6 +260,25 @@ use Support\BaseController;
         date_default_timezone_set('Asia/Jakarta');
     }
 
+    function storeFile($file, $targetDirectory)
+    {
+        // Cek apakah ada file yang diunggah
+        if ($file['error'] === UPLOAD_ERR_OK) {
+            $tmpName = $file['tmp_name'];
+            $originalName = basename($file['name']);
+            $targetPath = rtrim($targetDirectory, '/') . '/' . $originalName;
+
+            // Pindahkan file dari lokasi sementara ke tujuan
+            if (move_uploaded_file($tmpName, $targetPath)) {
+                return ['status' => 'success', 'message' => 'File berhasil diunggah.', 'path' => $targetPath];
+            } else {
+                return ['status' => 'error', 'message' => 'Terjadi kesalahan saat memindahkan file.'];
+            }
+        } else {
+            return ['status' => 'error', 'message' => 'File gagal diunggah.'];
+        }
+    }
+
     if (!function_exists('storage_path')) {
         function storage_path($path = '')
         {
@@ -273,5 +292,17 @@ use Support\BaseController;
         $_SESSION['token'] = $token;
         return $token;
     }
+
+    function env()
+    {
+        $envFilePath = __DIR__ . '/../../.env';
+        if (file_exists($envFilePath)) {
+            $env = parse_ini_file($envFilePath);
+            if ($env !== false) {
+                foreach ($env as $key => $value) {
+                    $_ENV[$key] = $value;
+                }
+            }
+        }
+    }
     
-?>
