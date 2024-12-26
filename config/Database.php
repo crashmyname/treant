@@ -137,10 +137,10 @@ class Database
     {
         $envFilePath = __DIR__ . '/../.env';
         if (file_exists($envFilePath)) {
-            $env = parse_ini_file($envFilePath);
+            $env = parse_ini_file($envFilePath, false, INI_SCANNER_RAW);
             if ($env !== false) {
                 foreach ($env as $key => $value) {
-                    $_ENV[$key] = $value;
+                    $_ENV[$key] = trim($value);
                 }
             }
         }

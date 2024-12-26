@@ -3,7 +3,7 @@ namespace Support;
 
 class Crypto
 {
-    private static $key = 'p@55w0rd';
+    private static $key = env('CRYPTO_SECRET');
 
     public static function encrypt($data)
     {

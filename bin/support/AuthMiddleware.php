@@ -23,7 +23,7 @@ class AuthMiddleware
             return false;
         }
 
-        $session_lifetime = env('SESSION_LIFETIME','default_key')*60;
+        $session_lifetime = env('SESSION_LIFETIME')*60;
         $current_time = time();
         
         if (isset($_SESSION['login_time']) && ($current_time - $_SESSION['login_time']) > $session_lifetime) {

@@ -1,5 +1,4 @@
 <?php
-use App\Controllers\UserController;
 use Support\Route;
 use Support\View;
 use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login

@@ -13,6 +13,7 @@ return array(
     'Psr\\Http\\Client\\' => array($vendorDir . '/psr/http-client/src'),
     'PhpOffice\\PhpSpreadsheet\\' => array($vendorDir . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet'),
     'Matrix\\' => array($vendorDir . '/markbaker/matrix/classes/src'),
+    'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'Config\\' => array($baseDir . '/config'),
     'Complex\\' => array($vendorDir . '/markbaker/complex/classes/src'),
     'App\\' => array($baseDir . '/app'),
