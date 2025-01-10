@@ -8,20 +8,6 @@ use Support\AuthMiddleware; //<-- Penambahan Middleware atau session login
 Route::get('/',function(){
     View::render('welcome/welcome');
 });
-Route::get('/test', [UserController::class, 'index']);
-Route::post('/testimport', [UserController::class, 'importExcel']);
-Route::post('/testpost', [UserController::class, 'store']);
-Route::put('/testi/{id}/update', [UserController::class, 'update'])->name('update');
-Route::delete('/testi/{id}/delete', [UserController::class, 'destroy'])->name('destroy');
-Route::get('/testi/{id}/show', [UserController::class, 'show']);
-Route::get('/module',[UserController::class, 'module']);
-Route::get('/monitor',[UserController::class, 'monitor']);
-
-Route::post('/module', [UserController::class, 'create']);
-Route::get('/hash',[UserController::class,'hash']);
-Route::group([AuthMiddleware::class], function(){
-
-});
 Route::get('/dokumentasi', function(){
     $title = "Get Started";
     View::render('documentation/install',['title'=>$title],'documentation/doc');
