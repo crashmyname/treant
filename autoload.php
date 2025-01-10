@@ -66,6 +66,23 @@ spl_autoload_register(function ($class) {
         require $file;
     }
 });
+
+spl_autoload_register(function ($class) {
+    $prefix = 'Core\\'; // Namespace prefix for Support classes
+    $base_dir = __DIR__ . '/core/';
+
+    $len = strlen($prefix);
+    if (strncmp($prefix, $class, $len) !== 0) {
+        return;
+    }
+
+    $relative_class = substr($class, $len);
+    $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+
+    if (file_exists($file)) {
+        require $file;
+    }
+});
 require_once __DIR__ . '/bin/support/helper.php';
 require_once __DIR__ . '/bin/support/Prefix.php';
 require_once __DIR__ . '/bin/support/Rc.php';

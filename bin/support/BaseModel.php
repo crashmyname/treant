@@ -98,6 +98,11 @@ class BaseModel
         return $this;
     }
 
+    public function selectRaw($rawExpression)
+    {
+        $this->selectColumns[] = $rawExpression; // Menambahkan SQL mentah ke daftar kolom
+        return $this;
+    }
     public function distinct($value = true)
     {
         $this->distinct = $value ? 'DISTINCT' : '';
