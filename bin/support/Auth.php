@@ -7,14 +7,14 @@ class Auth{
     public static function attempt($credentials)
     {
         $user = User::query()
-                ->where('username','=',$credentials->identifier)
+                ->where('username','=',$credentials['identifier'])
                 ->first();
         if(!$user){
             User::query()
-                ->where('email','=',$credentials->identifier)
+                ->where('email','=',$credentials['identifier'])
                 ->first();
         }
-        if($user && password_verify($credentials->password,$user->password)){
+        if($user && password_verify($credentials['password'],$user->password)){
             Session::set('user', $user->toArray());
             return true;
         }

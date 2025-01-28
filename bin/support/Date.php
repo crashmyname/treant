@@ -38,6 +38,38 @@ class Date{
         return $date;
     }
 
+    public static function DayNow()
+    {
+        setTime();
+        $date = date('l');
+        return $date;
+    }
+
+    public static function DayName($dateInput = null)
+    {
+        // Pastikan timezone sudah diatur
+        setTime();
+
+        // Jika tidak ada input, gunakan tanggal hari ini
+        $timestamp = $dateInput ? strtotime($dateInput) : time();
+
+        // Dapatkan nama hari dalam bahasa Inggris
+        $dayName = date('l', $timestamp);
+
+        // Terjemahkan ke bahasa Indonesia (opsional)
+        $days = [
+            'Sunday' => 'Minggu',
+            'Monday' => 'Senin',
+            'Tuesday' => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday' => 'Kamis',
+            'Friday' => 'Jumat',
+            'Saturday' => 'Sabtu',
+        ];
+
+        return $days[$dayName] ?? $dayName; // Kembalikan dalam bahasa Indonesia jika tersedia
+    }
+
     public static function parse($parameter)
     {
         $time = is_numeric($parameter) ? $parameter : strtotime($parameter);

@@ -306,6 +306,14 @@ class BaseController {
         return $csrf;
     }
 
+    public function csrfHeader()
+    {
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        return $_SESSION['csrf_token'];
+    }
+
     public function csrfMeta()
     {
         if(empty($_SESSION['csrf_token'])){

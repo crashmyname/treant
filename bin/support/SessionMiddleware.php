@@ -5,12 +5,12 @@ class SessionMiddleware {
     public static function start() {
         if (session_status() === PHP_SESSION_NONE) {
             ini_set('session.cookie_samesite','None');
-            ini_set('session.cookie_secure',true);
+            ini_set('session.cookie_secure',false);
             session_start([
                 'cookie_lifetime' => 86400,
                 'cookie_secure' => false,
-                'cookie_httponly' => true,
-                'cookie_samesite' => 'None',
+                'cookie_httponly' => false,
+                'cookie_samesite' => 'Lax',
             ]); // Memulai session jika belum dimulai
             if (!isset($_SESSION['csrf_token'])) {
                 $_SESSION['csrf_token'] = bin2hex(random_bytes(32));

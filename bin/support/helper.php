@@ -231,6 +231,12 @@ use Support\BaseController;
         return $basecontroller->csrfToken();
     }
 
+    function csrfHeader()
+    {
+        $basecontroller = new BaseController();
+        return $basecontroller->csrfHeader();
+    }
+
     function csrfToken(){
         $basecontroller = new BaseController();
         return $basecontroller->csrfMeta();
@@ -293,16 +299,28 @@ use Support\BaseController;
         return $token;
     }
 
-    function env()
+    function env($key, $default = null)
     {
-        $envFilePath = __DIR__ . '/../../.env';
-        if (file_exists($envFilePath)) {
-            $env = parse_ini_file($envFilePath);
-            if ($env !== false) {
-                foreach ($env as $key => $value) {
-                    $_ENV[$key] = $value;
+        static $env = null;
+
+        if ($env === null) {
+            $envFilePath = __DIR__ . '/../../.env';
+            if (file_exists($envFilePath)) {
+                $env = parse_ini_file($envFilePath, false, INI_SCANNER_RAW);
+                if ($env === false) {
+                    $env = [];
                 }
+            } else {
+                $env = [];
+            }
+
+            // Set ke $_ENV untuk kompatibilitas jika diperlukan
+            foreach ($env as $envKey => $envValue) {
+                $_ENV[$envKey] = $envValue;
             }
         }
+
+        // Ambil nilai berdasarkan key
+        return array_key_exists($key, $env) ? $env[$key] : $default;
     }
     
