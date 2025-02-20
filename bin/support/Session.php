@@ -51,6 +51,21 @@ class Session {
         }
         return null;
     }
-}
 
-?>
+    public static function flash($key, $value = null) {
+        if ($value !== null) {
+            $_SESSION['flash'][$key] = $value;
+        } else {
+            // Mengambil flash session
+            $flashValue = $_SESSION['flash'][$key] ?? null;
+            if (isset($_SESSION['flash'][$key])) {
+                unset($_SESSION['flash'][$key]); // Hapus setelah diakses
+            }
+            return $flashValue;
+        }
+    }
+
+    public static function hasFlash($key) {
+        return isset($_SESSION['flash'][$key]);
+    }
+}

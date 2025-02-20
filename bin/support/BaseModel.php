@@ -26,6 +26,7 @@ class BaseModel
     protected $limit;
     protected $offset;
     protected $orWhereConditions = [];
+    protected $data = [];
 
     public function __construct($attributes = [])
     {
@@ -189,6 +190,22 @@ class BaseModel
         return $this;
     }
 
+    public function whereBetween($column, $start, $end)
+    {
+        // Generate unique parameter names to prevent conflicts
+        $paramStart = str_replace('.', '_', $column) . "_start_" . count($this->whereParams);
+        $paramEnd = str_replace('.', '_', $column) . "_end_" . count($this->whereParams);
+
+        // Tambahkan kondisi WHERE ke array
+        $this->whereConditions[] = "{$column} BETWEEN :{$paramStart} AND :{$paramEnd}";
+
+        // Tambahkan parameter ke array parameter
+        $this->whereParams[":{$paramStart}"] = $start;
+        $this->whereParams[":{$paramEnd}"] = $end;
+
+        return $this;
+    }
+
     public function innerJoin($table, $first, $operator, $second)
     {
         return $this->join($table, $first, $operator, $second, 'INNER');
@@ -246,6 +263,23 @@ class BaseModel
         return $this;
     }
 
+    public function pluck($column)
+    {
+        try {
+            // Pastikan data tersedia
+            if (empty($this->data)) {
+                return [];
+            }
+
+            // Menggunakan array_column untuk mengambil nilai kolom
+            $result = array_column($this->data, $column);
+            return $result;
+        } catch (\Exception $e) {
+            ErrorHandler::handleException($e);
+            return [];
+        }
+    }
+
     public function get($fetchStyle = PDO::FETCH_OBJ)
     {
         try {
@@ -295,10 +329,16 @@ class BaseModel
             }
 
             $stmt->execute();
-            return $stmt->fetchAll($fetchStyle);
+            
+            // Simpan hasil dalam properti
+            $this->data = $stmt->fetchAll($fetchStyle);
+            
+            // Kembalikan instance untuk chaining
+            return $this;
         } catch (\Exception $e) {
             ErrorHandler::handleException($e);
-            return [];
+            $this->data = []; // Set data kosong jika terjadi error
+            return $this;
         }
     }
 
@@ -340,11 +380,18 @@ class BaseModel
 
     public function first()
     {
+        // Set limit ke 1
         $this->limit(1);
-        $results = $this->get();
-        if (!empty($results)) {
-            return new static($results[0]);
+        
+        // Eksekusi query
+        $this->get();
+
+        // Ambil data pertama dari hasil query
+        if (!empty($this->data) && isset($this->data[0])) {
+            return new static($this->data[0]);
         }
+
+        // Jika tidak ada data, kembalikan null
         return null;
     }
 
@@ -678,6 +725,22 @@ class BaseModel
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    public static function exists($conditions)
+    {
+        $query = static::query();
+
+        // Tambahkan semua kondisi where
+        foreach ($conditions as $field => $value) {
+            $query->where($field, '=', $value);
+        }
+
+        // Periksa apakah ada data dengan membatasi hasil ke satu dan memeriksa jika ada hasil
+        $result = $query->first();
+
+        return $result !== null;
+    }
+
     public function with($relations)
     {
         // Jika relations adalah array, lakukan iterasi untuk setiap relasi
@@ -693,23 +756,23 @@ class BaseModel
     }
 
     public function load($relation)
-{
-    // Mengecek apakah relasi yang diminta ada di model ini
-    if (method_exists($this, $relation)) {
-        // Panggil metode relasi dan muat datanya
-        $relationInstance = $this->{$relation}(); // Mengambil relasi yang diminta
-        
-        // Jika relasi memiliki query builder, kita bisa mengakses datanya
-        if (method_exists($relationInstance, 'get')) {
-            $this->{$relation} = $relationInstance->get(); // Mengambil hasil relasi
-        } else {
-            // Jika relasi tidak mengembalikan query builder, kita anggap hasilnya sudah ada
-            $this->{$relation} = $relationInstance;
+    {
+        // Mengecek apakah relasi yang diminta ada di model ini
+        if (method_exists($this, $relation)) {
+            // Panggil metode relasi dan muat datanya
+            $relationInstance = $this->{$relation}(); // Mengambil relasi yang diminta
+            
+            // Jika relasi memiliki query builder, kita bisa mengakses datanya
+            if (method_exists($relationInstance, 'get')) {
+                $this->{$relation} = $relationInstance->get(); // Mengambil hasil relasi
+            } else {
+                // Jika relasi tidak mengembalikan query builder, kita anggap hasilnya sudah ada
+                $this->{$relation} = $relationInstance;
+            }
         }
-    }
 
-    return $this;
-}
+        return $this;
+    }
 
 
     public function toArray()
@@ -727,4 +790,3 @@ class BaseModel
         $this->attributes[$name] = $value;
     }
 }
-?>

@@ -20,5 +20,3 @@ class RouteExceptionHandler
         exit();
     }
 }
-
-?>

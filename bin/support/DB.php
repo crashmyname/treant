@@ -145,9 +145,16 @@ class DB
 
     public static function raw($query, $params = [], $fetchStyle = PDO::FETCH_OBJ)
     {
-        $stmt = self::getConnection()->prepare($query);
-        $stmt->execute($params);
-        return $stmt->fetchAll($fetchStyle);
+        try {
+            $pdo = self::getConnection(); // Pastikan ini mengembalikan PDO aktif
+            $stmt = $pdo->prepare($query);
+            $stmt->execute($params);
+            return $stmt->fetchAll($fetchStyle);
+        } catch (PDOException $e) {
+            // Log error atau tampilkan pesan yang aman
+            error_log("Database Query Error: " . $e->getMessage());
+            return []; // Kembalikan array kosong jika terjadi kesalahan
+        }
     }
     // Eksekusi query
     public static function query($sql, $params = [])

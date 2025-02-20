@@ -9,6 +9,8 @@ class Treant
         'make:model' => 'createModel',
         'make:controller' => 'createController',
         'serve' => 'Serve',
+        'up' => 'up',
+        'down' => 'down',
         // Tambahkan perintah lainnya di sini
     ];
 
@@ -116,6 +118,26 @@ class Treant
         exec("php -S {$host}:{$port}");
     }
 
-}
+    protected function down()
+    {
+        $maintenanceFile = __DIR__ . '/../../.maintenance'; // Sesuaikan path ke root project Anda
+        if (!file_exists($maintenanceFile)) {
+            file_put_contents($maintenanceFile, "Maintenance mode is ON.");
+            echo "Aplikasi dalam mode maintenance!\n";
+        } else {
+            echo "Aplikasi sudah dalam mode maintenance.\n";
+        }
+    }
 
-?>
+    protected function up()
+    {
+        $maintenanceFile = __DIR__ . '/../../.maintenance'; // Sesuaikan path ke root project Anda
+        if (file_exists($maintenanceFile)) {
+            unlink($maintenanceFile);
+            echo "Aplikasi kembali normal!\n";
+        } else {
+            echo "Aplikasi sudah dalam keadaan normal.\n";
+        }
+    }
+
+}

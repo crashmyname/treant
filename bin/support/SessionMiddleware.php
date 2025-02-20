@@ -66,4 +66,3 @@ class SessionMiddleware {
         self::set('device_fingerprint', $fingerprint); // Menyimpan fingerprint di session
     }
 }
-?>

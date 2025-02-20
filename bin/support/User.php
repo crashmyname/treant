@@ -12,4 +12,3 @@ class User {
         return $this->data[$key] ?? null;
     }
 }
-?>

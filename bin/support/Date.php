@@ -94,5 +94,15 @@ class Date{
         setTime();
         return date('Y-m-d 23:59:59',$this->time);
     }
+
+    public static function isValidDateRange($date, $daysBefore = 14, $daysAfter = 14)
+    {
+        setTime();
+
+        $today = date('Y-m-d');
+        $minDate = date('Y-m-d', strtotime("-{$daysBefore} days"));
+        $maxDate = date('Y-m-d', strtotime("+{$daysAfter} days"));
+
+        return ($date >= $minDate && $date <= $maxDate);
+    }
 }
-?>

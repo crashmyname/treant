@@ -36,4 +36,3 @@ class RateLimiter
         return true; // Limit not exceeded
     }
 }
-?>

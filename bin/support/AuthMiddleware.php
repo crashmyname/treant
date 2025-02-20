@@ -70,4 +70,3 @@ class AuthMiddleware
     //     return true;
     // }
 }
-?>
