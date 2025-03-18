@@ -52,7 +52,7 @@ class ErrorHandler
         if ($trace) {
             $log .= "\nTrace: $trace";
         }
-        file_put_contents(__DIR__ . '/../../bin/logs/error.log', $log . "\n", FILE_APPEND);
+        file_put_contents(__DIR__ . '/../../logs/error.log', $log . "\n", FILE_APPEND);
     }
 
     // Menampilkan halaman error dengan informasi tambahan

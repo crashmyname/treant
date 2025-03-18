@@ -10,6 +10,11 @@ use Support\BaseController;
         return $baseURL.'public/'.$path;
     }
 
+    function includeFile($path)
+    {
+        return $_SERVER['DOCUMENT_ROOT'] . '/public/' . $path;
+    }
+
     function module($path)
     {
         $baseURL = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';

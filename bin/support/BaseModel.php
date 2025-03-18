@@ -26,7 +26,6 @@ class BaseModel
     protected $limit;
     protected $offset;
     protected $orWhereConditions = [];
-    protected $data = [];
 
     public function __construct($attributes = [])
     {
@@ -104,6 +103,8 @@ class BaseModel
         $this->selectColumns[] = $rawExpression; // Menambahkan SQL mentah ke daftar kolom
         return $this;
     }
+
+
     public function distinct($value = true)
     {
         $this->distinct = $value ? 'DISTINCT' : '';
@@ -112,16 +113,21 @@ class BaseModel
 
     public function where($column, $operator = '=', $value = null)
     {
-        if ($value === null || $value == '') {
+        if (strtoupper($operator) === 'LIKE') {
+            // LIKE operator handling (handles wildcards %)
+            $paramName = str_replace('.', '_', $column) . '_' . count($this->whereParams);
+            $this->whereConditions[] = "{$column} LIKE :{$paramName}";
+            $this->whereParams[":{$paramName}"] = $value; // e.g., "%keyword%"
+        } elseif ($value === null || $value == '') {
+            // Handle cases where the value is null, we use IS or IS NOT
             if ($operator === '=') {
                 $operator = 'IS';
             } elseif ($operator === '!=') {
                 $operator = 'IS NOT';
             }
-            // Handle cases where the value is null, we use IS or IS NOT
             $this->whereConditions[] = "{$column} {$operator} NULL";
         } else {
-            // Generate unique placeholder for each where condition
+            // Default condition
             $paramName = str_replace('.', '_', $column) . '_' . count($this->whereParams);
             $this->whereConditions[] = "{$column} {$operator} :{$paramName}";
             $this->whereParams[":{$paramName}"] = $value;
@@ -263,23 +269,6 @@ class BaseModel
         return $this;
     }
 
-    public function pluck($column)
-    {
-        try {
-            // Pastikan data tersedia
-            if (empty($this->data)) {
-                return [];
-            }
-
-            // Menggunakan array_column untuk mengambil nilai kolom
-            $result = array_column($this->data, $column);
-            return $result;
-        } catch (\Exception $e) {
-            ErrorHandler::handleException($e);
-            return [];
-        }
-    }
-
     public function get($fetchStyle = PDO::FETCH_OBJ)
     {
         try {
@@ -329,16 +318,10 @@ class BaseModel
             }
 
             $stmt->execute();
-            
-            // Simpan hasil dalam properti
-            $this->data = $stmt->fetchAll($fetchStyle);
-            
-            // Kembalikan instance untuk chaining
-            return $this;
+            return $stmt->fetchAll($fetchStyle);
         } catch (\Exception $e) {
             ErrorHandler::handleException($e);
-            $this->data = []; // Set data kosong jika terjadi error
-            return $this;
+            return [];
         }
     }
 
@@ -380,18 +363,11 @@ class BaseModel
 
     public function first()
     {
-        // Set limit ke 1
         $this->limit(1);
-        
-        // Eksekusi query
-        $this->get();
-
-        // Ambil data pertama dari hasil query
-        if (!empty($this->data) && isset($this->data[0])) {
-            return new static($this->data[0]);
+        $results = $this->get();
+        if (!empty($results)) {
+            return new static($results[0]);
         }
-
-        // Jika tidak ada data, kembalikan null
         return null;
     }
 
@@ -516,8 +492,9 @@ class BaseModel
                 // Eksekusi query
                 $stmt->execute();
 
-                // Mengambil ID yang baru dimasukkan
-                $this->attributes[$this->primaryKey] = $this->connection->lastInsertId(); // Menyimpan ID yang baru dimasukkan
+                // Mengambil ID yang baru dimasukkan menggunakan RETURNING
+                // $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $this->attributes[$this->primaryKey] = $this->connection->lastInsertId();
             }
         } catch (\Exception $e) {
             ErrorHandler::handleException($e); // Menangani error
@@ -725,7 +702,7 @@ class BaseModel
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
     public static function exists($conditions)
     {
         $query = static::query();
@@ -740,7 +717,7 @@ class BaseModel
 
         return $result !== null;
     }
-
+    
     public function with($relations)
     {
         // Jika relations adalah array, lakukan iterasi untuk setiap relasi
@@ -790,3 +767,4 @@ class BaseModel
         $this->attributes[$name] = $value;
     }
 }
+?>

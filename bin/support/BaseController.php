@@ -193,20 +193,28 @@ class BaseController {
 
     public function base_url()
     {
-        if (php_sapi_name() === 'cli-server' || PHP_SAPI === 'cli') {
-            $baseURL = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
-            $baseDir = rtrim(str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']), '/');
-            $baseURL .= $_SERVER['HTTP_HOST'] . $baseDir;
-            return $baseURL;
-        } else {
-            // URL saat menjalankan manual, periksa apakah HTTP_HOST tersedia
-            $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
-            $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
-            
-            // Sesuaikan dengan prefiks rute jika ada
-            $baseUrl = $protocol . $host . '/' . basename(dirname(dirname(__DIR__))); 
-            return $baseUrl;
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https://' : 'http://';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+
+        // Ambil path direktori script saat ini
+        $scriptName = $_SERVER['SCRIPT_NAME'];
+        $baseDir = str_replace(basename($scriptName), '', $scriptName);
+
+        // Hapus 'public_html' dari path jika ada
+        if (strpos($baseDir, 'public_html') !== false) {
+            $baseDir = str_replace('public_html/', '', $baseDir);
         }
+
+        // Trim agar tidak ada double slash di akhir
+        $baseDir = rtrim($baseDir, '/');
+
+        // Jika menggunakan CLI server
+        if (PHP_SAPI === 'cli-server' || PHP_SAPI === 'cli') {
+            return $protocol . $host . $baseDir;
+        }
+
+        // Return URL tanpa tambahan folder
+        return rtrim($protocol . $host . $baseDir, '/');
     }
 
     public function arrayGet($array, $key, $default)
